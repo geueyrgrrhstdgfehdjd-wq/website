@@ -14,7 +14,9 @@ const DATA_DIR = path.join(__dirname, 'data');
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+
+// ✅ Serve static files จาก root (ไม่ต้องมี public/)
+app.use(express.static(__dirname));
 
 // ===== DATABASE =====
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
@@ -167,13 +169,7 @@ app.get('/api/me', authMiddleware, (req, res) => {
 });
 
 // ===== ROUTES: PACKAGES =====
-app.get('/api/packages', (req, res) => {
-  const configPath = path.join(DATA_DIR, 'packages.json');
-  if (fs.existsSync(configPath)) {
-    return res.json(JSON.parse(fs.readFileSync(configPath, 'utf-8')));
-  }
-  res.json(PACKAGES);
-});
+app.get('/api/packages', (req, res) => res.json(PACKAGES));
 
 // ===== ROUTES: ORDERS =====
 app.post('/api/orders/create', authMiddleware, (req, res) => {
@@ -226,7 +222,7 @@ app.post('/api/redeem', authMiddleware, (req, res) => {
     const codes = readDB('codes');
     const codeData = codes.find(c => c.code === code.toUpperCase());
     if (!codeData) return res.status(404).json({ error: 'โค้ดไม่ถูกต้อง' });
-    if (codeData.used) return res.status(400).json({ error: 'โค้ดนี้ถูกใช้ไปแล้ว' });
+    if (codeData.used >= codeData.maxUse) return res.status(400).json({ error: 'โค้ดนี้ถูกใช้ไปแล้ว' });
     if (codeData.expiresAt && new Date(codeData.expiresAt) < new Date()) {
       return res.status(400).json({ error: 'โค้ดหมดอายุ' });
     }
@@ -247,9 +243,9 @@ app.post('/api/redeem', authMiddleware, (req, res) => {
       }
     }
 
-    codeData.used = true;
-    codeData.usedBy = req.user.username;
-    codeData.usedAt = new Date().toISOString();
+    codeData.used = (codeData.used || 0) + 1;
+    codeData.usedBy = codeData.usedBy || [];
+    codeData.usedBy.push({ username: req.user.username, at: new Date().toISOString() });
 
     writeDB('users', users);
     writeDB('codes', codes);
@@ -389,9 +385,9 @@ app.get('/api/admin/logs', authMiddleware, adminOnly, (req, res) => {
   res.json(logs.slice(-200).reverse());
 });
 
-// ===== FALLBACK =====
+// ✅ FALLBACK — ใช้ root
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, () => {
