@@ -28,21 +28,12 @@ function toast(msg, type = 'success') {
 }
 
 // ============ MODAL ============
-function openModal(name) {
-  document.getElementById(name + 'Modal').classList.add('show');
-}
-function closeModal(name) {
-  document.getElementById(name + 'Modal').classList.remove('show');
-}
-function switchModal(from, to) {
-  closeModal(from);
-  setTimeout(() => openModal(to), 200);
-}
+function openModal(name) { document.getElementById(name + 'Modal').classList.add('show'); }
+function closeModal(name) { document.getElementById(name + 'Modal').classList.remove('show'); }
+function switchModal(from, to) { closeModal(from); setTimeout(() => openModal(to), 200); }
 
 // ============ NAV ============
-function toggleMobile() {
-  document.getElementById('navMenu').classList.toggle('show');
-}
+function toggleMobile() { document.getElementById('navMenu').classList.toggle('show'); }
 
 function updateNav() {
   const isLogged = !!state.token;
@@ -78,6 +69,7 @@ function showPage(name) {
 }
 
 function showHome() { showPage('home'); }
+function scrollTo(id) { setTimeout(() => document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' }), 200); }
 
 // ============ AUTH ============
 async function handleRegister(e) {
@@ -100,9 +92,7 @@ async function handleRegister(e) {
     closeModal('register');
     toast(data.message);
     showPage('dashboard');
-  } catch (err) {
-    toast(err.message, 'error');
-  }
+  } catch (err) { toast(err.message, 'error'); }
 }
 
 async function handleLogin(e) {
@@ -121,9 +111,7 @@ async function handleLogin(e) {
     closeModal('login');
     toast('เข้าสู่ระบบสำเร็จ!');
     showPage('dashboard');
-  } catch (err) {
-    toast(err.message, 'error');
-  }
+  } catch (err) { toast(err.message, 'error'); }
 }
 
 function logout() {
@@ -153,18 +141,12 @@ async function handleBuy(e) {
   try {
     const data = await api('/orders/create', {
       method: 'POST',
-      body: {
-        pkgId: state.currentPkg,
-        method: fd.get('method'),
-        slip: fd.get('slip')
-      }
+      body: { pkgId: state.currentPkg, method: fd.get('method'), slip: fd.get('slip') }
     });
     closeModal('buy');
     toast('ส่งออเดอร์แล้ว! รอแอดมินอนุมัติ (' + data.order.id + ')');
     if (document.getElementById('page-dashboard').classList.contains('active')) loadDashboard();
-  } catch (err) {
-    toast(err.message, 'error');
-  }
+  } catch (err) { toast(err.message, 'error'); }
 }
 
 // ============ REDEEM ============
@@ -172,16 +154,11 @@ async function handleRedeem(e) {
   e.preventDefault();
   const fd = new FormData(e.target);
   try {
-    const data = await api('/redeem', {
-      method: 'POST',
-      body: { code: fd.get('code') }
-    });
+    const data = await api('/redeem', { method: 'POST', body: { code: fd.get('code') } });
     closeModal('redeem');
     toast(data.message);
     if (document.getElementById('page-dashboard').classList.contains('active')) loadDashboard();
-  } catch (err) {
-    toast(err.message, 'error');
-  }
+  } catch (err) { toast(err.message, 'error'); }
 }
 
 // ============ DASHBOARD ============
@@ -198,20 +175,14 @@ async function loadDashboard() {
 
     const orders = await api('/orders/my');
     document.getElementById('dashOrders').textContent = orders.length;
-    const list = document.getElementById('orderList');
-    list.innerHTML = orders.length ? orders.map(o => `
+    document.getElementById('orderList').innerHTML = orders.length ? orders.map(o => `
       <div class="order-item">
-        <div>
-          <strong>${o.pkgName}</strong>
-          <span class="order-id">${o.id}</span>
-        </div>
+        <div><strong>${o.pkgName}</strong><span class="order-id">${o.id}</span></div>
         <div>฿${o.amount} • ${o.method}</div>
         <div class="status status-${o.status}">${o.status}</div>
       </div>
     `).join('') : '<p style="text-align:center;color:var(--text-muted);">ยังไม่มีออเดอร์</p>';
-  } catch (err) {
-    toast(err.message, 'error');
-  }
+  } catch (err) { toast(err.message, 'error'); }
 }
 
 // ============ ADMIN ============
@@ -227,98 +198,63 @@ async function loadAdmin() {
     const orders = await api('/admin/orders');
     document.getElementById('adminOrderList').innerHTML = orders.length ? orders.map(o => `
       <div class="order-item admin">
-        <div>
-          <strong>${o.pkgName}</strong> 
-          <span class="order-id">${o.id}</span>
-          <br><small>@${o.username} • ${new Date(o.createdAt).toLocaleString('th-TH')}</small>
-        </div>
+        <div><strong>${o.pkgName}</strong> <span class="order-id">${o.id}</span><br><small>@${o.username} • ${new Date(o.createdAt).toLocaleString('th-TH')}</small></div>
         <div>฿${o.amount} • ${o.method}</div>
         <div class="status status-${o.status}">${o.status}</div>
-        <div class="admin-actions">
-          ${o.status === 'pending' ? `
-            <button class="btn-approve" onclick="approveOrder('${o.id}')">✓ อนุมัติ</button>
-            <button class="btn-reject" onclick="rejectOrder('${o.id}')">✗ ปฏิเสธ</button>
-          ` : '<small>เสร็จแล้ว</small>'}
-        </div>
+        <div class="admin-actions">${o.status === 'pending' ? `<button class="btn-approve" onclick="approveOrder('${o.id}')">✓</button><button class="btn-reject" onclick="rejectOrder('${o.id}')">✗</button>` : '<small>✓</small>'}</div>
       </div>
     `).join('') : '<p style="text-align:center;color:var(--text-muted);">ไม่มีออเดอร์</p>';
 
     const users = await api('/admin/users');
     document.getElementById('adminUserList').innerHTML = users.map(u => `
       <div class="user-item">
-        <div class="user-info">
-          <strong>${u.username}</strong> ${u.role === 'admin' ? '<span class="badge-admin">ADMIN</span>' : ''} ${u.banned ? '<span class="badge-banned">BANNED</span>' : ''}
-          <br><small>${u.email} • ${new Date(u.createdAt).toLocaleDateString('th-TH')}</small>
-        </div>
+        <div class="user-info"><strong>${u.username}</strong> ${u.role === 'admin' ? '<span class="badge-admin">ADMIN</span>' : ''} ${u.banned ? '<span class="badge-banned">BAN</span>' : ''}<br><small>${u.email}</small></div>
         <div>${u.activePkg || '-'}</div>
-        <div class="admin-actions">
-          ${u.role !== 'admin' ? `<button class="btn-${u.banned ? 'approve' : 'reject'}" onclick="banUser('${u.id}', ${!u.banned})">${u.banned ? 'ปลดแบน' : 'แบน'}</button>` : ''}
-        </div>
+        <div class="admin-actions">${u.role !== 'admin' ? `<button class="btn-${u.banned ? 'approve' : 'reject'}" onclick="banUser('${u.id}', ${!u.banned})">${u.banned ? 'ปลด' : 'แบน'}</button>` : ''}</div>
       </div>
     `).join('');
 
     const codes = await api('/admin/codes');
     document.getElementById('adminCodeList').innerHTML = codes.length ? codes.map(c => `
-      <div class="code-item">
-        <code>${c.code}</code>
-        <span>${c.type} ${c.type === 'credits' ? '฿' + c.value : c.pkgId}</span>
-        <span>ใช้แล้ว ${c.used || 0}/${c.maxUse}</span>
-      </div>
+      <div class="code-item"><code>${c.code}</code><span>${c.type} ${c.type === 'credits' ? '฿' + c.value : c.pkgId}</span><span>ใช้ ${c.used || 0}/${c.maxUse}</span></div>
     `).join('') : '<p style="text-align:center;color:var(--text-muted);">ยังไม่มีโค้ด</p>';
 
     const logs = await api('/admin/logs');
     document.getElementById('adminLogList').innerHTML = logs.length ? logs.map(l => `
-      <div class="log-item log-${l.type}">
-        <span class="log-time">${new Date(l.timestamp).toLocaleTimeString('th-TH')}</span>
-        <span class="log-type">${l.type}</span>
-        <span>${l.message}</span>
-      </div>
+      <div class="log-item log-${l.type}"><span class="log-time">${new Date(l.timestamp).toLocaleTimeString('th-TH')}</span><span class="log-type">${l.type}</span><span>${l.message}</span></div>
     `).join('') : '<p style="text-align:center;color:var(--text-muted);">ไม่มี log</p>';
-
-  } catch (err) {
-    toast(err.message, 'error');
-  }
+  } catch (err) { toast(err.message, 'error'); }
 }
 
 async function approveOrder(id) {
-  if (!confirm('อนุมัติออเดอร์ ' + id + '?')) return;
-  try {
-    await api('/admin/orders/approve', { method: 'POST', body: { orderId: id } });
-    toast('อนุมัติแล้ว');
-    loadAdmin();
-  } catch (err) { toast(err.message, 'error'); }
+  if (!confirm('อนุมัติ ' + id + '?')) return;
+  try { await api('/admin/orders/approve', { method: 'POST', body: { orderId: id } }); toast('อนุมัติแล้ว'); loadAdmin(); }
+  catch (err) { toast(err.message, 'error'); }
 }
 
 async function rejectOrder(id) {
-  const reason = prompt('เหตุผลที่ปฏิเสธ:');
+  const reason = prompt('เหตุผล:');
   if (reason === null) return;
-  try {
-    await api('/admin/orders/reject', { method: 'POST', body: { orderId: id, reason } });
-    toast('ปฏิเสธแล้ว');
-    loadAdmin();
-  } catch (err) { toast(err.message, 'error'); }
+  try { await api('/admin/orders/reject', { method: 'POST', body: { orderId: id, reason } }); toast('ปฏิเสธแล้ว'); loadAdmin(); }
+  catch (err) { toast(err.message, 'error'); }
 }
 
 async function banUser(id, banned) {
-  if (!confirm(`${banned ? 'แบน' : 'ปลดแบน'} ผู้ใช้นี้?`)) return;
-  try {
-    await api('/admin/users/ban', { method: 'POST', body: { userId: id, banned } });
-    toast(banned ? 'แบนแล้ว' : 'ปลดแบนแล้ว');
-    loadAdmin();
-  } catch (err) { toast(err.message, 'error'); }
+  if (!confirm(`${banned ? 'แบน' : 'ปลดแบน'}?`)) return;
+  try { await api('/admin/users/ban', { method: 'POST', body: { userId: id, banned } }); toast('สำเร็จ'); loadAdmin(); }
+  catch (err) { toast(err.message, 'error'); }
 }
 
 async function createCode(e) {
   e.preventDefault();
   const fd = new FormData(e.target);
-  const body = {
-    code: fd.get('code') || null,
-    type: fd.get('type'),
-    value: Number(fd.get('value')),
-    pkgId: fd.get('pkgId') || null
-  };
   try {
-    const data = await api('/admin/codes/create', { method: 'POST', body });
+    const data = await api('/admin/codes/create', { method: 'POST', body: {
+      code: fd.get('code') || null,
+      type: fd.get('type'),
+      value: Number(fd.get('value')),
+      pkgId: fd.get('pkgId') || null
+    }});
     toast('สร้างโค้ด ' + data.code.code + ' แล้ว!');
     e.target.reset();
     loadAdmin();
@@ -347,16 +283,11 @@ const animateCount = (el) => {
     el.textContent = Math.floor(cur).toLocaleString();
   }, 16);
 };
-
 const counterObs = new IntersectionObserver((entries) => {
   entries.forEach(en => {
-    if (en.isIntersecting) {
-      animateCount(en.target);
-      counterObs.unobserve(en.target);
-    }
+    if (en.isIntersecting) { animateCount(en.target); counterObs.unobserve(en.target); }
   });
 }, { threshold: 0.5 });
-
 document.querySelectorAll('.stat-num').forEach(el => counterObs.observe(el));
 
 // ============ SMOOTH SCROLL ============
@@ -375,5 +306,4 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-// ============ INIT ============
 updateNav();
