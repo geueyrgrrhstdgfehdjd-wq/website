@@ -1,11 +1,9 @@
-// ============ STATE ============
 const state = {
   token: localStorage.getItem('hp_token') || null,
   user: JSON.parse(localStorage.getItem('hp_user') || 'null'),
   currentPkg: null
 };
 
-// ============ API HELPER ============
 async function api(path, opts = {}) {
   const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
   if (state.token) headers['Authorization'] = 'Bearer ' + state.token;
@@ -19,7 +17,6 @@ async function api(path, opts = {}) {
   return data;
 }
 
-// ============ TOAST ============
 function toast(msg, type = 'success') {
   const el = document.getElementById('toast');
   el.textContent = msg;
@@ -27,12 +24,11 @@ function toast(msg, type = 'success') {
   setTimeout(() => el.classList.remove('show'), 3000);
 }
 
-// ============ MODAL ============
 function openModal(name) { document.getElementById(name + 'Modal').classList.add('show'); }
 function closeModal(name) { document.getElementById(name + 'Modal').classList.remove('show'); }
 function switchModal(from, to) { closeModal(from); setTimeout(() => openModal(to), 200); }
+function scrollToEl(sel) { setTimeout(() => document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth' }), 200); }
 
-// ============ NAV ============
 function toggleMobile() { document.getElementById('navMenu').classList.toggle('show'); }
 
 function updateNav() {
@@ -46,7 +42,6 @@ function updateNav() {
   }
 }
 
-// ============ PAGE NAV ============
 function showPage(name) {
   if (name === 'admin' && (!state.user || state.user.role !== 'admin')) {
     toast('ต้องเข้าสู่ระบบในฐานะแอดมิน', 'error');
@@ -59,30 +54,22 @@ function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-
   document.querySelectorAll('#navMenu a').forEach(a => {
     a.classList.toggle('active', a.dataset.page === name);
   });
-
   if (name === 'dashboard') loadDashboard();
   if (name === 'admin') loadAdmin();
 }
 
 function showHome() { showPage('home'); }
-function scrollTo(id) { setTimeout(() => document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' }), 200); }
 
-// ============ AUTH ============
 async function handleRegister(e) {
   e.preventDefault();
   const fd = new FormData(e.target);
   try {
     const data = await api('/register', {
       method: 'POST',
-      body: {
-        username: fd.get('username'),
-        email: fd.get('email'),
-        password: fd.get('password')
-      }
+      body: { username: fd.get('username'), email: fd.get('email'), password: fd.get('password') }
     });
     state.token = data.token;
     state.user = data.user;
@@ -124,7 +111,6 @@ function logout() {
   toast('ออกจากระบบแล้ว');
 }
 
-// ============ BUY ============
 function buyPkg(pkgId) {
   if (!state.token) { openModal('login'); return; }
   state.currentPkg = pkgId;
@@ -149,7 +135,6 @@ async function handleBuy(e) {
   } catch (err) { toast(err.message, 'error'); }
 }
 
-// ============ REDEEM ============
 async function handleRedeem(e) {
   e.preventDefault();
   const fd = new FormData(e.target);
@@ -161,7 +146,6 @@ async function handleRedeem(e) {
   } catch (err) { toast(err.message, 'error'); }
 }
 
-// ============ DASHBOARD ============
 async function loadDashboard() {
   if (!state.token) return;
   try {
@@ -172,7 +156,6 @@ async function loadDashboard() {
     document.getElementById('dashPkg').textContent = me.activePkg ? me.activePkg.toUpperCase() : 'ยังไม่มี';
     document.getElementById('dashExpire').textContent = me.expiresAt ? new Date(me.expiresAt).toLocaleString('th-TH') : '-';
     document.getElementById('dashCredits').textContent = me.credits || 0;
-
     const orders = await api('/orders/my');
     document.getElementById('dashOrders').textContent = orders.length;
     document.getElementById('orderList').innerHTML = orders.length ? orders.map(o => `
@@ -185,7 +168,6 @@ async function loadDashboard() {
   } catch (err) { toast(err.message, 'error'); }
 }
 
-// ============ ADMIN ============
 async function loadAdmin() {
   if (!state.token) return;
   try {
@@ -261,7 +243,6 @@ async function createCode(e) {
   } catch (err) { toast(err.message, 'error'); }
 }
 
-// ============ TABS ============
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('tab')) {
     const tab = e.target.dataset.tab;
@@ -271,7 +252,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// ============ COUNTER ANIMATION ============
 const animateCount = (el) => {
   const target = Number(el.dataset.count);
   const duration = 2000;
@@ -290,7 +270,6 @@ const counterObs = new IntersectionObserver((entries) => {
 }, { threshold: 0.5 });
 document.querySelectorAll('.stat-num').forEach(el => counterObs.observe(el));
 
-// ============ SMOOTH SCROLL ============
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', (e) => {
     const href = a.getAttribute('href');
