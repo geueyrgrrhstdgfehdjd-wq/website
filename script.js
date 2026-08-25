@@ -5,7 +5,6 @@ const state = {
   selectedOrders: new Set()
 };
 
-// ===== AUTO LOGIN =====
 (async function init() {
   try {
     const res = await fetch('/api/auto-login', { credentials: 'include' });
@@ -55,7 +54,6 @@ function showAutoLoginBanner(name, device) {
   setTimeout(() => b.classList.remove('show'), 5000);
 }
 
-// ===== API =====
 async function api(p, o = {}) {
   const h = { 'Content-Type': 'application/json', ...(o.headers || {}) };
   if (state.token) h['Authorization'] = 'Bearer ' + state.token;
@@ -84,7 +82,6 @@ function openModal(n) { document.getElementById(n + 'Modal').classList.add('show
 function closeModal(n) { document.getElementById(n + 'Modal').classList.remove('show'); }
 function switchModal(a, b) { closeModal(a); setTimeout(() => openModal(b), 200); }
 
-// ===== LOAD SETTINGS =====
 async function loadSettings() {
   const s = await api('/settings');
   state.settings = s;
@@ -151,7 +148,6 @@ async function loadAnnouncements() {
   } catch (e) {}
 }
 
-// ===== NAV =====
 function updateNav() {
   const l = !!state.token;
   document.getElementById('navActions').style.display = l ? 'none' : 'flex';
@@ -174,7 +170,6 @@ function showPage(n) {
 }
 function showHome() { showPage('home'); }
 
-// ===== AUTH =====
 async function handleRegister(e) {
   e.preventDefault();
   const fd = new FormData(e.target);
@@ -200,7 +195,7 @@ async function handleLogin(e) {
     state.token = d.token; state.user = d.user;
     localStorage.setItem('hp_token', d.token);
     localStorage.setItem('hp_user', JSON.stringify(d.user));
-    updateNav(); closeModal('login'); toast('เข้า�ู่ระบบสำเร็จ'); startAutoRefresh(); showPage('dashboard');
+    updateNav(); closeModal('login'); toast('เข้าสู่ระบบสำเร็จ'); startAutoRefresh(); showPage('dashboard');
   } catch (err) { toast(err.message, 'error'); }
 }
 async function logout() {
@@ -208,14 +203,12 @@ async function logout() {
   forceLogout(); toast('ออกจากระบบ');
 }
 
-// ===== BUY =====
 function buyPkg(id) {
   if (!state.token) { openModal('login'); return; }
   state.currentPkg = id;
   const p = state.settings.packages[id];
   document.getElementById('buyPkgName').textContent = p.name;
   document.getElementById('buyPkgPrice').textContent = '฿' + p.price.toLocaleString();
-  // payment options
   const pay = state.settings.payments || {};
   const opts = [];
   if (pay.truemoney?.enabled) opts.push('<option value="truemoney">TrueMoney: ' + pay.truemoney.wallet + '</option>');
@@ -241,7 +234,6 @@ async function handleRedeem(e) {
   } catch (e) { toast(e.message, 'error'); }
 }
 
-// ===== DASHBOARD =====
 async function loadDashboard() {
   if (!state.token) return;
   try {
@@ -260,8 +252,6 @@ async function loadDashboard() {
         <div class="status status-${o.status}">${o.status}</div>
       </div>
     `).join('') : '<p style="text-align:center;color:var(--text-muted);">ยังไม่มีออเดอร์</p>';
-    
-    // messages
     const msgs = await api('/my/messages');
     document.getElementById('messageList').innerHTML = msgs.length ? msgs.slice(0, 10).map(m => `
       <div class="message-item ${m.read ? '' : 'unread'}">
@@ -273,11 +263,9 @@ async function loadDashboard() {
   } catch (e) { toast(e.message, 'error'); }
 }
 
-// ===== ADMIN =====
 async function loadAdmin() {
   if (!state.token || state.user?.role !== 'admin') return;
   try {
-    // Stats
     const stats = await api('/admin/stats');
     document.getElementById('sUsers').textContent = stats.totalUsers;
     document.getElementById('sTodayOrders').textContent = stats.todayOrders;
@@ -287,10 +275,7 @@ async function loadAdmin() {
     document.getElementById('sTotalRev').textContent = '฿' + stats.totalRevenue.toLocaleString();
     document.getElementById('sOnline').textContent = stats.onlineUsers;
     document.getElementById('sActive').textContent = stats.activeUsers;
-
-    // Chart
     drawChart(stats.chart7days);
-
     loadAdminOrders();
     loadAdminUsers();
     loadPackagesAdmin();
@@ -306,45 +291,32 @@ async function loadAdmin() {
 function drawChart(data) {
   const canvas = document.getElementById('salesChart');
   const ctx = canvas.getContext('2d');
-  if (state.chart) state.chart.destroy();
   canvas.width = canvas.parentElement.clientWidth - 48;
   canvas.height = 200;
-  
   const max = Math.max(...data.map(d => d.revenue), 1);
   const bw = canvas.width / data.length;
-  
-  state.chart = {
-    draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // bars
-      data.forEach((d, i) => {
-        const h = (d.revenue / max) * (canvas.height - 40);
-        const x = i * bw + bw * 0.15;
-        const w = bw * 0.7;
-        const y = canvas.height - h - 20;
-        // gradient
-        const grad = ctx.createLinearGradient(0, y, 0, y + h);
-        grad.addColorStop(0, '#ff5722');
-        grad.addColorStop(1, '#ff9800');
-        ctx.fillStyle = grad;
-        ctx.fillRect(x, y, w, h);
-        // text
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 11px Kanit';
-        ctx.textAlign = 'center';
-        ctx.fillText('฿' + d.revenue, x + w/2, y - 5);
-        ctx.fillStyle = '#9a9aa8';
-        ctx.font = '10px Kanit';
-        ctx.fillText(d.date, x + w/2, canvas.height - 5);
-        ctx.fillText(d.orders + ' orders', x + w/2, canvas.height - 18);
-      });
-    }
-  };
-  state.chart.draw();
-  window.addEventListener('resize', () => { if (state.chart) state.chart.draw(); });
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  data.forEach((d, i) => {
+    const h = (d.revenue / max) * (canvas.height - 40);
+    const x = i * bw + bw * 0.15;
+    const w = bw * 0.7;
+    const y = canvas.height - h - 20;
+    const grad = ctx.createLinearGradient(0, y, 0, y + h);
+    grad.addColorStop(0, '#ff5722');
+    grad.addColorStop(1, '#ff9800');
+    ctx.fillStyle = grad;
+    ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 11px Kanit';
+    ctx.textAlign = 'center';
+    ctx.fillText('฿' + d.revenue, x + w/2, y - 5);
+    ctx.fillStyle = '#9a9aa8';
+    ctx.font = '10px Kanit';
+    ctx.fillText(d.date, x + w/2, canvas.height - 5);
+    ctx.fillText(d.orders + ' orders', x + w/2, canvas.height - 18);
+  });
 }
 
-// ===== ORDERS ADMIN =====
 async function loadAdminOrders() {
   const search = document.getElementById('orderSearch')?.value || '';
   const status = document.getElementById('orderFilter')?.value || 'all';
@@ -396,7 +368,6 @@ async function rejectOrder(id) {
   catch (e) { toast(e.message, 'error'); }
 }
 
-// ===== USERS ADMIN =====
 async function loadAdminUsers() {
   const search = document.getElementById('userSearch')?.value || '';
   const role = document.getElementById('userRoleFilter')?.value || 'all';
@@ -408,11 +379,11 @@ async function loadAdminUsers() {
           <strong>${u.username}</strong>
           ${u.role === 'admin' ? '<span class="badge-admin">ADMIN</span>' : ''}
           ${u.banned ? '<span class="badge-banned">BAN</span>' : ''}
-          <br><small>${u.email} • IP: ${u.ip || '-'} • เข้า�่าสุด: ${u.lastLogin ? new Date(u.lastLogin).toLocaleString('th-TH') : '-'}</small>
+          <br><small>${u.email} • IP: ${u.ip || '-'}</small>
         </div>
-        <div>� ${u.credits || 0}</div>
+        <div>💰 ${u.credits || 0}</div>
         <div class="admin-actions">
-          <button class="btn-redeem" onclick="openUserAction('${u.id}')">�️</button>
+          <button class="btn-redeem" onclick="openUserAction('${u.id}')">⚙️</button>
           ${u.role !== 'admin' ? `<button class="btn-${u.banned ? 'approve' : 'reject'}" onclick="banUser('${u.id}', ${!u.banned})">${u.banned ? 'ปลด' : 'แบน'}</button>` : ''}
         </div>
       </div>
@@ -421,8 +392,7 @@ async function loadAdminUsers() {
 }
 
 function openUserAction(uid) {
-  const u = (window._users || []).find(x => x.id === uid);
-  const html = `
+  document.getElementById('userActionContent').innerHTML = `
     <div class="form-group"><label>เติม/ลด เครดิต</label>
       <input type="number" id="creditsAmount" placeholder="จำนวน">
       <div style="display:flex;gap:8px;margin-top:8px;">
@@ -433,16 +403,15 @@ function openUserAction(uid) {
     </div>
     <div class="form-group"><label>ให้แพ็คเกจ</label>
       <select id="giftPkg">
-        <option value="daily">DAILY (1 วัน)</option>
-        <option value="weekly">WEEKLY (7 วัน)</option>
-        <option value="monthly">MONTHLY (30 วัน)</option>
-        <option value="season">SEASON (90 วัน)</option>
+        <option value="daily">DAILY</option>
+        <option value="weekly">WEEKLY</option>
+        <option value="monthly">MONTHLY</option>
+        <option value="season">SEASON</option>
         <option value="lifetime">LIFETIME</option>
       </select>
       <button class="btn-primary" onclick="giftPackage('${uid}')" style="margin-top:8px;">🎁 ให้แพ็คเกจ</button>
     </div>
   `;
-  document.getElementById('userActionContent').innerHTML = html;
   openModal('userAction');
 }
 
@@ -469,7 +438,6 @@ async function banUser(uid, banned) {
   catch (e) { toast(e.message, 'error'); }
 }
 
-// ===== PACKAGES ADMIN =====
 async function loadPackagesAdmin() {
   const pkgs = Object.values(state.settings.packages).sort((a, b) => (a.order || 99) - (b.order || 99));
   document.getElementById('packageEditor').innerHTML = pkgs.map(p => `
@@ -477,8 +445,7 @@ async function loadPackagesAdmin() {
       <div class="pkg-edit-icon">${p.image || '🎁'}</div>
       <div class="pkg-edit-info">
         <strong>${p.name}</strong>
-        <span>฿${p.price.toLocaleString()} ${p.oldPrice ? `<del>฿${p.oldPrice.toLocaleString()}</del>` : ''} • ${p.days >= 99999 ? 'ตลอดชีพ' : p.days + ' วัน'}</span>
-        <small style="color:var(--text-muted);">ลำดับ: ${p.order || '-'}</small>
+        <span>฿${p.price.toLocaleString()} ${p.oldPrice ? `<del>฿${p.oldPrice.toLocaleString()}</del>` : ''}</span>
       </div>
       <div style="display:flex;gap:6px;">
         <button class="btn-approve" onclick="openPkgEdit('${p.id}')">✏️</button>
@@ -534,7 +501,6 @@ async function deletePkg(id) {
   catch (e) { toast(e.message, 'error'); }
 }
 
-// ===== CODES ADMIN =====
 async function loadCodes() {
   const codes = await api('/admin/codes');
   document.getElementById('adminCodeList').innerHTML = codes.map(c => `
@@ -542,7 +508,7 @@ async function loadCodes() {
       <code>${c.code}</code>
       <span>${c.type} ${c.type === 'credits' ? '฿' + c.value : c.pkgId}</span>
       <span>ใช้ ${c.used || 0}/${c.maxUse}</span>
-      <button class="btn-reject" onclick="deleteCode('${c.id}')">�️</button>
+      <button class="btn-reject" onclick="deleteCode('${c.id}')">🗑️</button>
     </div>
   `).join('') || '<p>ยังไม่มีโค้ด</p>';
 }
@@ -579,7 +545,6 @@ async function deleteCode(id) {
   loadCodes();
 }
 
-// ===== ANNOUNCEMENTS =====
 async function loadAnnouncementsAdmin() {
   const anns = await api('/admin/announcements');
   document.getElementById('adminAnnList').innerHTML = anns.map(a => `
@@ -602,7 +567,7 @@ async function createAnnouncement(e) {
     await api('/admin/announcements', { method: 'POST', body: {
       title: fd.get('title'), type: fd.get('type'), message: fd.get('message')
     }});
-    toast('ประกา�แล้ว'); e.target.reset(); loadAnnouncementsAdmin();
+    toast('ประกาศแล้ว'); e.target.reset(); loadAnnouncementsAdmin();
   } catch (e) { toast(e.message, 'error'); }
 }
 
@@ -612,19 +577,16 @@ async function toggleAnn(id) {
 }
 
 async function deleteAnn(id) {
-  if (!confirm('ลบประกา�?')) return;
+  if (!confirm('ลบประกาศ?')) return;
   await api('/admin/announcements/' + id, { method: 'DELETE' });
   loadAnnouncementsAdmin();
 }
 
-// ===== MESSAGES ADMIN =====
 async function loadMessagesAdmin() {
   const msgs = await api('/admin/messages');
-  // populate select
   const users = await api('/admin/users?limit=1000');
   document.getElementById('msgUserSelect').innerHTML = '<option value="">-เลือกผู้ใช้-</option>' +
     users.users.map(u => `<option value="${u.id}">${u.username} (${u.email})</option>`).join('');
-  
   document.getElementById('adminMsgList').innerHTML = msgs.slice(0, 50).map(m => `
     <div class="message-manage">
       <strong>${m.title}</strong>
@@ -646,7 +608,6 @@ async function sendMessage(e) {
   } catch (e) { toast(e.message, 'error'); }
 }
 
-// ===== PAYMENTS SETTINGS =====
 function loadPaymentsSettings() {
   const p = state.settings.payments || {};
   document.getElementById('setTrueWallet').value = p.truemoney?.wallet || '';
@@ -674,7 +635,6 @@ async function savePayments(e) {
   } catch (e) { toast(e.message, 'error'); }
 }
 
-// ===== CUSTOMIZE =====
 function loadCustomizeSettings() {
   const s = state.settings;
   document.getElementById('setSiteName').value = s.site.name;
@@ -715,7 +675,6 @@ async function saveSettings(e) {
   } catch (e) { toast(e.message, 'error'); }
 }
 
-// ===== LOGS =====
 async function loadLogs() {
   const type = document.getElementById('logTypeFilter')?.value || 'all';
   const logs = await api('/admin/logs?type=' + type);
@@ -728,7 +687,6 @@ async function loadLogs() {
   `).join('') || '<p>ไม่มี log</p>';
 }
 
-// ===== SYSTEM =====
 async function backupSystem() {
   const d = await api('/admin/system/backup', { method: 'POST' });
   const blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' });
@@ -745,9 +703,7 @@ async function clearCache() {
 
 async function systemInfo() {
   const d = await api('/admin/system/info');
-  document.getElementById('systemInfo').innerHTML = `
-    <pre>${JSON.stringify(d, null, 2)}</pre>
-  `;
+  document.getElementById('systemInfo').innerHTML = `<pre>${JSON.stringify(d, null, 2)}</pre>`;
 }
 
 function exportCSV(type) {
@@ -763,7 +719,6 @@ function exportCSV(type) {
   });
 }
 
-// ===== TABS =====
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('tab')) {
     const t = e.target.dataset.tab;
