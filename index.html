@@ -14,7 +14,6 @@
   .gradient-text { background: linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #f97316 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .btn-glow { box-shadow: 0 0 30px rgba(167, 139, 250, 0.4); transition: all 0.3s; }
   .btn-glow:hover { box-shadow: 0 0 50px rgba(167, 139, 250, 0.7); transform: translateY(-2px); }
-  .card-glow { box-shadow: 0 0 40px rgba(167, 139, 250, 0.15); }
   .input-glow:focus { border-color: #a78bfa; box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15); }
   .float { animation: float 6s ease-in-out infinite; }
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
@@ -162,7 +161,6 @@
             <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> Subdomain ฟรี</li>
             <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> หลังบ้านจัดการ</li>
             <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ระบบ Wallet</li>
-            <li class="flex items-center gap-2 text-sm text-gray-500"><svg class="icon-sm text-gray-600"><use href="#i-x"/></svg> ต่อโดเมนส่วนตัว</li>
           </ul>
           <button onclick="selectPlan('basic', 129)" class="w-full glass-light text-white py-3 rounded-xl font-bold hover:bg-white/10 transition">เลือกแพ็กเกจ</button>
         </div>
@@ -193,7 +191,6 @@
             <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ทุกอย่างใน Pro</li>
             <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ออกแบบเว็บให้ฟรี</li>
             <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ทีมงานดูแล</li>
-            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> API เต็มรูปแบบ</li>
             <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> SLA 99.9%</li>
           </ul>
           <button onclick="selectPlan('vip', 799)" class="w-full glass-light text-white py-3 rounded-xl font-bold hover:bg-white/10 transition">เลือกแพ็กเกจ</button>
@@ -362,8 +359,8 @@
       <h3 class="text-2xl md:text-3xl font-black text-white mb-2">เข้าสู่ระบบ</h3>
       <p class="text-gray-400 mb-6">ยินดีต้อนรับกลับมา</p>
       <div class="space-y-3">
-        <input id="loginUsername" placeholder="Username" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
-        <input id="loginPassword" type="password" placeholder="Password" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
+        <input id="loginUsername" placeholder="Username" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow" onkeypress="if(event.key==='Enter')document.getElementById('loginPassword').focus()">
+        <input id="loginPassword" type="password" placeholder="Password" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow" onkeypress="if(event.key==='Enter')doLogin()">
         <button onclick="doLogin()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow">เข้าสู่ระบบ</button>
       </div>
       <p class="text-center text-gray-400 text-sm mt-4">ยังไม่มีบัญชี? <a onclick="switchAuth('register')" class="text-purple-400 cursor-pointer">สมัครเลย</a></p>
@@ -380,17 +377,27 @@
         <input id="regPassword2" type="password" placeholder="ยืนยัน Password" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
         <button onclick="doRegister()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow">สมัครสมาชิก</button>
       </div>
-      <p class="text-center text-gray-400 text-sm mt-4">มีบัญชีแล้ว? <a onclick="switchAuth('login')" class="text-purple-600 cursor-pointer">เข้าสู่ระบบ</a></p>
+      <p class="text-center text-gray-400 text-sm mt-4">มีบัญชีแล้ว? <a onclick="switchAuth('login')" class="text-purple-400 cursor-pointer">เข้าสู่ระบบ</a></p>
     </div>
   </div>
 </div>
 
 <div id="adminLoginModal" class="modal fixed inset-0 bg-black/70 backdrop-blur-sm items-center justify-center z-50 p-4">
   <div class="glass rounded-3xl p-6 md:p-8 w-full max-w-md slide-up">
-    <h3 class="text-2xl font-black text-white mb-6 flex items-center gap-2"><svg class="icon"><use href="#i-shield"/></svg> Admin</h3>
+    <h3 class="text-2xl font-black text-white mb-2 flex items-center gap-2">
+      <svg class="icon"><use href="#i-shield"/></svg> Admin Login
+    </h3>
+    <p class="text-xs text-gray-500 mb-4">🔑 Default: nextrastore / nextra109store</p>
+
     <div class="space-y-3">
-      <input id="adminLoginUser" type="text" placeholder="Username" value="nextrastore" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow">
-      <input id="adminLoginPass" type="password" placeholder="Password" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow">
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">Username</label>
+        <input id="adminLoginUser" type="text" value="nextrastore" autocomplete="username" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-400 mb-1">Password</label>
+        <input id="adminLoginPass" type="password" value="nextra109store" autocomplete="current-password" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow" onkeypress="if(event.key==='Enter')doAdminLogin()">
+      </div>
       <button onclick="doAdminLogin()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow">เข้าสู่ระบบ</button>
       <button onclick="closeModal('adminLoginModal')" class="w-full text-gray-400 py-2">ยกเลิก</button>
     </div>
@@ -425,7 +432,7 @@
           <p id="cs-domain-error" class="text-red-400 text-xs mt-1 hidden"></p>
         </div>
         <div><label class="block text-sm mb-1 text-gray-400">ชื่อร้าน *</label><input id="cs-shopname" placeholder="ร้านของฉัน" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow"></div>
-        <div><label class="block text-sm mb-1 text-gray-400">Username admin *</label><input id="cs-adminuser" placeholder="admin" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow"><p class="text-xs text-gray-500 mt-1">ใช้เข้าหลังบ้านเว็บของคุณ</p></div>
+        <div><label class="block text-sm mb-1 text-gray-400">Username admin *</label><input id="cs-adminuser" placeholder="admin" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow"></div>
         <div><label class="block text-sm mb-1 text-gray-400">Password admin *</label><input id="cs-adminpass" type="password" placeholder="ขั้นต่ำ 6 ตัว" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow"></div>
       </div>
       <div class="flex gap-2 mt-6">
@@ -456,7 +463,7 @@
         </div>
       </div>
       <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-4">
-        <p class="text-sm text-yellow-300">⚠️ ต้องโอน <span class="font-bold" id="cs-required-amount">฿0</span> ให้ครบ ระบบจะตรวจสอบอัตโนมัติ</p>
+        <p class="text-sm text-yellow-300">⚠️ ต้องโอน <span class="font-bold" id="cs-required-amount">฿0</span> ให้ครบ</p>
       </div>
       <div class="flex gap-2 mt-6">
         <button onclick="csBack()" class="flex-1 glass-light text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2"><svg class="icon-sm"><use href="#i-arrow-left"/></svg> กลับ</button>
@@ -471,15 +478,11 @@
       <p class="text-gray-400 mb-6">เว็บของคุณพร้อมใช้งานแล้ว</p>
       <div class="glass-light rounded-2xl p-6 mb-6">
         <p class="text-xs text-gray-400 mb-2">URL เว็บของคุณ</p>
-        <div class="flex items-center justify-center gap-2 flex-wrap">
-          <a id="cs-final-url" class="text-xl md:text-2xl font-black gradient-text break-all hover:scale-105 inline-block transition cursor-pointer"></a>
-          <button onclick="copyUrl()" class="text-purple-400"><svg class="icon"><use href="#i-copy"/></svg></button>
-        </div>
+        <p id="cs-final-url" class="text-xl md:text-2xl font-black gradient-text break-all"></p>
       </div>
       <div class="glass-light rounded-2xl p-4 text-left text-sm space-y-2 mb-6">
         <div class="flex justify-between gap-2"><span class="text-gray-400">Username admin:</span><span class="font-bold text-white" id="cs-final-user">-</span></div>
         <div class="flex justify-between gap-2"><span class="text-gray-400">Password admin:</span><span class="font-bold text-white" id="cs-final-pass">-</span></div>
-        <div class="text-red-400 text-xs mt-2">⚠️ กรุณาจดรหัสไว้</div>
       </div>
       <button onclick="goToMySite()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow flex items-center justify-center gap-2"><svg class="icon"><use href="#i-external"/></svg> เข้าสู่เว็บของฉัน</button>
       <button onclick="closeCreateSite();enterMember();" class="w-full text-gray-400 py-2 mt-2">กลับหน้าหลัก</button>
@@ -507,12 +510,16 @@ const CONFIG = {
 };
 
 let db = {
-  members: JSON.parse(localStorage.getItem('members')) || [],
-  sites: JSON.parse(localStorage.getItem('sites')) || [],
-  payments: JSON.parse(localStorage.getItem('payments')) || []
+  members: JSON.parse(localStorage.getItem('ns_members')) || [],
+  sites: JSON.parse(localStorage.getItem('ns_sites')) || [],
+  payments: JSON.parse(localStorage.getItem('ns_payments')) || []
 };
 
-function saveDB() { Object.keys(db).forEach(k => localStorage.setItem(k, JSON.stringify(db[k]))); }
+function saveDB() { 
+  localStorage.setItem('ns_members', JSON.stringify(db.members));
+  localStorage.setItem('ns_sites', JSON.stringify(db.sites));
+  localStorage.setItem('ns_payments', JSON.stringify(db.payments));
+}
 
 let currentMember = null, currentSite = null, cart = [];
 let selectedPlan = null, csStep = 1, csData = {};
@@ -611,16 +618,24 @@ function enterMember() {
 function openAdminLogin() { openModal('adminLoginModal'); }
 
 function doAdminLogin() {
-  if (document.getElementById('adminLoginUser').value === CONFIG.ADMIN_USER && 
-      document.getElementById('adminLoginPass').value === CONFIG.ADMIN_PASS) {
+  const u = document.getElementById('adminLoginUser').value.trim();
+  const p = document.getElementById('adminLoginPass').value.trim();
+  
+  console.log('Login attempt:', { user: u, pass: p, expected: CONFIG.ADMIN_USER + '/' + CONFIG.ADMIN_PASS });
+  
+  if (u === CONFIG.ADMIN_USER && p === CONFIG.ADMIN_PASS) {
     closeModal('adminLoginModal');
     document.getElementById('homePage').classList.add('hidden');
     document.getElementById('memberPage').classList.add('hidden');
     document.getElementById('clientSitePage').classList.add('hidden');
     document.getElementById('adminPage').classList.remove('hidden');
     showAdminTab('dashboard');
-    toast('ยินดีต้อนรับแอดมิน');
-  } else { toast('รหัสผิด', 'red'); }
+    toast('ยินดีต้อนรับแอดมิน nextrastore 👑');
+  } else {
+    toast('รหัสผิด! user=' + u + ' pass=' + p.length + 'ตัว', 'red');
+    document.getElementById('adminLoginPass').value = '';
+    document.getElementById('adminLoginPass').focus();
+  }
 }
 
 function logoutAdmin() {
@@ -663,7 +678,7 @@ function renderCsStep() {
       { name: 'pro', price: 299, label: 'Pro ⭐ แนะนำ' },
       { name: 'vip', price: 799, label: 'VIP 👑' }
     ].map(p => `
-      <div onclick="selectedPlan={name:'${p.name}',price:${p.price}};renderCsStep();" class="glass-light p-4 rounded-xl cursor-pointer ${selectedPlan.name===p.name?'border-2 border-purple-500':''} flex justify-between items-center hover:bg-white/10">
+      <div onclick="selectedPlan={name:'${p.name}',price:${p.price}};renderCsStep();" class="glass-light p-4 rounded-xl cursor-pointer ${selectedPlan.name === p.name ? 'border-2 border-purple-500' : ''} flex justify-between items-center hover:bg-white/10">
         <div class="font-bold text-white">${p.label}</div>
         <div class="text-2xl font-black gradient-text">฿${p.price}</div>
       </div>
@@ -688,7 +703,7 @@ function csNext() {
     csData = { domain, shopname, adminUser, adminPass };
     csStep = 3;
   } else if (csStep === 3) {
-    if (!confirm(`ยืนยันชำระเงิน ฿${selectedPlan.price.toLocaleString()}?\n\nระบบจะตรวจสอบยอดเงินที่โอนเข้า 098-878-5068`)) return;
+    if (!confirm(`ยืนยันชำระเงิน ฿${selectedPlan.price.toLocaleString()}?`)) return;
     db.payments.push({
       id: Date.now().toString(),
       memberId: currentMember.id,
@@ -731,12 +746,6 @@ function csNext() {
 
 function csBack() { csStep--; renderCsStep(); }
 
-function copyUrl() { 
-  const url = (csData.domain || '') + '.' + CONFIG.DOMAIN;
-  navigator.clipboard.writeText(url);
-  toast('คัดลอก URL แล้ว');
-}
-
 function goToMySite() {
   closeCreateSite();
   if (currentSite) showClientSite(currentSite);
@@ -746,13 +755,13 @@ function renderMySites() {
   const mySites = db.sites.filter(s => s.memberName === currentMember.username);
   document.getElementById('mySitesCount').textContent = mySites.length;
   if (mySites.length) {
-    const totalSpent = db.payments.filter(p => p.memberName === currentMember.username && p.status==='verified').reduce((s,p)=>s+p.amount,0);
+    const totalSpent = db.payments.filter(p => p.memberName === currentMember.username && p.status === 'verified').reduce((s,p) => s + p.amount, 0);
     document.getElementById('mySpent').textContent = '฿' + totalSpent.toLocaleString();
     document.getElementById('myPlan').textContent = mySites[0].plan.toUpperCase();
     document.getElementById('myExpiry').textContent = new Date(mySites[0].expiresAt).toLocaleDateString('th-TH');
   }
   document.getElementById('mySitesList').innerHTML = mySites.length ? mySites.map(s => `
-    <div class="glass-light rounded-2xl p-4 mb-3 flex justify-between items-center hover:scale-[1.02] transition cursor-pointer" onclick="showClientSite(db.sites.find(x=>x.id===${s.id}))">
+    <div class="glass-light rounded-2xl p-4 mb-3 flex justify-between items-center hover:scale-[1.02] transition cursor-pointer" onclick="showClientSite(db.sites.find(x => x.id === ${s.id}))">
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center">
           <svg class="icon text-white"><use href="#i-cart"/></svg>
@@ -808,16 +817,16 @@ function renderStorefront() {
     <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
       <h2 class="text-2xl md:text-3xl font-black text-white mb-6">สินค้าทั้งหมด</h2>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        ${s.products.map((p,i) => `
+        ${s.products.map((p, i) => `
           <div class="glass rounded-2xl overflow-hidden hover:scale-105 transition">
             <div class="h-32 md:h-40 bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-              <svg class="icon-xl text-purple-400"><use href="#${p.icon||'i-box'}"/></svg>
+              <svg class="icon-xl text-purple-400"><use href="#${p.icon || 'i-box'}"/></svg>
             </div>
             <div class="p-3 md:p-4">
               <h4 class="font-bold text-white text-sm md:text-base">${p.name}</h4>
               <div class="flex justify-between items-center mt-2">
                 <span class="text-lg md:text-xl font-black gradient-text">฿${p.price.toLocaleString()}</span>
-                <button onclick="addToCartClient(${i})" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-lg text-xs md:text-sm font-bold" ${p.stock<=0?'disabled':''}>${p.stock<=0?'หมด':'ซื้อ'}</button>
+                <button onclick="addToCartClient(${i})" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-lg text-xs md:text-sm font-bold" ${p.stock <= 0 ? 'disabled' : ''}>${p.stock <= 0 ? 'หมด' : 'ซื้อ'}</button>
               </div>
             </div>
           </div>
@@ -828,7 +837,7 @@ function renderStorefront() {
           <h3 class="text-xl font-bold text-white mb-4">ตะกร้า</h3>
           <div id="cartListClient"></div>
           <div class="mt-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-            <span class="text-2xl font-black gradient-text">รวม: ฿${cart.reduce((s,c)=>s+c.price*c.qty,0).toLocaleString()}</span>
+            <span class="text-2xl font-black gradient-text">รวม: ฿${cart.reduce((s, c) => s + c.price * c.qty, 0).toLocaleString()}</span>
             <button onclick="checkoutClient()" class="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-xl font-bold btn-glow">ชำระเงิน</button>
           </div>
         </div>
@@ -848,13 +857,13 @@ function addToCartClient(idx) {
 }
 
 function renderCartClient() {
-  document.getElementById('cartListClient').innerHTML = cart.map((c,i) => `
+  document.getElementById('cartListClient').innerHTML = cart.map((c, i) => `
     <div class="flex justify-between items-center py-2 border-b border-white/5 text-sm">
       <span class="text-white">${c.name} x${c.qty}</span>
       <div class="flex items-center gap-2">
-        <button onclick="changeQtyClient(${i},-1)" class="w-8 h-8 rounded bg-white/5">-</button>
-        <span class="font-bold text-white">฿${(c.price*c.qty).toLocaleString()}</span>
-        <button onclick="changeQtyClient(${i},1)" class="w-8 h-8 rounded bg-white/5">+</button>
+        <button onclick="changeQtyClient(${i}, -1)" class="w-8 h-8 rounded bg-white/5">-</button>
+        <span class="font-bold text-white">฿${(c.price * c.qty).toLocaleString()}</span>
+        <button onclick="changeQtyClient(${i}, 1)" class="w-8 h-8 rounded bg-white/5">+</button>
       </div>
     </div>
   `).join('');
@@ -862,21 +871,21 @@ function renderCartClient() {
 
 function changeQtyClient(i, d) {
   cart[i].qty += d;
-  if (cart[i].qty <= 0) cart.splice(i,1);
+  if (cart[i].qty <= 0) cart.splice(i, 1);
   renderStorefront();
 }
 
 function checkoutClient() {
-  const total = cart.reduce((s,c) => s + c.price*c.qty, 0);
+  const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
   if (!confirm(`ชำระ ฿${total.toLocaleString()}?`)) return;
   cart.forEach(c => {
-    const p = currentSite.products.find(p=>p.id===c.id);
-    if (p) { p.stock -= c.qty; p.sold = (p.sold||0) + c.qty; }
+    const p = currentSite.products.find(p => p.id === c.id);
+    if (p) { p.stock -= c.qty; p.sold = (p.sold || 0) + c.qty; }
   });
   currentSite.orders = currentSite.orders || [];
   currentSite.orders.push({
     code: 'OR' + Date.now().toString().slice(-6),
-    items: cart.map(c => ({ name:c.name, qty:c.qty, price:c.price })),
+    items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price })),
     total, date: new Date().toLocaleString('th-TH')
   });
   const idx = db.sites.findIndex(s => s.id === currentSite.id);
@@ -899,19 +908,19 @@ function renderClientAdmin() {
     <div class="max-w-6xl mx-auto px-4 md:px-6 py-8">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6">
         <h2 class="text-2xl md:text-3xl font-black text-white">หลังบ้าน: ${s.shopname}</h2>
-        <button onclick="document.getElementById('clientAdminPanel').classList.add('hidden');document.getElementById('clientStorefront').classList.remove('hidden');renderStorefront();" class="glass-light px-4 py-2 rounded-xl text-white">← กลับหน้าร้าน</button>
+        <button onclick="document.getElementById('clientAdminPanel').classList.add('hidden'); document.getElementById('clientStorefront').classList.remove('hidden'); renderStorefront();" class="glass-light px-4 py-2 rounded-xl text-white">← กลับหน้าร้าน</button>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
         <div class="glass rounded-2xl p-4"><p class="text-sm text-gray-400">สินค้า</p><p class="text-2xl font-black text-white mt-1">${s.products.length}</p></div>
-        <div class="glass rounded-2xl p-4"><p class="text-sm text-gray-400">ออเดอร์</p><p class="text-2xl font-black text-white mt-1">${(s.orders||[]).length}</p></div>
-        <div class="glass rounded-2xl p-4"><p class="text-sm text-gray-400">ยอดขาย</p><p class="text-2xl font-black gradient-text mt-1">฿${(s.orders||[]).reduce((sum,o)=>sum+o.total,0).toLocaleString()}</p></div>
+        <div class="glass rounded-2xl p-4"><p class="text-sm text-gray-400">ออเดอร์</p><p class="text-2xl font-black text-white mt-1">${(s.orders || []).length}</p></div>
+        <div class="glass rounded-2xl p-4"><p class="text-sm text-gray-400">ยอดขาย</p><p class="text-2xl font-black gradient-text mt-1">฿${(s.orders || []).reduce((sum, o) => sum + o.total, 0).toLocaleString()}</p></div>
       </div>
       <div class="glass rounded-2xl p-4 md:p-6">
         <h3 class="font-bold text-white mb-4">จัดการสินค้า</h3>
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm">
             <thead><tr class="text-gray-400 border-b border-white/10"><th class="py-2">สินค้า</th><th class="py-2">ราคา</th><th class="py-2">สต็อก</th><th class="py-2">ขาย</th></tr></thead>
-            <tbody>${s.products.map(p => `<tr class="border-b border-white/5"><td class="py-2 text-white">${p.name}</td><td class="py-2 text-white">฿${p.price.toLocaleString()}</td><td class="py-2 text-gray-400">${p.stock}</td><td class="py-2 text-green-400">${p.sold||0}</td></tr>`).join('')}</tbody>
+            <tbody>${s.products.map(p => `<tr class="border-b border-white/5"><td class="py-2 text-white">${p.name}</td><td class="py-2 text-white">฿${p.price.toLocaleString()}</td><td class="py-2 text-gray-400">${p.stock}</td><td class="py-2 text-green-400">${p.sold || 0}</td></tr>`).join('')}</tbody>
           </table>
         </div>
       </div>
@@ -920,20 +929,20 @@ function renderClientAdmin() {
 }
 
 function showAdminTab(tab) {
-  ['dashboard','tenants','sites','revenue','settings'].forEach(t => document.getElementById('admin-'+t).classList.add('hidden'));
-  document.getElementById('admin-'+tab).classList.remove('hidden');
-  if (tab==='dashboard') renderAdminDash();
-  if (tab==='tenants') renderTenants();
-  if (tab==='sites') renderSites();
-  if (tab==='revenue') renderRevenue();
+  ['dashboard', 'tenants', 'sites', 'revenue', 'settings'].forEach(t => document.getElementById('admin-' + t).classList.add('hidden'));
+  document.getElementById('admin-' + tab).classList.remove('hidden');
+  if (tab === 'dashboard') renderAdminDash();
+  if (tab === 'tenants') renderTenants();
+  if (tab === 'sites') renderSites();
+  if (tab === 'revenue') renderRevenue();
 }
 
 function renderAdminDash() {
   document.getElementById('statMembers').textContent = db.members.length;
-  document.getElementById('statActiveSites').textContent = db.sites.filter(s=>s.status==='active').length;
-  const mrr = db.sites.filter(s=>s.status==='active').reduce((s,site) => s + site.price, 0);
+  document.getElementById('statActiveSites').textContent = db.sites.filter(s => s.status === 'active').length;
+  const mrr = db.sites.filter(s => s.status === 'active').reduce((s, site) => s + site.price, 0);
   document.getElementById('statMRR').textContent = '฿' + mrr.toLocaleString();
-  const monthAgo = Date.now() - 30*24*60*60*1000;
+  const monthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
   document.getElementById('statNew').textContent = db.members.filter(m => new Date(m.createdAt).getTime() > monthAgo).length;
   document.getElementById('recentRentals').innerHTML = db.sites.slice(-5).reverse().map(s => `
     <div class="flex justify-between items-center py-3 border-b border-white/5">
@@ -950,22 +959,22 @@ function renderAdminDash() {
 }
 
 function renderTenants() {
-  document.getElementById('tenantsTable').innerHTML = db.members.length ? db.members.map((m,i) => {
-    const userSite = db.sites.find(s=>s.memberName===m.username);
-    return `<tr class="border-b border-white/5"><td class="py-3 text-white">${m.name}</td><td class="py-3 text-gray-400 font-mono">${m.username}</td><td class="py-3 gradient-text font-bold">${(userSite?.plan||'-').toUpperCase()}</td><td class="py-3 text-white">${db.sites.filter(s=>s.memberName===m.username).length}</td><td class="py-3 text-orange-400 text-sm">${userSite?.expiresAt ? new Date(userSite.expiresAt).toLocaleDateString('th-TH') : '-'}</td><td class="py-3"><button onclick="deleteMember(${i})" class="text-red-400 text-sm flex items-center gap-1"><svg class="icon-sm"><use href="#i-trash"/></svg></button></td></tr>`;
+  document.getElementById('tenantsTable').innerHTML = db.members.length ? db.members.map((m, i) => {
+    const userSite = db.sites.find(s => s.memberName === m.username);
+    return `<tr class="border-b border-white/5"><td class="py-3 text-white">${m.name}</td><td class="py-3 text-gray-400 font-mono">${m.username}</td><td class="py-3 gradient-text font-bold">${(userSite?.plan || '-').toUpperCase()}</td><td class="py-3 text-white">${db.sites.filter(s => s.memberName === m.username).length}</td><td class="py-3 text-orange-400 text-sm">${userSite?.expiresAt ? new Date(userSite.expiresAt).toLocaleDateString('th-TH') : '-'}</td><td class="py-3"><button onclick="deleteMember(${i})" class="text-red-400 text-sm flex items-center gap-1"><svg class="icon-sm"><use href="#i-trash"/></svg></button></td></tr>`;
   }).join('') : '<tr><td colspan="6" class="py-8 text-center text-gray-500">ยังไม่มี</td></tr>';
 }
 
-function deleteMember(i) { if (confirm('ลบ?')) { db.members.splice(i,1); saveDB(); renderTenants(); } }
+function deleteMember(i) { if (confirm('ลบ?')) { db.members.splice(i, 1); saveDB(); renderTenants(); } }
 
 function renderSites() {
-  document.getElementById('sitesTable').innerHTML = db.sites.length ? db.sites.map(s => `<tr class="border-b border-white/5"><td class="py-3 text-white font-mono text-xs">${s.domain}.${CONFIG.DOMAIN}</td><td class="py-3 text-gray-300">${s.memberName}</td><td class="py-3 text-white">${s.products.length}</td><td class="py-3 gradient-text font-bold">฿${(s.orders||[]).reduce((sum,o)=>sum+o.total,0).toLocaleString()}</td><td class="py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">ใช้งาน</span></td></tr>`).join('') : '<tr><td colspan="5" class="py-8 text-center text-gray-500">ยังไม่มี</td></tr>';
+  document.getElementById('sitesTable').innerHTML = db.sites.length ? db.sites.map(s => `<tr class="border-b border-white/5"><td class="py-3 text-white font-mono text-xs">${s.domain}.${CONFIG.DOMAIN}</td><td class="py-3 text-gray-300">${s.memberName}</td><td class="py-3 text-white">${s.products.length}</td><td class="py-3 gradient-text font-bold">฿${(s.orders || []).reduce((sum, o) => sum + o.total, 0).toLocaleString()}</td><td class="py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">ใช้งาน</span></td></tr>`).join('') : '<tr><td colspan="5" class="py-8 text-center text-gray-500">ยังไม่มี</td></tr>';
 }
 
 function renderRevenue() {
-  const todayRev = db.payments.filter(p => new Date(p.date).toDateString() === new Date().toDateString() && p.status==='verified').reduce((s,p)=>s+p.amount,0);
-  const monthRev = db.payments.filter(p => new Date(p.date).getMonth() === new Date().getMonth() && p.status==='verified').reduce((s,p)=>s+p.amount,0);
-  const allRev = db.payments.filter(p => p.status==='verified').reduce((s,p)=>s+p.amount,0);
+  const todayRev = db.payments.filter(p => new Date(p.date).toDateString() === new Date().toDateString() && p.status === 'verified').reduce((s, p) => s + p.amount, 0);
+  const monthRev = db.payments.filter(p => new Date(p.date).getMonth() === new Date().getMonth() && p.status === 'verified').reduce((s, p) => s + p.amount, 0);
+  const allRev = db.payments.filter(p => p.status === 'verified').reduce((s, p) => s + p.amount, 0);
   document.getElementById('revToday').textContent = '฿' + todayRev.toLocaleString();
   document.getElementById('revMonth').textContent = '฿' + monthRev.toLocaleString();
   document.getElementById('revAll').textContent = '฿' + allRev.toLocaleString();
