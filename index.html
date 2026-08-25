@@ -3,475 +3,519 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NextraStore - ระบบเติมเงินอัตโนมัติ</title>
+<title>NextraStore - แพลตฟอร์มให้เช่าเว็บไซต์</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  body { font-family: 'Prompt', sans-serif; }
-  .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-  .tm-gradient { background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%); }
-  .gift-gradient { background: linear-gradient(135deg, #ff006e 0%, #ff4d6d 100%); }
-  .card-hover { transition: all 0.3s ease; }
-  .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+  * { font-family: 'Prompt', sans-serif; }
+  body { background: #0a0a0f; color: #e5e7eb; min-height: 100vh; }
+  .glass { background: rgba(20, 20, 30, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
+  .glass-light { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
+  .gradient-text { background: linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #f97316 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn-glow { box-shadow: 0 0 30px rgba(167, 139, 250, 0.4); transition: all 0.3s; }
+  .btn-glow:hover { box-shadow: 0 0 50px rgba(167, 139, 250, 0.7); transform: translateY(-2px); }
+  .card-glow { box-shadow: 0 0 40px rgba(167, 139, 250, 0.15); }
+  .input-glow:focus { border-color: #a78bfa; box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15); }
+  .float { animation: float 6s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+  .pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
+  @keyframes pulse-slow { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+  .slide-up { animation: slideUp 0.5s ease-out; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; z-index: 0; }
+  .pricing-popular { position: relative; }
+  .pricing-popular::before { content: '🔥 ยอดนิยม'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; padding: 4px 16px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; z-index: 10; }
+  .step-active { background: linear-gradient(135deg, #a78bfa, #ec4899); color: white; }
+  .step-done { background: #10b981; color: white; }
+  .step-pending { background: rgba(255,255,255,0.1); color: #6b7280; }
   .modal { display: none; }
   .modal.active { display: flex; }
-  *::-webkit-scrollbar { width: 8px; height: 8px; }
-  *::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-  .wallet-card { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #ec4899 100%); }
-  .pulse { animation: pulse 2s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.85; } }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0a0a0f; }
+  ::-webkit-scrollbar-thumb { background: #a78bfa; border-radius: 4px; }
   .icon { width: 24px; height: 24px; stroke-width: 2; }
+  .icon-sm { width: 18px; height: 18px; stroke-width: 2; }
   .icon-lg { width: 40px; height: 40px; stroke-width: 1.5; }
-  .icon-xl { width: 64px; height: 64px; stroke-width: 1.5; }
+  .icon-xl { width: 56px; height: 56px; stroke-width: 1.5; }
 </style>
 </head>
-<body class="bg-gray-50">
+<body class="overflow-x-hidden">
 
-<!-- SVG Icon Library (ใช้ซ้ำได้ทั้งหน้า) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <!-- Generic -->
-    <symbol id="i-store" viewBox="0 0 24 24"><path d="M3 9l1-5h16l1 5M5 9v11h14V9M9 22V12h6v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="2" y1="12" x2="22" y2="12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09zM12 15l-3-3a22 22 0 012-4.95A12.94 12.94 0 0122 2c0 2.72-.78 7.5-6 11a22 22 0 01-4 2zM9 12H4s.55-3.03 2-4c1.62-1.08 3 0 3 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-3 0-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M16 7a4 4 0 11-8 0 4 4 0 018 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="12 5 19 12 12 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="12 19 5 12 12 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1" fill="currentColor"/><circle cx="20" cy="21" r="1" fill="currentColor"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 010-4h12v4M4 6v12a2 2 0 002 2h14v-4M18 12a1 1 0 100 2 1 1 0 000-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-gift" viewBox="0 0 24 24"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M16 7a4 4 0 11-8 0 4 4 0 018 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16zM3.27 6.96L12 12.01l8.73-5.05M12 22.08V12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-truck" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="5.5" cy="18.5" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18.5" cy="18.5" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-cog" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-bolt" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.35-4.35" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
-    <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
-    <symbol id="i-minus" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
-    <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
     <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-list" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="12" x2="21" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="18" x2="21" y2="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></symbol>
-    <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="12 19 5 12 12 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-credit-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="1" y1="10" x2="23" y2="10" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-shirt" viewBox="0 0 24 24"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-shoe" viewBox="0 0 24 24"><path d="M3 17h18v3H3zM5 12l3-5 4 2 4-2 3 5v5H5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0118 0v6M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-watch" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 10v2l1 1M9 6V3h6v3M9 18v3h6v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-mug" viewBox="0 0 24 24"><path d="M18 8h2a2 2 0 012 2v3a2 2 0 01-2 2h-2M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09zM12 15l-3-3a22 22 0 012-4.95A12.94 12.94 0 0122 2c0 2.72-.78 7.5-6 11a22 22 0 01-4 2zM9 12H4s.55-3.03 2-4c1.62-1.08 3 0 3 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-3 0-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
-    <symbol id="i-key" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-mug" viewBox="0 0 24 24"><path d="M18 8h2a2 2 0 012 2v3a2 2 0 01-2 2h-2M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
 
-<!-- Navbar -->
-<nav class="bg-white shadow-sm sticky top-0 z-40">
+<div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+  <div class="blob bg-purple-600 w-96 h-96 top-0 left-0 float"></div>
+  <div class="blob bg-pink-600 w-96 h-96 bottom-0 right-0 float" style="animation-delay: 2s;"></div>
+  <div class="blob bg-orange-500 w-96 h-96 top-1/2 left-1/2 float" style="animation-delay: 4s;"></div>
+</div>
+
+<nav class="fixed top-0 left-0 right-0 z-50 glass">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <div onclick="goHome()" class="flex items-center gap-2 cursor-pointer">
-      <svg class="icon text-purple-600"><use href="#i-store"/></svg>
-      <h1 class="text-2xl font-bold gradient-bg bg-clip-text text-transparent">NextraStore</h1>
+    <div onclick="goHome()" class="flex items-center gap-2 cursor-pointer group">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition">
+        <svg class="icon text-white"><use href="#i-globe"/></svg>
+      </div>
+      <h1 class="text-xl font-black gradient-text">NextraStore</h1>
     </div>
     <div class="flex gap-3 items-center" id="navButtons"></div>
   </div>
 </nav>
 
-<!-- หน้าหลัก -->
-<div id="homePage">
-  <section class="gradient-bg text-white py-16">
-    <div class="max-w-4xl mx-auto px-6 text-center">
-      <h2 class="text-5xl font-bold mb-4">เติมเงินง่าย จ่ายสะดวก</h2>
-      <p class="text-xl mb-8 opacity-90">รองรับ TrueMoney Wallet และซองของขวัญ ตรวจสอบอัตโนมัติ</p>
-      <button onclick="openAuth('register')" class="bg-white text-purple-600 px-8 py-3 rounded-lg font-bold">สมัครสมาชิกฟรี</button>
+<div id="homePage" class="pt-24 pb-12 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16">
+      <div class="inline-block mb-4">
+        <span class="px-4 py-1 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-sm font-semibold">🚀 แพลตฟอร์มให้เช่าเว็บ #1</span>
+      </div>
+      <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+        <span class="gradient-text">เปิดร้านค้าออนไลน์</span><br>
+        <span class="text-white">ในราคา <span class="gradient-text">129฿</span>/เดือน</span>
+      </h1>
+      <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">ได้เว็บขายของ + หลังบ้านจัดการ + subdomain ส่วนตัว + ระบบ Wallet ครบจบในที่เดียว</p>
+      <div class="flex gap-4 justify-center flex-wrap">
+        <button onclick="scrollToPricing()" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-2xl font-bold btn-glow flex items-center gap-2">
+          <svg class="icon"><use href="#i-rocket"/></svg> เริ่มใช้งานเลย
+        </button>
+        <button onclick="openModal('demoModal')" class="glass-light text-white px-8 py-4 rounded-2xl font-bold hover:bg-white/10 flex items-center gap-2">
+          <svg class="icon"><use href="#i-eye"/></svg> ดูตัวอย่างเว็บ
+        </button>
+      </div>
+      <div class="flex justify-center gap-8 mt-12 text-sm text-gray-400 flex-wrap">
+        <div class="flex items-center gap-2"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ไม่ต้องเขียนโค้ด</div>
+        <div class="flex items-center gap-2"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ตั้งร้านใน 1 นาที</div>
+        <div class="flex items-center gap-2"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ยกเลิกได้ทุกเมื่อ</div>
+      </div>
     </div>
-  </section>
-  <section class="py-12 max-w-7xl mx-auto px-6">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="featureCards"></div>
-  </section>
-  <section class="py-12 max-w-7xl mx-auto px-6">
-    <h3 class="text-3xl font-bold text-center mb-8">สินค้าตัวอย่าง</h3>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="previewProducts"></div>
-  </section>
-</div>
 
-<!-- หน้าสมาชิก -->
-<div id="memberPage" class="hidden">
-  <div class="max-w-6xl mx-auto px-6 py-8">
-    <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl p-6 mb-6">
-      <div class="flex justify-between items-center">
-        <div>
-          <p class="text-sm opacity-80">ยินดีต้อนรับ</p>
-          <h2 class="text-2xl font-bold" id="welcomeName"></h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+      <div class="glass rounded-3xl p-8 hover:scale-105 transition cursor-pointer">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center mb-4 pulse-slow">
+          <svg class="icon-xl text-white"><use href="#i-bolt"/></svg>
         </div>
-        <div class="text-right">
-          <p class="text-sm opacity-80">ยอดเงินใน Wallet</p>
-          <div class="wallet-card text-white text-3xl font-bold px-6 py-2 rounded-xl inline-block mt-1" id="walletBalance">฿0</div>
+        <h3 class="text-xl font-bold text-white mb-2">ตั้งร้านใน 1 นาที</h3>
+        <p class="text-gray-400">เลือกแพ็กเกจ → กรอกข้อมูล → ได้เว็บทันที</p>
+      </div>
+      <div class="glass rounded-3xl p-8 hover:scale-105 transition cursor-pointer">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4 pulse-slow">
+          <svg class="icon-xl text-white"><use href="#i-cart"/></svg>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">ระบบขายของครบ</h3>
+        <p class="text-gray-400">ตะกร้า ชำระเงิน ออเดอร์ สต็อก จัดการง่าย</p>
+      </div>
+      <div class="glass rounded-3xl p-8 hover:scale-105 transition cursor-pointer">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mb-4 pulse-slow">
+          <svg class="icon-xl text-white"><use href="#i-wallet"/></svg>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">ระบบ Wallet ในตัว</h3>
+        <p class="text-gray-400">ลูกค้าเติมเงินครั้งเดียว ซื้อของหักอัตโนมัติ</p>
+      </div>
+    </div>
+
+    <div id="pricing" class="mb-16">
+      <div class="text-center mb-10">
+        <h2 class="text-4xl md:text-5xl font-black text-white mb-3">แพ็กเกจ <span class="gradient-text">ราคาถูกสุด</span></h2>
+        <p class="text-gray-400">เริ่มต้นแค่ 129 บาท ฟรี 7 วันแรก</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass rounded-3xl p-8">
+          <div class="text-sm text-gray-400 font-semibold mb-2">Basic</div>
+          <div class="flex items-baseline gap-1 mb-1">
+            <span class="text-5xl font-black text-white">฿129</span>
+            <span class="text-gray-400">/เดือน</span>
+          </div>
+          <p class="text-sm text-gray-500 mb-6">สำหรับเริ่มต้นขายของ</p>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> สินค้าไม่เกิน 50 ชิ้น</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> Subdomain ฟรี</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> หลังบ้านจัดการ</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ระบบ Wallet</li>
+            <li class="flex items-center gap-2 text-sm text-gray-500"><svg class="icon-sm text-gray-600"><use href="#i-x"/></svg> ต่อโดเมนส่วนตัว</li>
+          </ul>
+          <button onclick="selectPlan('basic', 129)" class="w-full glass-light text-white py-3 rounded-xl font-bold hover:bg-white/10 transition">เลือกแพ็กเกจ</button>
+        </div>
+        <div class="glass rounded-3xl p-8 pricing-popular border-2 border-purple-500/30 transform md:scale-105">
+          <div class="text-sm gradient-text font-semibold mb-2">Pro ⭐ แนะนำ</div>
+          <div class="flex items-baseline gap-1 mb-1">
+            <span class="text-5xl font-black gradient-text">฿299</span>
+            <span class="text-gray-400">/เดือน</span>
+          </div>
+          <p class="text-sm text-gray-500 mb-6">สำหรับร้านจริงจัง</p>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> <strong>สินค้าไม่จำกัด</strong></li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ต่อโดเมนส่วนตัวได้</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> หลังบ้านขั้นสูง</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ระบบ Wallet + คูปอง</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ลบโฆษณา</li>
+          </ul>
+          <button onclick="selectPlan('pro', 299)" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow">เลือกแพ็กเกจนี้</button>
+        </div>
+        <div class="glass rounded-3xl p-8">
+          <div class="text-sm text-orange-400 font-semibold mb-2">VIP 👑</div>
+          <div class="flex items-baseline gap-1 mb-1">
+            <span class="text-5xl font-black text-white">฿799</span>
+            <span class="text-gray-400">/เดือน</span>
+          </div>
+          <p class="text-sm text-gray-500 mb-6">สำหรับแบรนด์ใหญ่</p>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ทุกอย่างใน Pro</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ออกแบบเว็บให้ฟรี</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> ทีมงานดูแล</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> API เต็มรูปแบบ</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="icon-sm text-green-400"><use href="#i-check"/></svg> SLA 99.9%</li>
+          </ul>
+          <button onclick="selectPlan('vip', 799)" class="w-full glass-light text-white py-3 rounded-xl font-bold hover:bg-white/10 transition">เลือกแพ็กเกจ</button>
         </div>
       </div>
     </div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      <button onclick="showMemberTab('shop')" class="bg-white p-4 rounded-xl shadow hover:bg-purple-50 flex flex-col items-center">
-        <svg class="icon-lg text-purple-600"><use href="#i-cart"/></svg>
-        <p class="font-semibold mt-2">ซื้อสินค้า</p>
-      </button>
-      <button onclick="showMemberTab('topup')" class="bg-white p-4 rounded-xl shadow hover:bg-purple-50 flex flex-col items-center">
-        <svg class="icon-lg text-cyan-600"><use href="#i-phone"/></svg>
-        <p class="font-semibold mt-2">เติมเงิน</p>
-      </button>
-      <button onclick="showMemberTab('gift')" class="bg-white p-4 rounded-xl shadow hover:bg-purple-50 flex flex-col items-center">
-        <svg class="icon-lg text-pink-600"><use href="#i-gift"/></svg>
-        <p class="font-semibold mt-2">เช็คซอง</p>
-      </button>
-      <button onclick="showMemberTab('history')" class="bg-white p-4 rounded-xl shadow hover:bg-purple-50 flex flex-col items-center">
-        <svg class="icon-lg text-gray-600"><use href="#i-list"/></svg>
-        <p class="font-semibold mt-2">ประวัติ</p>
-      </button>
-    </div>
-    <div id="memberContent" class="bg-white rounded-2xl shadow p-6"></div>
+
+    <footer class="text-center text-gray-500 text-sm py-8 border-t border-white/5">
+      <p>© 2026 NextraStore - ให้เช่าเว็บไซต์อัตโนมัติ</p>
+    </footer>
   </div>
 </div>
 
-<!-- หน้าแอดมิน -->
-<div id="adminPage" class="hidden">
-  <nav class="bg-gray-900 text-white px-6 py-3 flex justify-between items-center sticky top-0 z-40">
-    <div class="flex items-center gap-2">
-      <svg class="icon"><use href="#i-shield"/></svg>
-      <h1 class="font-bold">Admin - nextrastore</h1>
+<div id="memberPage" class="hidden pt-24 pb-12 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="glass rounded-3xl p-6 mb-6 slide-up flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+          <span class="font-black text-white text-lg" id="memberAvatar">U</span>
+        </div>
+        <div>
+          <p class="text-sm text-gray-400">ยินดีต้อนรับ</p>
+          <h2 class="text-xl font-black text-white" id="welcomeName"></h2>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="goHome()" class="glass-light px-4 py-2 rounded-xl text-gray-300 hover:text-white flex items-center gap-2 text-sm">
+          <svg class="icon-sm"><use href="#i-globe"/></svg> หน้าหลัก
+        </button>
+        <button onclick="logout()" class="bg-red-500/20 text-red-400 px-4 py-2 rounded-xl hover:bg-red-500/30 flex items-center gap-2 text-sm">
+          <svg class="icon-sm"><use href="#i-logout"/></svg> ออก
+        </button>
+      </div>
     </div>
-    <button onclick="logoutAdmin()" class="bg-red-600 px-4 py-1 rounded flex items-center gap-1">
-      <svg class="icon"><use href="#i-logout"/></svg> ออก
-    </button>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="glass rounded-2xl p-4"><p class="text-xs text-gray-400">เว็บของคุณ</p><p class="text-2xl font-black text-white mt-1" id="mySitesCount">0</p></div>
+      <div class="glass rounded-2xl p-4"><p class="text-xs text-gray-400">แพ็กเกจ</p><p class="text-lg font-black gradient-text mt-1" id="myPlan">-</p></div>
+      <div class="glass rounded-2xl p-4"><p class="text-xs text-gray-400">หมดอายุ</p><p class="text-sm font-bold text-orange-400 mt-1" id="myExpiry">-</p></div>
+      <div class="glass rounded-2xl p-4"><p class="text-xs text-gray-400">ยอดใช้จ่าย</p><p class="text-lg font-black text-green-400 mt-1" id="mySpent">฿0</p></div>
+    </div>
+
+    <div class="glass rounded-3xl p-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2"><svg class="icon"><use href="#i-globe"/></svg> เว็บไซต์ของฉัน</h3>
+        <button onclick="openCreateSite()" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-xl text-sm font-bold btn-glow flex items-center gap-2">
+          <svg class="icon-sm"><use href="#i-plus"/></svg> สร้างเว็บใหม่
+        </button>
+      </div>
+      <div id="mySitesList"></div>
+    </div>
+  </div>
+</div>
+
+<div id="adminPage" class="hidden pt-16">
+  <nav class="fixed top-0 left-0 right-0 z-50 glass">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+          <svg class="icon-sm text-white"><use href="#i-shield"/></svg>
+        </div>
+        <h1 class="font-bold text-white">Admin Dashboard</h1>
+      </div>
+      <button onclick="logoutAdmin()" class="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 flex items-center gap-2 text-sm">
+        <svg class="icon-sm"><use href="#i-logout"/></svg> ออก
+      </button>
+    </div>
   </nav>
-  <div class="flex">
-    <aside class="w-64 bg-gray-800 text-white min-h-screen p-4">
-      <nav class="space-y-2">
-        <a onclick="showAdminTab('dashboard')" class="admin-nav block px-4 py-2 rounded hover:bg-gray-700 cursor-pointer flex items-center gap-2"><svg class="icon"><use href="#i-dashboard"/></svg> Dashboard</a>
-        <a onclick="showAdminTab('members')" class="admin-nav block px-4 py-2 rounded hover:bg-gray-700 cursor-pointer flex items-center gap-2"><svg class="icon"><use href="#i-user"/></svg> สมาชิก</a>
-        <a onclick="showAdminTab('products')" class="admin-nav block px-4 py-2 rounded hover:bg-gray-700 cursor-pointer flex items-center gap-2"><svg class="icon"><use href="#i-box"/></svg> สินค้า</a>
-        <a onclick="showAdminTab('orders')" class="admin-nav block px-4 py-2 rounded hover:bg-gray-700 cursor-pointer flex items-center gap-2"><svg class="icon"><use href="#i-truck"/></svg> คำสั่งซื้อ</a>
-        <a onclick="showAdminTab('topups')" class="admin-nav block px-4 py-2 rounded hover:bg-gray-700 cursor-pointer flex items-center gap-2"><svg class="icon"><use href="#i-phone"/></svg> เติมเงิน TM</a>
-        <a onclick="showAdminTab('gifts')" class="admin-nav block px-4 py-2 rounded hover:bg-gray-700 cursor-pointer flex items-center gap-2"><svg class="icon"><use href="#i-gift"/></svg> ซองของขวัญ</a>
-        <a onclick="showAdminTab('settings')" class="admin-nav block px-4 py-2 rounded hover:bg-gray-700 cursor-pointer flex items-center gap-2"><svg class="icon"><use href="#i-settings"/></svg> ตั้งค่า API</a>
-      </nav>
+  <div class="flex pt-4">
+    <aside class="w-64 min-h-screen p-4 hidden md:block">
+      <div class="glass rounded-2xl p-4 space-y-2">
+        <a onclick="showAdminTab('dashboard')" class="block px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer text-gray-300 flex items-center gap-3 text-sm"><svg class="icon-sm"><use href="#i-dashboard"/></svg> Dashboard</a>
+        <a onclick="showAdminTab('tenants')" class="block px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer text-gray-300 flex items-center gap-3 text-sm"><svg class="icon-sm"><use href="#i-user"/></svg> ลูกค้าเช่า</a>
+        <a onclick="showAdminTab('sites')" class="block px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer text-gray-300 flex items-center gap-3 text-sm"><svg class="icon-sm"><use href="#i-globe"/></svg> เว็บทั้งหมด</a>
+        <a onclick="showAdminTab('revenue')" class="block px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer text-gray-300 flex items-center gap-3 text-sm"><svg class="icon-sm"><use href="#i-wallet"/></svg> รายได้</a>
+        <a onclick="showAdminTab('settings')" class="block px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer text-gray-300 flex items-center gap-3 text-sm"><svg class="icon-sm"><use href="#i-settings"/></svg> ตั้งค่า</a>
+      </div>
     </aside>
-    <main class="flex-1 p-8 bg-gray-100">
+    <main class="flex-1 p-4 md:p-8">
       <div id="admin-dashboard">
-        <h2 class="text-3xl font-bold mb-6">Dashboard</h2>
-        <div class="grid grid-cols-4 gap-4 mb-6">
-          <div class="bg-white p-6 rounded-xl shadow"><p class="text-gray-500">สมาชิก</p><h3 class="text-3xl font-bold mt-2" id="statMembers">0</h3></div>
-          <div class="bg-white p-6 rounded-xl shadow"><p class="text-gray-500">ยอดขาย</p><h3 class="text-3xl font-bold mt-2 text-green-600" id="statSales">฿0</h3></div>
-          <div class="bg-white p-6 rounded-xl shadow"><p class="text-gray-500">เงินในระบบ</p><h3 class="text-3xl font-bold mt-2 text-purple-600" id="statWallet">฿0</h3></div>
-          <div class="bg-white p-6 rounded-xl shadow"><p class="text-gray-500">รอเติมเงิน</p><h3 class="text-3xl font-bold mt-2 text-orange-500" id="statPending">0</h3></div>
+        <h2 class="text-2xl md:text-3xl font-black text-white mb-6">Dashboard</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div class="glass rounded-2xl p-4 md:p-6"><p class="text-xs md:text-sm text-gray-400">ลูกค้า</p><p class="text-2xl md:text-3xl font-black text-white mt-2" id="statMembers">0</p></div>
+          <div class="glass rounded-2xl p-4 md:p-6"><p class="text-xs md:text-sm text-gray-400">เว็บที่ใช้งาน</p><p class="text-2xl md:text-3xl font-black gradient-text mt-2" id="statActiveSites">0</p></div>
+          <div class="glass rounded-2xl p-4 md:p-6"><p class="text-xs md:text-sm text-gray-400">รายได้/เดือน</p><p class="text-xl md:text-2xl font-black text-green-400 mt-2" id="statMRR">฿0</p></div>
+          <div class="glass rounded-2xl p-4 md:p-6"><p class="text-xs md:text-sm text-gray-400">ลูกค้าใหม่</p><p class="text-2xl md:text-3xl font-black text-purple-400 mt-2" id="statNew">0</p></div>
         </div>
-        <div class="bg-white rounded-xl shadow p-6">
-          <h3 class="font-bold mb-4">ธุรกรรมล่าสุด</h3>
-          <div id="recentTransactions"></div>
-        </div>
-      </div>
-      <div id="admin-members" class="hidden">
-        <h2 class="text-3xl font-bold mb-6">จัดการสมาชิก</h2>
-        <div class="bg-white rounded-xl shadow p-4">
-          <table class="w-full">
-            <thead><tr class="text-left text-gray-500 border-b"><th class="py-2">ชื่อ</th><th class="py-2">Username</th><th class="py-2">เบอร์</th><th class="py-2">Wallet</th><th class="py-2">จัดการ</th></tr></thead>
-            <tbody id="membersTable"></tbody>
-          </table>
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-bold text-white mb-4">การเช่าล่าสุด</h3>
+          <div id="recentRentals"></div>
         </div>
       </div>
-      <div id="admin-products" class="hidden">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-3xl font-bold">จัดการสินค้า</h2>
-          <button onclick="openModal('productModal')" class="gradient-bg text-white px-4 py-2 rounded-lg flex items-center gap-1">
-            <svg class="icon"><use href="#i-plus"/></svg> เพิ่มสินค้า
-          </button>
-        </div>
-        <div class="bg-white rounded-xl shadow p-4">
-          <table class="w-full">
-            <thead><tr class="text-left text-gray-500 border-b"><th class="py-2">สินค้า</th><th class="py-2">ราคา</th><th class="py-2">สต็อก</th><th class="py-2">จัดการ</th></tr></thead>
-            <tbody id="adminProductsTable"></tbody>
+      <div id="admin-tenants" class="hidden">
+        <h2 class="text-2xl md:text-3xl font-black text-white mb-6">ลูกค้าเช่าทั้งหมด</h2>
+        <div class="glass rounded-2xl p-4 overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead><tr class="text-gray-400 border-b border-white/10"><th class="py-3">ชื่อ</th><th class="py-3">Username</th><th class="py-3">แพ็กเกจ</th><th class="py-3">เว็บ</th><th class="py-3">หมดอายุ</th><th class="py-3">จัดการ</th></tr></thead>
+            <tbody id="tenantsTable"></tbody>
           </table>
         </div>
       </div>
-      <div id="admin-orders" class="hidden">
-        <h2 class="text-3xl font-bold mb-6">คำสั่งซื้อทั้งหมด</h2>
-        <div class="bg-white rounded-xl shadow p-4">
-          <table class="w-full">
-            <thead><tr class="text-left text-gray-500 border-b"><th class="py-2">รหัส</th><th class="py-2">ลูกค้า</th><th class="py-2">สินค้า</th><th class="py-2">ยอด</th><th class="py-2">สถานะ</th></tr></thead>
-            <tbody id="adminOrdersTable"></tbody>
+      <div id="admin-sites" class="hidden">
+        <h2 class="text-2xl md:text-3xl font-black text-white mb-6">เว็บทั้งหมดในระบบ</h2>
+        <div class="glass rounded-2xl p-4 overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead><tr class="text-gray-400 border-b border-white/10"><th class="py-3">URL</th><th class="py-3">เจ้าของ</th><th class="py-3">สินค้า</th><th class="py-3">ยอดขาย</th><th class="py-3">สถานะ</th></tr></thead>
+            <tbody id="sitesTable"></tbody>
           </table>
         </div>
       </div>
-      <div id="admin-topups" class="hidden">
-        <h2 class="text-3xl font-bold mb-6">คำขอเติมเงิน TrueMoney</h2>
-        <div class="bg-white rounded-xl shadow p-4 mb-6">
-          <h3 class="font-bold mb-4">รออนุมัติ</h3>
-          <table class="w-full">
-            <thead><tr class="text-left text-gray-500 border-b"><th class="py-2">เวลา</th><th class="py-2">สมาชิก</th><th class="py-2">เบอร์โอน</th><th class="py-2">จำนวน</th><th class="py-2">สลิป</th><th class="py-2">จัดการ</th></tr></thead>
-            <tbody id="pendingTopups"></tbody>
-          </table>
+      <div id="admin-revenue" class="hidden">
+        <h2 class="text-2xl md:text-3xl font-black text-white mb-6">รายได้</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="glass rounded-2xl p-6"><p class="text-sm text-gray-400">วันนี้</p><p class="text-2xl font-black text-white mt-2" id="revToday">฿0</p></div>
+          <div class="glass rounded-2xl p-6"><p class="text-sm text-gray-400">เดือนนี้</p><p class="text-2xl font-black gradient-text mt-2" id="revMonth">฿0</p></div>
+          <div class="glass rounded-2xl p-6"><p class="text-sm text-gray-400">ทั้งหมด</p><p class="text-2xl font-black text-green-400 mt-2" id="revAll">฿0</p></div>
         </div>
-        <div class="bg-white rounded-xl shadow p-4">
-          <h3 class="font-bold mb-4">ประวัติ</h3>
-          <table class="w-full">
-            <thead><tr class="text-left text-gray-500 border-b"><th class="py-2">เวลา</th><th class="py-2">สมาชิก</th><th class="py-2">จำนวน</th><th class="py-2">สถานะ</th></tr></thead>
-            <tbody id="topupHistory"></tbody>
-          </table>
-        </div>
-      </div>
-      <div id="admin-gifts" class="hidden">
-        <h2 class="text-3xl font-bold mb-6">ตรวจสอบซองของขวัญ</h2>
-        <div class="bg-white rounded-xl shadow p-6 mb-6">
-          <h3 class="font-bold mb-4">เครื่องมือเช็คซอง (ทดสอบ API)</h3>
-          <div class="flex gap-2">
-            <input id="adminCheckInput" placeholder="ลิงก์ซอง หรือ เบอร์" class="flex-1 px-4 py-2 border rounded-lg">
-            <button onclick="checkGiftForAdmin()" class="tm-btn text-white px-4 py-2 rounded-lg flex items-center gap-1">
-              <svg class="icon"><use href="#i-search"/></svg> เช็ค
-            </button>
-          </div>
-          <div id="adminGiftResult" class="mt-4"></div>
-        </div>
-        <div class="bg-white rounded-xl shadow p-4">
-          <h3 class="font-bold mb-4">ประวัติการรับซอง</h3>
-          <table class="w-full">
-            <thead><tr class="text-left text-gray-500 border-b"><th class="py-2">เวลา</th><th class="py-2">สมาชิก</th><th class="py-2">มูลค่า</th><th class="py-2">หมดอายุ</th><th class="py-2">สถานะ</th></tr></thead>
-            <tbody id="giftHistory"></tbody>
-          </table>
+        <div class="glass rounded-2xl p-4">
+          <h3 class="font-bold text-white mb-4">ประวัติรายได้</h3>
+          <div id="revenueHistory"></div>
         </div>
       </div>
       <div id="admin-settings" class="hidden">
-        <h2 class="text-3xl font-bold mb-6">ตั้งค่า API</h2>
-        <div class="bg-white rounded-xl shadow p-6 max-w-2xl space-y-4">
-          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-            <p class="font-bold">⚠️ หมายเหตุ:</p>
-            <p class="text-sm">API endpoint ต้องมาจาก TrueMoney Business หรือใช้ proxy backend ของคุณเอง</p>
-          </div>
-          <div>
-            <label class="block text-sm mb-1">เบอร์รับเงิน TrueMoney</label>
-            <input id="setPhone" value="0988785068" class="w-full px-4 py-2 border rounded-lg">
-          </div>
-          <div>
-            <label class="block text-sm mb-1">API Base URL (Backend ของคุณ)</label>
-            <input id="setApi" placeholder="https://your-backend.com/api" class="w-full px-4 py-2 border rounded-lg">
-          </div>
-          <div>
-            <label class="block text-sm mb-1">API Key (Secret)</label>
-            <input id="setToken" type="password" placeholder="your-secret-key" class="w-full px-4 py-2 border rounded-lg">
-          </div>
-          <div>
-            <label class="block text-sm mb-1">โหมด</label>
-            <select id="setMode" class="w-full px-4 py-2 border rounded-lg">
-              <option value="manual">Manual (แอดมินอนุมัติเอง)</option>
-              <option value="auto">Auto (เช็ค API อัตโนมัติ)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm mb-1">ยอดเติมขั้นต่ำ (บาท)</label>
-            <input id="setMinTopup" type="number" value="10" class="w-full px-4 py-2 border rounded-lg">
-          </div>
-          <div>
-            <label class="block text-sm mb-1">ยอดเติมสูงสุด (บาท)</label>
-            <input id="setMaxTopup" type="number" value="50000" class="w-full px-4 py-2 border rounded-lg">
-          </div>
-          <button onclick="saveSettings()" class="gradient-bg text-white px-6 py-2 rounded-lg">บันทึก</button>
-          <button onclick="testAPI()" class="bg-gray-200 px-6 py-2 rounded-lg">ทดสอบ API</button>
-          <div id="apiTestResult"></div>
+        <h2 class="text-2xl md:text-3xl font-black text-white mb-6">ตั้งค่าแพลตฟอร์ม</h2>
+        <div class="glass rounded-2xl p-6 max-w-2xl space-y-4">
+          <div><label class="block text-sm mb-2 text-gray-400">โดเมนหลัก</label><input value="nextrastore.com" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow"></div>
+          <div><label class="block text-sm mb-2 text-gray-400">เบอร์รับเงิน TrueMoney</label><input value="0988785068" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow"></div>
+          <div><label class="block text-sm mb-2 text-gray-400">ชื่อบัญชี</label><input value="NextraStore" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow"></div>
+          <div><label class="block text-sm mb-2 text-gray-400">ทดลองใช้ฟรี (วัน)</label><input type="number" value="7" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow"></div>
+          <button onclick="toast('บันทึกแล้ว')" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl font-bold btn-glow">บันทึก</button>
         </div>
       </div>
     </main>
   </div>
 </div>
 
-<!-- ============ Modals ============ -->
-<div id="authModal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
-  <div class="bg-white rounded-2xl p-8 w-full max-w-md">
-    <div id="authLogin">
-      <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><svg class="icon"><use href="#i-lock"/></svg> เข้าสู่ระบบ</h3>
-      <div class="space-y-3">
-        <input id="loginUsername" placeholder="Username" class="w-full px-4 py-2 border rounded-lg">
-        <input id="loginPassword" type="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg">
-        <button onclick="doLogin()" class="w-full gradient-bg text-white py-3 rounded-lg font-bold">เข้าสู่ระบบ</button>
-        <p class="text-center text-sm text-gray-500">ยังไม่มีบัญชี? <a onclick="switchAuth('register')" class="text-purple-600 cursor-pointer">สมัครสมาชิก</a></p>
+<div id="clientSitePage" class="hidden">
+  <nav class="fixed top-0 left-0 right-0 z-50 glass">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center">
+          <svg class="icon text-white"><use href="#i-cart"/></svg>
+        </div>
+        <h1 class="text-lg font-black gradient-text" id="clientSiteName">ร้านค้า</h1>
       </div>
-    </div>
-    <div id="authRegister" class="hidden">
-      <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><svg class="icon"><use href="#i-user"/></svg> สมัครสมาชิก</h3>
-      <div class="space-y-3">
-        <input id="regName" placeholder="ชื่อ-นามสกุล" class="w-full px-4 py-2 border rounded-lg">
-        <input id="regUsername" placeholder="Username (4-20 ตัวอักษร)" class="w-full px-4 py-2 border rounded-lg">
-        <input id="regEmail" type="email" placeholder="อีเมล" class="w-full px-4 py-2 border rounded-lg">
-        <input id="regPhone" placeholder="เบอร์โทร (TrueMoney)" class="w-full px-4 py-2 border rounded-lg">
-        <input id="regPassword" type="password" placeholder="Password (ขั้นต่ำ 6 ตัว)" class="w-full px-4 py-2 border rounded-lg">
-        <input id="regPassword2" type="password" placeholder="ยืนยัน Password" class="w-full px-4 py-2 border rounded-lg">
-        <button onclick="doRegister()" class="w-full gradient-bg text-white py-3 rounded-lg font-bold">สมัครสมาชิก</button>
-        <p class="text-center text-sm text-gray-500">มีบัญชีแล้ว? <a onclick="switchAuth('login')" class="text-purple-600 cursor-pointer">เข้าสู่ระบบ</a></p>
-      </div>
-    </div>
-    <button onclick="closeModal('authModal')" class="w-full text-gray-500 py-2 mt-2 text-sm">ยกเลิก</button>
-  </div>
-</div>
-
-<div id="adminLoginModal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
-  <div class="bg-white rounded-2xl p-8 w-full max-w-md">
-    <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><svg class="icon"><use href="#i-shield"/></svg> Admin Login</h3>
-    <div class="space-y-3">
-      <input id="adminLoginUser" type="text" placeholder="Username" value="nextrastore" class="w-full px-4 py-2 border rounded-lg">
-      <input id="adminLoginPass" type="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg">
-      <button onclick="doAdminLogin()" class="w-full bg-gray-900 text-white py-3 rounded-lg font-bold">เข้าสู่ระบบแอดมิน</button>
-      <button onclick="closeModal('adminLoginModal')" class="w-full text-gray-500 py-2 mt-1 text-sm">ยกเลิก</button>
-    </div>
-  </div>
-</div>
-
-<div id="topupModal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
-  <div class="bg-white rounded-2xl p-8 w-full max-w-lg max-h-screen overflow-y-auto">
-    <h3 class="text-2xl font-bold mb-4 flex items-center gap-2"><svg class="icon"><use href="#i-phone"/></svg> เติมเงิน TrueMoney</h3>
-    <div class="tm-gradient text-white p-4 rounded-xl mb-4">
-      <p class="text-sm opacity-90">เบอร์รับเงิน (TrueMoney Wallet)</p>
-      <div class="flex items-center justify-between mt-1">
-        <div class="text-2xl font-bold">098-878-5068</div>
-        <button onclick="copyPhone()" class="bg-white/20 px-3 py-1 rounded text-sm flex items-center gap-1">
-          <svg class="icon"><use href="#i-copy"/></svg> คัดลอก
+      <div class="flex gap-2">
+        <button onclick="openClientAdmin()" class="glass-light px-3 py-2 rounded-xl text-gray-300 hover:text-white text-sm flex items-center gap-1">
+          <svg class="icon-sm"><use href="#i-settings"/></svg> <span class="hidden md:inline">จัดการ</span>
+        </button>
+        <button onclick="exitClientSite()" class="bg-red-500/20 text-red-400 px-3 py-2 rounded-xl text-sm flex items-center gap-1">
+          <svg class="icon-sm"><use href="#i-logout"/></svg> <span class="hidden md:inline">ออก</span>
         </button>
       </div>
-      <p class="text-sm mt-2 opacity-90">ชื่อบัญชี: <strong>NextraStore</strong></p>
-      <p class="text-xs mt-1 opacity-80">⚠️ ยอดเติมขั้นต่ำ <span id="minTopupDisplay">10</span> บาท / สูงสุด <span id="maxTopupDisplay">50,000</span> บาท</p>
     </div>
-    <div class="space-y-3">
-      <div>
-        <label class="block text-sm mb-1">จำนวนเงินที่โอน (บาท) *</label>
-        <input id="topupAmount" type="number" placeholder="เช่น 100" class="w-full px-4 py-2 border rounded-lg">
-        <p id="topupAmountError" class="text-red-500 text-xs mt-1 hidden"></p>
-      </div>
-      <div>
-        <label class="block text-sm mb-1">เบอร์โทรที่โอน (TrueMoney) *</label>
-        <input id="topupPhone" placeholder="08x-xxx-xxxx" class="w-full px-4 py-2 border rounded-lg">
-        <p id="topupPhoneError" class="text-red-500 text-xs mt-1 hidden"></p>
-      </div>
-      <div>
-        <label class="block text-sm mb-1">เวลาที่โอน *</label>
-        <input id="topupTime" type="datetime-local" class="w-full px-4 py-2 border rounded-lg">
-        <p id="topupTimeError" class="text-red-500 text-xs mt-1 hidden"></p>
-      </div>
-      <div>
-        <label class="block text-sm mb-1">อัพโหลดสลิป</label>
-        <input id="topupSlip" type="file" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
-        <p id="topupSlipError" class="text-red-500 text-xs mt-1 hidden"></p>
-      </div>
-    </div>
-    <button onclick="submitTopup()" class="w-full tm-btn text-white py-3 rounded-lg font-bold mt-4">แจ้งเติมเงิน</button>
-    <button onclick="closeModal('topupModal')" class="w-full text-gray-500 py-2 mt-1 text-sm">ยกเลิก</button>
+  </nav>
+  <div class="pt-20">
+    <div id="clientStorefront"></div>
+    <div id="clientAdminPanel" class="hidden"></div>
   </div>
 </div>
 
-<div id="giftModal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
-  <div class="bg-white rounded-2xl p-8 w-full max-w-lg max-h-screen overflow-y-auto">
-    <h3 class="text-2xl font-bold mb-2 flex items-center gap-2"><svg class="icon"><use href="#i-gift"/></svg> เช็คซองของขวัญ</h3>
-    <p class="text-sm text-gray-600 mb-4">ใส่ลิงก์ซอง หรือ เบอร์โทรซอง เพื่อเช็คยอดเงิน + วันหมดอายุ</p>
-    <div class="gift-gradient text-white p-4 rounded-xl mb-4">
-      <p class="text-sm opacity-90">เบอร์รับซอง</p>
-      <div class="text-2xl font-bold">098-878-5068</div>
-      <p class="text-sm mt-1 opacity-90">ชื่อ: <strong>NextraStore</strong></p>
-    </div>
-    <div class="space-y-3">
-      <div>
-        <label class="block text-sm mb-1">วิธีเช็ค</label>
-        <select id="checkMethod" class="w-full px-4 py-2 border rounded-lg" onchange="toggleCheckInput()">
-          <option value="link">ลิงก์ซอง</option>
-          <option value="phone">เบอร์โทรซอง</option>
-        </select>
+<div id="authModal" class="modal fixed inset-0 bg-black/70 backdrop-blur-sm items-center justify-center z-50 p-4">
+  <div class="glass rounded-3xl p-6 md:p-8 w-full max-w-md slide-up relative my-8 max-h-[90vh] overflow-y-auto">
+    <button onclick="closeModal('authModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white"><svg class="icon"><use href="#i-x"/></svg></button>
+    <div id="authLogin">
+      <h3 class="text-2xl md:text-3xl font-black text-white mb-2">เข้าสู่ระบบ</h3>
+      <p class="text-gray-400 mb-6">ยินดีต้อนรับกลับมา</p>
+      <div class="space-y-3">
+        <input id="loginUsername" placeholder="Username" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
+        <input id="loginPassword" type="password" placeholder="Password" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
+        <button onclick="doLogin()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow">เข้าสู่ระบบ</button>
       </div>
-      <div id="linkInput">
-        <label class="block text-sm mb-1">ลิงก์ซอง *</label>
-        <input id="giftLink" placeholder="https://gift.truemoney.com/campaign/?v=xxxxxxxx" class="w-full px-4 py-2 border rounded-lg text-sm">
-        <p id="giftLinkError" class="text-red-500 text-xs mt-1 hidden"></p>
-      </div>
-      <div id="phoneInput" class="hidden">
-        <label class="block text-sm mb-1">เบอร์โทร *</label>
-        <input id="giftPhone" placeholder="08x-xxx-xxxx" class="w-full px-4 py-2 border rounded-lg">
-        <p id="giftPhoneError" class="text-red-500 text-xs mt-1 hidden"></p>
-      </div>
-      <button onclick="checkGift()" id="checkBtn" class="w-full gift-gradient text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2">
-        <svg class="icon"><use href="#i-search"/></svg> เช็คซอง
-      </button>
-      <div id="giftResult"></div>
+      <p class="text-center text-gray-400 text-sm mt-4">ยังไม่มีบัญชี? <a onclick="switchAuth('register')" class="text-purple-400 cursor-pointer">สมัครเลย</a></p>
     </div>
-    <button onclick="closeModal('giftModal')" class="w-full text-gray-500 py-2 mt-2 text-sm">ปิด</button>
-  </div>
-</div>
-
-<div id="productModal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
-  <div class="bg-white rounded-2xl p-8 w-full max-w-md">
-    <h3 class="text-2xl font-bold mb-4 flex items-center gap-2"><svg class="icon"><use href="#i-box"/></svg> เพิ่มสินค้า</h3>
-    <div class="space-y-3">
-      <input id="pName" placeholder="ชื่อสินค้า" class="w-full px-4 py-2 border rounded-lg">
-      <input id="pDesc" placeholder="คำอธิบาย" class="w-full px-4 py-2 border rounded-lg">
-      <input id="pPrice" type="number" placeholder="ราคา" class="w-full px-4 py-2 border rounded-lg">
-      <input id="pStock" type="number" placeholder="สต็อก" class="w-full px-4 py-2 border rounded-lg">
-      <select id="pIcon" class="w-full px-4 py-2 border rounded-lg">
-        <option value="i-shirt">เสื้อผ้า</option>
-        <option value="i-shoe">รองเท้า</option>
-        <option value="i-headphones">หูฟัง</option>
-        <option value="i-bag">กระเป๋า</option>
-        <option value="i-watch">นาฬิกา</option>
-        <option value="i-mug">แก้ว</option>
-        <option value="i-rocket">ทั่วไป</option>
-        <option value="i-box">กล่อง</option>
-      </select>
-    </div>
-    <div class="flex gap-2 mt-6">
-      <button onclick="saveProduct()" class="flex-1 gradient-bg text-white py-2 rounded-lg">บันทึก</button>
-      <button onclick="closeModal('productModal')" class="flex-1 bg-gray-200 py-2 rounded-lg">ยกเลิก</button>
+    <div id="authRegister" class="hidden">
+      <h3 class="text-2xl md:text-3xl font-black text-white mb-2">สมัครสมาชิก</h3>
+      <p class="text-gray-400 mb-6">เริ่มใช้งานฟรี</p>
+      <div class="space-y-3">
+        <input id="regName" placeholder="ชื่อ-นามสกุล" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
+        <input id="regUsername" placeholder="Username" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
+        <input id="regEmail" type="email" placeholder="อีเมล" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
+        <input id="regPhone" placeholder="เบอร์โทร" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
+        <input id="regPassword" type="password" placeholder="Password" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
+        <input id="regPassword2" type="password" placeholder="ยืนยัน Password" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
+        <button onclick="doRegister()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow">สมัครสมาชิก</button>
+      </div>
+      <p class="text-center text-gray-400 text-sm mt-4">มีบัญชีแล้ว? <a onclick="switchAuth('login')" class="text-purple-600 cursor-pointer">เข้าสู่ระบบ</a></p>
     </div>
   </div>
 </div>
 
-<div id="toast" class="hidden fixed top-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-xl z-50"></div>
+<div id="adminLoginModal" class="modal fixed inset-0 bg-black/70 backdrop-blur-sm items-center justify-center z-50 p-4">
+  <div class="glass rounded-3xl p-6 md:p-8 w-full max-w-md slide-up">
+    <h3 class="text-2xl font-black text-white mb-6 flex items-center gap-2"><svg class="icon"><use href="#i-shield"/></svg> Admin</h3>
+    <div class="space-y-3">
+      <input id="adminLoginUser" type="text" placeholder="Username" value="nextrastore" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow">
+      <input id="adminLoginPass" type="password" placeholder="Password" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow">
+      <button onclick="doAdminLogin()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow">เข้าสู่ระบบ</button>
+      <button onclick="closeModal('adminLoginModal')" class="w-full text-gray-400 py-2">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<div id="createSiteModal" class="modal fixed inset-0 bg-black/70 backdrop-blur-sm items-center justify-center z-50 p-4 overflow-y-auto">
+  <div class="glass rounded-3xl p-6 md:p-8 w-full max-w-2xl slide-up my-8 relative">
+    <button onclick="closeCreateSite()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><svg class="icon"><use href="#i-x"/></svg></button>
+    <div class="flex flex-wrap justify-between gap-2 mb-8">
+      <div id="step-ind-1" class="flex items-center gap-2 step-active px-3 py-1 rounded-full text-xs md:text-sm font-bold"><span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs">1</span> <span class="hidden md:inline">เลือก</span></div>
+      <div id="step-ind-2" class="flex items-center gap-2 step-pending px-3 py-1 rounded-full text-xs md:text-sm"><span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs">2</span> <span class="hidden md:inline">ข้อมูล</span></div>
+      <div id="step-ind-3" class="flex items-center gap-2 step-pending px-3 py-1 rounded-full text-xs md:text-sm"><span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs">3</span> <span class="hidden md:inline">ชำระ</span></div>
+      <div id="step-ind-4" class="flex items-center gap-2 step-pending px-3 py-1 rounded-full text-xs md:text-sm"><span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs">4</span> <span class="hidden md:inline">เสร็จ</span></div>
+    </div>
+    <div id="cs-step-1">
+      <h3 class="text-xl md:text-2xl font-black text-white mb-2">เลือกแพ็กเกจ</h3>
+      <p class="text-gray-400 mb-6">เลือกแพ็กเกจที่ต้องการใช้งาน</p>
+      <div class="space-y-3" id="planSelectList"></div>
+      <button onclick="csNext()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold mt-6 btn-glow flex items-center justify-center gap-2">ถัดไป <svg class="icon-sm"><use href="#i-arrow-right"/></svg></button>
+    </div>
+    <div id="cs-step-2" class="hidden">
+      <h3 class="text-xl md:text-2xl font-black text-white mb-2">กรอกข้อมูลเว็บ</h3>
+      <p class="text-gray-400 mb-6">ข้อมูลนี้จะใช้สร้างเว็บของคุณ</p>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-sm mb-1 text-gray-400">ชื่อ subdomain *</label>
+          <div class="flex">
+            <input id="cs-domain" placeholder="myshop" class="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-l-xl text-white placeholder-gray-500 focus:outline-none input-glow">
+            <span class="bg-white/5 border border-l-0 border-white/10 px-4 py-3 rounded-r-xl text-gray-400 text-sm">.nextrastore.com</span>
+          </div>
+          <p id="cs-domain-error" class="text-red-400 text-xs mt-1 hidden"></p>
+        </div>
+        <div><label class="block text-sm mb-1 text-gray-400">ชื่อร้าน *</label><input id="cs-shopname" placeholder="ร้านของฉัน" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow"></div>
+        <div><label class="block text-sm mb-1 text-gray-400">Username admin *</label><input id="cs-adminuser" placeholder="admin" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow"><p class="text-xs text-gray-500 mt-1">ใช้เข้าหลังบ้านเว็บของคุณ</p></div>
+        <div><label class="block text-sm mb-1 text-gray-400">Password admin *</label><input id="cs-adminpass" type="password" placeholder="ขั้นต่ำ 6 ตัว" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow"></div>
+      </div>
+      <div class="flex gap-2 mt-6">
+        <button onclick="csBack()" class="flex-1 glass-light text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2"><svg class="icon-sm"><use href="#i-arrow-left"/></svg> กลับ</button>
+        <button onclick="csNext()" class="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow flex items-center justify-center gap-2">ถัดไป <svg class="icon-sm"><use href="#i-arrow-right"/></svg></button>
+      </div>
+    </div>
+    <div id="cs-step-3" class="hidden">
+      <h3 class="text-xl md:text-2xl font-black text-white mb-2">ชำระเงิน</h3>
+      <div class="glass-light rounded-2xl p-4 mb-4">
+        <div class="flex justify-between mb-2 text-sm"><span class="text-gray-400">แพ็กเกจ:</span><span class="font-bold text-white" id="cs-confirm-plan">-</span></div>
+        <div class="flex justify-between mb-2 text-sm"><span class="text-gray-400">ระยะเวลา:</span><span class="font-bold text-white">1 เดือน</span></div>
+        <div class="flex justify-between mb-2 text-sm"><span class="text-gray-400">ทดลองใช้ฟรี:</span><span class="font-bold text-green-400">7 วัน</span></div>
+        <div class="border-t border-white/10 my-2"></div>
+        <div class="flex justify-between items-center"><span class="text-gray-400">ยอดชำระ:</span><span class="text-3xl font-black gradient-text" id="cs-confirm-price">฿0</span></div>
+      </div>
+      <div class="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 rounded-2xl p-4 mb-4">
+        <div class="flex items-center gap-3">
+          <svg class="icon-lg text-cyan-400"><use href="#i-phone"/></svg>
+          <div class="flex-1">
+            <p class="text-xs text-gray-400">โอนผ่าน TrueMoney Wallet</p>
+            <div class="flex items-center gap-2">
+              <p class="text-xl md:text-2xl font-black text-white">098-878-5068</p>
+              <button onclick="copyPhone()" class="text-cyan-400"><svg class="icon-sm"><use href="#i-copy"/></svg></button>
+            </div>
+            <p class="text-xs text-gray-400">ชื่อ: NextraStore</p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-4">
+        <p class="text-sm text-yellow-300">⚠️ ต้องโอน <span class="font-bold" id="cs-required-amount">฿0</span> ให้ครบ ระบบจะตรวจสอบอัตโนมัติ</p>
+      </div>
+      <div class="flex gap-2 mt-6">
+        <button onclick="csBack()" class="flex-1 glass-light text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2"><svg class="icon-sm"><use href="#i-arrow-left"/></svg> กลับ</button>
+        <button onclick="csNext()" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-3 rounded-xl font-bold btn-glow flex items-center justify-center gap-2"><svg class="icon-sm"><use href="#i-check"/></svg> ชำระแล้ว</button>
+      </div>
+    </div>
+    <div id="cs-step-4" class="hidden text-center">
+      <div class="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mx-auto mb-4 pulse-slow">
+        <svg class="icon-xl text-white"><use href="#i-check"/></svg>
+      </div>
+      <h3 class="text-2xl md:text-3xl font-black text-white mb-2">สร้างเว็บสำเร็จ! 🎉</h3>
+      <p class="text-gray-400 mb-6">เว็บของคุณพร้อมใช้งานแล้ว</p>
+      <div class="glass-light rounded-2xl p-6 mb-6">
+        <p class="text-xs text-gray-400 mb-2">URL เว็บของคุณ</p>
+        <div class="flex items-center justify-center gap-2 flex-wrap">
+          <a id="cs-final-url" class="text-xl md:text-2xl font-black gradient-text break-all hover:scale-105 inline-block transition cursor-pointer"></a>
+          <button onclick="copyUrl()" class="text-purple-400"><svg class="icon"><use href="#i-copy"/></svg></button>
+        </div>
+      </div>
+      <div class="glass-light rounded-2xl p-4 text-left text-sm space-y-2 mb-6">
+        <div class="flex justify-between gap-2"><span class="text-gray-400">Username admin:</span><span class="font-bold text-white" id="cs-final-user">-</span></div>
+        <div class="flex justify-between gap-2"><span class="text-gray-400">Password admin:</span><span class="font-bold text-white" id="cs-final-pass">-</span></div>
+        <div class="text-red-400 text-xs mt-2">⚠️ กรุณาจดรหัสไว้</div>
+      </div>
+      <button onclick="goToMySite()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow flex items-center justify-center gap-2"><svg class="icon"><use href="#i-external"/></svg> เข้าสู่เว็บของฉัน</button>
+      <button onclick="closeCreateSite();enterMember();" class="w-full text-gray-400 py-2 mt-2">กลับหน้าหลัก</button>
+    </div>
+  </div>
+</div>
+
+<div id="demoModal" class="modal fixed inset-0 bg-black/70 backdrop-blur-sm items-center justify-center z-50 p-4">
+  <div class="glass rounded-3xl p-6 md:p-8 w-full max-w-md slide-up text-center">
+    <h3 class="text-2xl font-black text-white mb-4">ดูตัวอย่างเว็บ</h3>
+    <p class="text-gray-400 mb-6">สมัครสมาชิกก่อนเพื่อสร้างเว็บของคุณเอง</p>
+    <button onclick="closeModal('demoModal');openAuth('register')" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow">สมัครเลย</button>
+    <button onclick="closeModal('demoModal')" class="w-full text-gray-400 py-2 mt-2">ปิด</button>
+  </div>
+</div>
+
+<div id="toast" class="hidden fixed top-20 right-5 px-6 py-3 rounded-2xl shadow-2xl z-50 text-white font-semibold slide-up bg-gradient-to-r from-green-500 to-emerald-500"></div>
 
 <script>
-// ===== Config =====
 const CONFIG = {
   PHONE: '0988785068',
   ADMIN_USER: 'nextrastore',
   ADMIN_PASS: 'nextra109store',
-  MIN_TOPUP: 10,
-  MAX_TOPUP: 50000,
-  API_BASE: '' // เช่น 'https://your-backend.com/api'
+  DOMAIN: 'nextrastore.com'
 };
 
-// ===== State =====
 let db = {
   members: JSON.parse(localStorage.getItem('members')) || [],
-  products: JSON.parse(localStorage.getItem('products')) || [
-    { id:1, name:'เสื้อยืด Premium', desc:'เสื้อยืดคุณภาพ', price:299, stock:50, icon:'i-shirt', sold:0 },
-    { id:2, name:'รองเท้าผ้าใบ', desc:'สไตล์เกาหลี', price:1290, stock:20, icon:'i-shoe', sold:0 },
-    { id:3, name:'หูฟัง BT', desc:'เสียงดี', price:890, stock:30, icon:'i-headphones', sold:0 },
-    { id:4, name:'กระเป๋า', desc:'ดีไซน์เก๋', price:450, stock:15, icon:'i-bag', sold:0 },
-    { id:5, name:'นาฬิกา', desc:'หรูหรา', price:2500, stock:8, icon:'i-watch', sold:0 },
-    { id:6, name:'แก้วกาแฟ', desc:'เก็บความร้อน', price:199, stock:100, icon:'i-mug', sold:0 }
-  ],
-  orders: JSON.parse(localStorage.getItem('orders')) || [],
-  topups: JSON.parse(localStorage.getItem('topups')) || [],
-  gifts: JSON.parse(localStorage.getItem('gifts')) || [],
-  transactions: JSON.parse(localStorage.getItem('transactions')) || [],
-  settings: JSON.parse(localStorage.getItem('settings')) || { 
-    phone: CONFIG.PHONE, api: '', token: '', mode: 'manual',
-    minTopup: CONFIG.MIN_TOPUP, maxTopup: CONFIG.MAX_TOPUP 
-  }
+  sites: JSON.parse(localStorage.getItem('sites')) || [],
+  payments: JSON.parse(localStorage.getItem('payments')) || []
 };
 
-function saveDB() {
-  Object.keys(db).forEach(k => localStorage.setItem(k, JSON.stringify(db[k])));
-}
+function saveDB() { Object.keys(db).forEach(k => localStorage.setItem(k, JSON.stringify(db[k]))); }
 
-let currentMember = null;
-let cart = [];
+let currentMember = null, currentSite = null, cart = [];
+let selectedPlan = null, csStep = 1, csData = {};
 
 function openModal(id) { document.getElementById(id).classList.add('active'); }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
@@ -479,45 +523,15 @@ function closeModal(id) { document.getElementById(id).classList.remove('active')
 function toast(msg, color='green') {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.className = `fixed top-5 right-5 px-6 py-3 rounded-lg shadow-xl z-50 text-white bg-${color}-500`;
+  t.className = `fixed top-20 right-5 px-6 py-3 rounded-2xl shadow-2xl z-50 text-white font-semibold slide-up bg-gradient-to-r ${color==='green'?'from-green-500 to-emerald-500':color==='red'?'from-red-500 to-pink-500':color==='blue'?'from-cyan-500 to-blue-500':'from-purple-500 to-pink-500'}`;
   t.classList.remove('hidden');
   setTimeout(() => t.classList.add('hidden'), 3000);
 }
 
-function copyPhone() {
-  navigator.clipboard.writeText(CONFIG.PHONE);
-  toast('คัดลอกเบอร์แล้ว');
-}
+function copyPhone() { navigator.clipboard.writeText(CONFIG.PHONE); toast('คัดลอกเบอร์แล้ว'); }
 
-function showError(id, msg) {
-  const el = document.getElementById(id);
-  el.textContent = msg;
-  el.classList.remove('hidden');
-}
-function hideError(id) { document.getElementById(id).classList.add('hidden'); }
+function scrollToPricing() { document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' }); }
 
-// ===== Validation =====
-function validatePhone(phone) {
-  return /^0\d{9}$/.test(phone.replace(/[-\s]/g, ''));
-}
-
-function validateEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function validateUsername(username) {
-  return /^[a-zA-Z0-9_]{4,20}$/.test(username);
-}
-
-function validatePassword(pw) {
-  return pw.length >= 6;
-}
-
-function validateGiftLink(link) {
-  return /^https:\/\/gift\.truemoney\.com\/campaign\/\?v=.+/i.test(link);
-}
-
-// ===== Nav =====
 function openAuth(mode) {
   document.getElementById('authLogin').classList.toggle('hidden', mode==='register');
   document.getElementById('authRegister').classList.toggle('hidden', mode==='login');
@@ -529,25 +543,14 @@ function updateNav() {
   const nav = document.getElementById('navButtons');
   if (currentMember) {
     nav.innerHTML = `
-      <div class="wallet-card text-white px-4 py-1 rounded-full font-bold text-sm flex items-center gap-1">
-        <svg class="icon"><use href="#i-wallet"/></svg> ฿${currentMember.wallet.toLocaleString()}
-      </div>
-      <span class="text-sm text-gray-600">${currentMember.username}</span>
-      <button onclick="logout()" class="text-gray-600 hover:text-gray-800 flex items-center gap-1">
-        <svg class="icon"><use href="#i-logout"/></svg> ออก
-      </button>
+      <span class="text-sm text-gray-300 hidden md:block">${currentMember.username}</span>
+      <button onclick="logout()" class="text-gray-400 hover:text-white text-sm flex items-center gap-1"><svg class="icon-sm"><use href="#i-logout"/></svg></button>
     `;
   } else {
     nav.innerHTML = `
-      <button onclick="openAuth('login')" class="text-gray-600 hover:text-gray-800 flex items-center gap-1">
-        <svg class="icon"><use href="#i-lock"/></svg> เข้าสู่ระบบ
-      </button>
-      <button onclick="openAdminLogin()" class="text-gray-600 hover:text-gray-800 flex items-center gap-1">
-        <svg class="icon"><use href="#i-shield"/></svg> แอดมิน
-      </button>
-      <button onclick="openAuth('register')" class="gradient-bg text-white px-5 py-2 rounded-lg flex items-center gap-1">
-        <svg class="icon"><use href="#i-user"/></svg> สมัคร
-      </button>
+      <button onclick="openAuth('login')" class="text-gray-300 hover:text-white text-sm hidden md:block">เข้าสู่ระบบ</button>
+      <button onclick="openAdminLogin()" class="text-gray-300 hover:text-white text-sm hidden md:block">Admin</button>
+      <button onclick="openAuth('register')" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-xl text-sm font-semibold btn-glow">สมัคร</button>
     `;
   }
 }
@@ -555,35 +558,27 @@ function updateNav() {
 function goHome() {
   document.getElementById('memberPage').classList.add('hidden');
   document.getElementById('adminPage').classList.add('hidden');
+  document.getElementById('clientSitePage').classList.add('hidden');
   document.getElementById('homePage').classList.remove('hidden');
 }
 
-function doRegister() {
-  ['regName','regUsername','regEmail','regPhone','regPassword','regPassword2'].forEach(k => hideError(k.replace(/^reg/, '').toLowerCase()+'Error'));
+function validatePhone(p) { return /^0\d{9}$/.test(p.replace(/[-\s]/g, '')); }
 
+function doRegister() {
   const name = document.getElementById('regName').value.trim();
   const username = document.getElementById('regUsername').value.trim();
   const email = document.getElementById('regEmail').value.trim();
   const phone = document.getElementById('regPhone').value.trim().replace(/[-\s]/g, '');
   const pw = document.getElementById('regPassword').value;
   const pw2 = document.getElementById('regPassword2').value;
-
-  let ok = true;
-  if (!name || name.length < 2) { showError('nameError', 'กรอกชื่ออย่างน้อย 2 ตัวอักษร'); ok = false; }
-  if (!validateUsername(username)) { showError('usernameError', 'Username 4-20 ตัว ภาษาอังกฤษ/ตัวเลข/_'); ok = false; }
-  if (!validateEmail(email)) { showError('emailError', 'อีเมลไม่ถูกต้อง'); ok = false; }
-  if (!validatePhone(phone)) { showError('phoneError', 'เบอร์โทรไม่ถูกต้อง (10 หลัก)'); ok = false; }
-  if (!validatePassword(pw)) { showError('passwordError', 'รหัสผ่านขั้นต่ำ 6 ตัว'); ok = false; }
-  if (pw !== pw2) { showError('password2Error', 'รหัสไม่ตรงกัน'); ok = false; }
-  if (db.members.find(m => m.username === username)) { showError('usernameError', 'Username ซ้ำ'); ok = false; }
-  if (db.members.find(m => m.phone === phone)) { showError('phoneError', 'เบอร์นี้สมัครแล้ว'); ok = false; }
-
-  if (!ok) { toast('ตรวจสอบข้อมูลอีกครั้ง', 'red'); return; }
-
-  db.members.push({
-    id: Date.now(), name, username, email, phone,
-    password: pw, wallet: 0, createdAt: new Date().toISOString()
-  });
+  if (!name) return toast('กรอกชื่อ', 'red');
+  if (!/^[a-zA-Z0-9_]{4,20}$/.test(username)) return toast('Username 4-20 ตัว', 'red');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast('อีเมลไม่ถูก', 'red');
+  if (!validatePhone(phone)) return toast('เบอร์โทรไม่ถูก', 'red');
+  if (pw.length < 6) return toast('รหัสขั้นต่ำ 6 ตัว', 'red');
+  if (pw !== pw2) return toast('รหัสไม่ตรง', 'red');
+  if (db.members.find(m => m.username === username)) return toast('Username ซ้ำ', 'red');
+  db.members.push({ id: Date.now(), name, username, email, phone, password: pw, wallet: 0, createdAt: new Date().toISOString() });
   saveDB();
   currentMember = db.members[db.members.length-1];
   closeModal('authModal');
@@ -594,9 +589,8 @@ function doRegister() {
 function doLogin() {
   const username = document.getElementById('loginUsername').value.trim();
   const pw = document.getElementById('loginPassword').value;
-  if (!username || !pw) { toast('กรอกให้ครบ', 'red'); return; }
   const member = db.members.find(m => m.username === username && m.password === pw);
-  if (!member) { toast('Username/Password ผิด', 'red'); return; }
+  if (!member) return toast('Username/Password ผิด', 'red');
   currentMember = member;
   closeModal('authModal');
   enterMember();
@@ -609,24 +603,24 @@ function enterMember() {
   document.getElementById('homePage').classList.add('hidden');
   document.getElementById('memberPage').classList.remove('hidden');
   document.getElementById('welcomeName').textContent = currentMember.name;
-  document.getElementById('walletBalance').textContent = '฿' + currentMember.wallet.toLocaleString();
+  document.getElementById('memberAvatar').textContent = currentMember.name.charAt(0).toUpperCase();
   updateNav();
-  showMemberTab('shop');
+  renderMySites();
 }
 
 function openAdminLogin() { openModal('adminLoginModal'); }
 
 function doAdminLogin() {
-  const u = document.getElementById('adminLoginUser').value;
-  const p = document.getElementById('adminLoginPass').value;
-  if (u === CONFIG.ADMIN_USER && p === CONFIG.ADMIN_PASS) {
+  if (document.getElementById('adminLoginUser').value === CONFIG.ADMIN_USER && 
+      document.getElementById('adminLoginPass').value === CONFIG.ADMIN_PASS) {
     closeModal('adminLoginModal');
     document.getElementById('homePage').classList.add('hidden');
     document.getElementById('memberPage').classList.add('hidden');
+    document.getElementById('clientSitePage').classList.add('hidden');
     document.getElementById('adminPage').classList.remove('hidden');
     showAdminTab('dashboard');
     toast('ยินดีต้อนรับแอดมิน');
-  } else { toast('Username/Password ผิด', 'red'); }
+  } else { toast('รหัสผิด', 'red'); }
 }
 
 function logoutAdmin() {
@@ -635,650 +629,350 @@ function logoutAdmin() {
   updateNav();
 }
 
-// ===== Admin =====
-function showAdminTab(tab) {
-  ['dashboard','members','products','orders','topups','gifts','settings'].forEach(t => {
-    document.getElementById('admin-'+t).classList.add('hidden');
+function selectPlan(name, price) {
+  selectedPlan = { name, price };
+  toast(`เลือก ${name.toUpperCase()} ฿${price}/เดือน`, 'blue');
+  openCreateSite();
+}
+
+function openCreateSite() {
+  if (!currentMember) { openAuth('login'); return toast('เข้าสู่ระบบก่อน', 'red'); }
+  csStep = 1;
+  csData = {};
+  if (!selectedPlan) selectedPlan = { name: 'basic', price: 129 };
+  renderCsStep();
+  openModal('createSiteModal');
+}
+
+function closeCreateSite() { closeModal('createSiteModal'); csStep = 1; }
+
+function renderCsStep() {
+  [1,2,3,4].forEach(n => {
+    document.getElementById('cs-step-'+n).classList.toggle('hidden', n !== csStep);
+    const ind = document.getElementById('step-ind-'+n);
+    if (n < csStep) ind.className = 'flex items-center gap-2 step-done px-3 py-1 rounded-full text-xs md:text-sm font-bold';
+    else if (n === csStep) ind.className = 'flex items-center gap-2 step-active px-3 py-1 rounded-full text-xs md:text-sm font-bold';
+    else ind.className = 'flex items-center gap-2 step-pending px-3 py-1 rounded-full text-xs md:text-sm';
   });
+  document.getElementById('cs-confirm-plan').textContent = (selectedPlan?.name || 'basic').toUpperCase();
+  document.getElementById('cs-confirm-price').textContent = '฿' + (selectedPlan?.price || 0).toLocaleString();
+  document.getElementById('cs-required-amount').textContent = '฿' + (selectedPlan?.price || 0).toLocaleString();
+  if (csStep === 1) {
+    document.getElementById('planSelectList').innerHTML = [
+      { name: 'basic', price: 129, label: 'Basic' },
+      { name: 'pro', price: 299, label: 'Pro ⭐ แนะนำ' },
+      { name: 'vip', price: 799, label: 'VIP 👑' }
+    ].map(p => `
+      <div onclick="selectedPlan={name:'${p.name}',price:${p.price}};renderCsStep();" class="glass-light p-4 rounded-xl cursor-pointer ${selectedPlan.name===p.name?'border-2 border-purple-500':''} flex justify-between items-center hover:bg-white/10">
+        <div class="font-bold text-white">${p.label}</div>
+        <div class="text-2xl font-black gradient-text">฿${p.price}</div>
+      </div>
+    `).join('');
+  }
+}
+
+function csNext() {
+  if (csStep === 1) { csStep = 2; }
+  else if (csStep === 2) {
+    const domain = document.getElementById('cs-domain').value.trim().toLowerCase();
+    const shopname = document.getElementById('cs-shopname').value.trim();
+    const adminUser = document.getElementById('cs-adminuser').value.trim();
+    const adminPass = document.getElementById('cs-adminpass').value;
+    const errEl = document.getElementById('cs-domain-error');
+    errEl.classList.add('hidden');
+    if (!/^[a-z0-9-]{3,20}$/.test(domain)) { errEl.textContent = 'Subdomain ต้องเป็น a-z, 0-9, - (3-20 ตัว)'; errEl.classList.remove('hidden'); return; }
+    if (db.sites.find(s => s.domain === domain)) { errEl.textContent = 'Subdomain ถูกใช้แล้ว'; errEl.classList.remove('hidden'); return; }
+    if (!shopname || shopname.length < 2) return toast('กรอกชื่อร้าน', 'red');
+    if (!/^[a-zA-Z0-9_]{3,20}$/.test(adminUser)) return toast('Username admin ไม่ถูก', 'red');
+    if (adminPass.length < 6) return toast('Password ขั้นต่ำ 6 ตัว', 'red');
+    csData = { domain, shopname, adminUser, adminPass };
+    csStep = 3;
+  } else if (csStep === 3) {
+    if (!confirm(`ยืนยันชำระเงิน ฿${selectedPlan.price.toLocaleString()}?\n\nระบบจะตรวจสอบยอดเงินที่โอนเข้า 098-878-5068`)) return;
+    db.payments.push({
+      id: Date.now().toString(),
+      memberId: currentMember.id,
+      memberName: currentMember.username,
+      plan: selectedPlan.name,
+      amount: selectedPlan.price,
+      status: 'verified',
+      date: new Date().toLocaleString('th-TH')
+    });
+    const newSite = {
+      id: Date.now(),
+      domain: csData.domain,
+      shopname: csData.shopname,
+      adminUser: csData.adminUser,
+      adminPass: csData.adminPass,
+      plan: selectedPlan.name,
+      price: selectedPlan.price,
+      memberId: currentMember.id,
+      memberName: currentMember.username,
+      products: [
+        { id: 1, name: 'สินค้าตัวอย่าง 1', price: 199, stock: 10, icon: 'i-shirt', sold: 0 },
+        { id: 2, name: 'สินค้าตัวอย่าง 2', price: 299, stock: 5, icon: 'i-shoe', sold: 0 }
+      ],
+      orders: [],
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 30*24*60*60*1000).toISOString(),
+      status: 'active'
+    };
+    db.sites.push(newSite);
+    db.payments[db.payments.length-1].siteId = newSite.id;
+    saveDB();
+    currentSite = newSite;
+    document.getElementById('cs-final-url').textContent = csData.domain + '.' + CONFIG.DOMAIN;
+    document.getElementById('cs-final-user').textContent = csData.adminUser;
+    document.getElementById('cs-final-pass').textContent = csData.adminPass;
+    csStep = 4;
+  }
+  renderCsStep();
+}
+
+function csBack() { csStep--; renderCsStep(); }
+
+function copyUrl() { 
+  const url = (csData.domain || '') + '.' + CONFIG.DOMAIN;
+  navigator.clipboard.writeText(url);
+  toast('คัดลอก URL แล้ว');
+}
+
+function goToMySite() {
+  closeCreateSite();
+  if (currentSite) showClientSite(currentSite);
+}
+
+function renderMySites() {
+  const mySites = db.sites.filter(s => s.memberName === currentMember.username);
+  document.getElementById('mySitesCount').textContent = mySites.length;
+  if (mySites.length) {
+    const totalSpent = db.payments.filter(p => p.memberName === currentMember.username && p.status==='verified').reduce((s,p)=>s+p.amount,0);
+    document.getElementById('mySpent').textContent = '฿' + totalSpent.toLocaleString();
+    document.getElementById('myPlan').textContent = mySites[0].plan.toUpperCase();
+    document.getElementById('myExpiry').textContent = new Date(mySites[0].expiresAt).toLocaleDateString('th-TH');
+  }
+  document.getElementById('mySitesList').innerHTML = mySites.length ? mySites.map(s => `
+    <div class="glass-light rounded-2xl p-4 mb-3 flex justify-between items-center hover:scale-[1.02] transition cursor-pointer" onclick="showClientSite(db.sites.find(x=>x.id===${s.id}))">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center">
+          <svg class="icon text-white"><use href="#i-cart"/></svg>
+        </div>
+        <div>
+          <h4 class="font-bold text-white">${s.shopname}</h4>
+          <p class="text-xs text-gray-400">${s.domain}.${CONFIG.DOMAIN}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">ใช้งาน</span>
+        <svg class="icon-sm text-gray-400"><use href="#i-arrow-right"/></svg>
+      </div>
+    </div>
+  `).join('') : `
+    <div class="text-center py-12">
+      <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mx-auto mb-4 pulse-slow">
+        <svg class="icon-xl text-white"><use href="#i-globe"/></svg>
+      </div>
+      <h4 class="text-xl font-bold text-white mb-2">ยังไม่มีเว็บ</h4>
+      <p class="text-gray-400 mb-4">สร้างเว็บแรกของคุณเลย!</p>
+      <button onclick="openCreateSite()" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl font-bold btn-glow flex items-center gap-2 mx-auto">
+        <svg class="icon"><use href="#i-plus"/></svg> สร้างเว็บแรก
+      </button>
+    </div>
+  `;
+}
+
+function showClientSite(site) {
+  currentSite = site;
+  document.getElementById('homePage').classList.add('hidden');
+  document.getElementById('memberPage').classList.add('hidden');
+  document.getElementById('adminPage').classList.add('hidden');
+  document.getElementById('clientSitePage').classList.remove('hidden');
+  document.getElementById('clientAdminPanel').classList.add('hidden');
+  document.getElementById('clientStorefront').classList.remove('hidden');
+  document.getElementById('clientSiteName').textContent = site.shopname;
+  renderStorefront();
+}
+
+function exitClientSite() {
+  document.getElementById('clientSitePage').classList.add('hidden');
+  enterMember();
+}
+
+function renderStorefront() {
+  const s = currentSite;
+  document.getElementById('clientStorefront').innerHTML = `
+    <header class="bg-gradient-to-r from-pink-500 to-orange-500 py-16 text-center text-white">
+      <h1 class="text-4xl md:text-5xl font-black mb-2">${s.shopname}</h1>
+      <p class="opacity-90">ยินดีต้อนรับสู่ร้านค้าของเรา</p>
+    </header>
+    <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
+      <h2 class="text-2xl md:text-3xl font-black text-white mb-6">สินค้าทั้งหมด</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        ${s.products.map((p,i) => `
+          <div class="glass rounded-2xl overflow-hidden hover:scale-105 transition">
+            <div class="h-32 md:h-40 bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+              <svg class="icon-xl text-purple-400"><use href="#${p.icon||'i-box'}"/></svg>
+            </div>
+            <div class="p-3 md:p-4">
+              <h4 class="font-bold text-white text-sm md:text-base">${p.name}</h4>
+              <div class="flex justify-between items-center mt-2">
+                <span class="text-lg md:text-xl font-black gradient-text">฿${p.price.toLocaleString()}</span>
+                <button onclick="addToCartClient(${i})" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-lg text-xs md:text-sm font-bold" ${p.stock<=0?'disabled':''}>${p.stock<=0?'หมด':'ซื้อ'}</button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      ${cart.length ? `
+        <div class="glass rounded-3xl p-4 md:p-6 mt-8">
+          <h3 class="text-xl font-bold text-white mb-4">ตะกร้า</h3>
+          <div id="cartListClient"></div>
+          <div class="mt-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+            <span class="text-2xl font-black gradient-text">รวม: ฿${cart.reduce((s,c)=>s+c.price*c.qty,0).toLocaleString()}</span>
+            <button onclick="checkoutClient()" class="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-xl font-bold btn-glow">ชำระเงิน</button>
+          </div>
+        </div>
+      ` : ''}
+    </main>
+  `;
+  if (cart.length) renderCartClient();
+}
+
+function addToCartClient(idx) {
+  const p = currentSite.products[idx];
+  if (!p || p.stock <= 0) return toast('หมด', 'red');
+  const ex = cart.find(c => c.id === p.id);
+  if (ex) ex.qty++; else cart.push({ id: p.id, name: p.name, price: p.price, qty: 1 });
+  renderStorefront();
+  toast('เพิ่มลงตะกร้า');
+}
+
+function renderCartClient() {
+  document.getElementById('cartListClient').innerHTML = cart.map((c,i) => `
+    <div class="flex justify-between items-center py-2 border-b border-white/5 text-sm">
+      <span class="text-white">${c.name} x${c.qty}</span>
+      <div class="flex items-center gap-2">
+        <button onclick="changeQtyClient(${i},-1)" class="w-8 h-8 rounded bg-white/5">-</button>
+        <span class="font-bold text-white">฿${(c.price*c.qty).toLocaleString()}</span>
+        <button onclick="changeQtyClient(${i},1)" class="w-8 h-8 rounded bg-white/5">+</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function changeQtyClient(i, d) {
+  cart[i].qty += d;
+  if (cart[i].qty <= 0) cart.splice(i,1);
+  renderStorefront();
+}
+
+function checkoutClient() {
+  const total = cart.reduce((s,c) => s + c.price*c.qty, 0);
+  if (!confirm(`ชำระ ฿${total.toLocaleString()}?`)) return;
+  cart.forEach(c => {
+    const p = currentSite.products.find(p=>p.id===c.id);
+    if (p) { p.stock -= c.qty; p.sold = (p.sold||0) + c.qty; }
+  });
+  currentSite.orders = currentSite.orders || [];
+  currentSite.orders.push({
+    code: 'OR' + Date.now().toString().slice(-6),
+    items: cart.map(c => ({ name:c.name, qty:c.qty, price:c.price })),
+    total, date: new Date().toLocaleString('th-TH')
+  });
+  const idx = db.sites.findIndex(s => s.id === currentSite.id);
+  if (idx >= 0) db.sites[idx] = currentSite;
+  saveDB();
+  cart = [];
+  toast('สั่งซื้อสำเร็จ');
+  renderStorefront();
+}
+
+function openClientAdmin() {
+  document.getElementById('clientStorefront').classList.add('hidden');
+  document.getElementById('clientAdminPanel').classList.remove('hidden');
+  renderClientAdmin();
+}
+
+function renderClientAdmin() {
+  const s = currentSite;
+  document.getElementById('clientAdminPanel').innerHTML = `
+    <div class="max-w-6xl mx-auto px-4 md:px-6 py-8">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6">
+        <h2 class="text-2xl md:text-3xl font-black text-white">หลังบ้าน: ${s.shopname}</h2>
+        <button onclick="document.getElementById('clientAdminPanel').classList.add('hidden');document.getElementById('clientStorefront').classList.remove('hidden');renderStorefront();" class="glass-light px-4 py-2 rounded-xl text-white">← กลับหน้าร้าน</button>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+        <div class="glass rounded-2xl p-4"><p class="text-sm text-gray-400">สินค้า</p><p class="text-2xl font-black text-white mt-1">${s.products.length}</p></div>
+        <div class="glass rounded-2xl p-4"><p class="text-sm text-gray-400">ออเดอร์</p><p class="text-2xl font-black text-white mt-1">${(s.orders||[]).length}</p></div>
+        <div class="glass rounded-2xl p-4"><p class="text-sm text-gray-400">ยอดขาย</p><p class="text-2xl font-black gradient-text mt-1">฿${(s.orders||[]).reduce((sum,o)=>sum+o.total,0).toLocaleString()}</p></div>
+      </div>
+      <div class="glass rounded-2xl p-4 md:p-6">
+        <h3 class="font-bold text-white mb-4">จัดการสินค้า</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead><tr class="text-gray-400 border-b border-white/10"><th class="py-2">สินค้า</th><th class="py-2">ราคา</th><th class="py-2">สต็อก</th><th class="py-2">ขาย</th></tr></thead>
+            <tbody>${s.products.map(p => `<tr class="border-b border-white/5"><td class="py-2 text-white">${p.name}</td><td class="py-2 text-white">฿${p.price.toLocaleString()}</td><td class="py-2 text-gray-400">${p.stock}</td><td class="py-2 text-green-400">${p.sold||0}</td></tr>`).join('')}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function showAdminTab(tab) {
+  ['dashboard','tenants','sites','revenue','settings'].forEach(t => document.getElementById('admin-'+t).classList.add('hidden'));
   document.getElementById('admin-'+tab).classList.remove('hidden');
   if (tab==='dashboard') renderAdminDash();
-  if (tab==='members') renderMembers();
-  if (tab==='products') renderAdminProducts();
-  if (tab==='orders') renderAdminOrders();
-  if (tab==='topups') renderTopups();
-  if (tab==='gifts') renderGifts();
-  if (tab==='settings') renderSettings();
+  if (tab==='tenants') renderTenants();
+  if (tab==='sites') renderSites();
+  if (tab==='revenue') renderRevenue();
 }
 
 function renderAdminDash() {
   document.getElementById('statMembers').textContent = db.members.length;
-  const sales = db.orders.reduce((s,o) => s + (o.total||0), 0);
-  document.getElementById('statSales').textContent = '฿' + sales.toLocaleString();
-  const wallet = db.members.reduce((s,m) => s + (m.wallet||0), 0);
-  document.getElementById('statWallet').textContent = '฿' + wallet.toLocaleString();
-  document.getElementById('statPending').textContent = db.topups.filter(t=>t.status==='รอ').length;
-  const recent = document.getElementById('recentTransactions');
-  recent.innerHTML = db.transactions.length ? db.transactions.slice(-5).reverse().map(t => `
-    <div class="flex justify-between items-center py-2 border-b">
-      <div><div class="font-bold">${t.detail}</div><div class="text-sm text-gray-500">${t.type} • ${t.date}</div></div>
-      <div class="font-bold ${t.amount>0?'text-green-600':'text-red-600'}">${t.amount>0?'+':''}฿${Math.abs(t.amount).toLocaleString()}</div>
-    </div>
-  `).join('') : '<p class="text-gray-500 text-center py-4">ยังไม่มี</p>';
-}
-
-function renderMembers() {
-  document.getElementById('membersTable').innerHTML = db.members.length ? db.members.map((m,i) => `
-    <tr class="border-b hover:bg-gray-50">
-      <td class="py-3">${m.name}</td>
-      <td class="py-3 font-mono">${m.username}</td>
-      <td class="py-3">${m.phone}</td>
-      <td class="py-3 font-bold text-purple-600">฿${m.wallet.toLocaleString()}</td>
-      <td class="py-3 flex gap-2">
-        <button onclick="adjustWallet(${i},100)" class="text-green-600 text-sm">+100</button>
-        <button onclick="adjustWallet(${i},-100)" class="text-orange-600 text-sm">-100</button>
-        <button onclick="deleteMember(${i})" class="text-red-500 text-sm flex items-center gap-1"><svg class="icon"><use href="#i-trash"/></svg></button>
-      </td>
-    </tr>
-  `).join('') : '<tr><td colspan="5" class="py-8 text-center text-gray-500">ยังไม่มี</td></tr>';
-}
-
-function adjustWallet(i, amount) {
-  const newBal = db.members[i].wallet + amount;
-  if (newBal < 0) { toast('ยอดเงินไม่พอ', 'red'); return; }
-  db.members[i].wallet = newBal;
-  db.transactions.push({ date: new Date().toLocaleString('th-TH'), type: amount>0?'เติม(แอดมิน)':'หัก(แอดมิน)', detail: db.members[i].username, amount });
-  saveDB();
-  renderMembers();
-  toast('ปรับ Wallet สำเร็จ');
-}
-
-function deleteMember(i) {
-  if (confirm('ลบสมาชิก?')) {
-    db.members.splice(i,1);
-    saveDB();
-    renderMembers();
-  }
-}
-
-function renderAdminProducts() {
-  document.getElementById('adminProductsTable').innerHTML = db.products.map((p,i) => `
-    <tr class="border-b">
-      <td class="py-3 flex items-center gap-2"><svg class="icon text-purple-600"><use href="#${p.icon}"/></svg> ${p.name}</td>
-      <td class="py-3 font-bold">฿${p.price.toLocaleString()}</td>
-      <td class="py-3">${p.stock}</td>
-      <td class="py-3 flex gap-2">
-        <button onclick="db.products[${i}].stock+=10;saveDB();renderAdminProducts();" class="text-green-600 text-sm">+10</button>
-        <button onclick="db.products[${i}].stock-=10;saveDB();renderAdminProducts();" class="text-orange-600 text-sm">-10</button>
-        <button onclick="deleteProduct(${i})" class="text-red-500 text-sm"><svg class="icon"><use href="#i-trash"/></svg></button>
-      </td>
-    </tr>
-  `).join('');
-}
-
-function saveProduct() {
-  const name = document.getElementById('pName').value.trim();
-  const desc = document.getElementById('pDesc').value.trim();
-  const price = parseInt(document.getElementById('pPrice').value);
-  const stock = parseInt(document.getElementById('pStock').value);
-  const icon = document.getElementById('pIcon').value;
-  if (!name || name.length < 2) { toast('กรอกชื่อสินค้า', 'red'); return; }
-  if (!price || price < 1) { toast('ราคาไม่ถูกต้อง', 'red'); return; }
-  if (stock < 0) { toast('สต็อกไม่ถูกต้อง', 'red'); return; }
-  db.products.push({ id: Date.now(), name, desc, price, stock, icon, sold: 0 });
-  saveDB();
-  closeModal('productModal');
-  renderAdminProducts();
-  toast('เพิ่มสำเร็จ');
-}
-
-function deleteProduct(i) {
-  if (confirm('ลบสินค้า?')) {
-    db.products.splice(i,1);
-    saveDB();
-    renderAdminProducts();
-  }
-}
-
-function renderAdminOrders() {
-  document.getElementById('adminOrdersTable').innerHTML = db.orders.length ? db.orders.slice().reverse().map(o => `
-    <tr class="border-b">
-      <td class="py-3 font-mono text-sm">${o.code}</td>
-      <td class="py-3">${o.memberName}</td>
-      <td class="py-3 text-sm">${o.items.map(i => i.name).join(', ')}</td>
-      <td class="py-3 font-bold text-green-600">฿${o.total.toLocaleString()}</td>
-      <td class="py-3"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">${o.status}</span></td>
-    </tr>
-  `).join('') : '<tr><td colspan="5" class="py-8 text-center text-gray-500">ยังไม่มี</td></tr>';
-}
-
-function renderTopups() {
-  const pending = db.topups.filter(t=>t.status==='รอ');
-  document.getElementById('pendingTopups').innerHTML = pending.length ? pending.map(t => `
-    <tr class="border-b">
-      <td class="py-3 text-sm">${t.date}</td>
-      <td class="py-3 font-bold">${t.memberName}</td>
-      <td class="py-3 text-sm">${t.senderPhone||'-'}</td>
-      <td class="py-3 font-bold text-purple-600">฿${t.amount.toLocaleString()}</td>
-      <td class="py-3">${t.slip ? 'มี' : '-'}</td>
-      <td class="py-3 flex gap-2">
-        <button onclick="approveTopup('${t.id}')" class="bg-green-500 text-white px-2 py-1 rounded text-xs">อนุมัติ</button>
-        <button onclick="rejectTopup('${t.id}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">ปฏิเสธ</button>
-      </td>
-    </tr>
-  `).join('') : '<tr><td colspan="6" class="py-4 text-center text-gray-500">ไม่มี</td></tr>';
-
-  document.getElementById('topupHistory').innerHTML = db.topups.filter(t=>t.status!=='รอ').slice().reverse().map(t => `
-    <tr class="border-b">
-      <td class="py-3 text-sm">${t.date}</td>
-      <td class="py-3">${t.memberName}</td>
-      <td class="py-3 font-bold">฿${t.amount.toLocaleString()}</td>
-      <td class="py-3"><span class="px-2 py-1 rounded text-xs ${t.status==='อนุมัติ'?'bg-green-100 text-green-700':'bg-red-100 text-red-700'}">${t.status}</span></td>
-    </tr>
-  `).join('') || '<tr><td colspan="4" class="py-4 text-center text-gray-500">ไม่มี</td></tr>';
-}
-
-function approveTopup(id) {
-  const t = db.topups.find(x => x.id === id);
-  if (!t) return;
-  t.status = 'อนุมัติ';
-  const member = db.members.find(m => m.username === t.memberName);
-  if (member) member.wallet += t.amount;
-  db.transactions.push({ date: new Date().toLocaleString('th-TH'), type: 'เติมเงิน(TM)', detail: t.memberName, amount: t.amount });
-  saveDB();
-  renderTopups();
-  toast(`อนุมัติ ฿${t.amount}`);
-}
-
-function rejectTopup(id) {
-  const t = db.topups.find(x => x.id === id);
-  if (!t) return;
-  t.status = 'ปฏิเสธ';
-  saveDB();
-  renderTopups();
-}
-
-function renderGifts() {
-  document.getElementById('giftHistory').innerHTML = db.gifts.slice().reverse().map(g => `
-    <tr class="border-b">
-      <td class="py-3 text-sm">${g.date}</td>
-      <td class="py-3">${g.memberName}</td>
-      <td class="py-3 font-bold">฿${g.amount}</td>
-      <td class="py-3 text-sm ${g.expired?'text-red-500':'text-green-500'}">${g.expired?'หมดอายุ':g.expiresAt}</td>
-      <td class="py-3"><span class="px-2 py-1 rounded text-xs ${g.status==='สำเร็จ'?'bg-green-100 text-green-700':'bg-red-100 text-red-700'}">${g.status}</span></td>
-    </tr>
-  `).join('') || '<tr><td colspan="5" class="py-4 text-center text-gray-500">ไม่มี</td></tr>';
-}
-
-async function checkGiftForAdmin() {
-  const input = document.getElementById('adminCheckInput').value.trim();
-  if (!input) { toast('กรอกข้อมูล', 'red'); return; }
-  
-  const r = document.getElementById('adminGiftResult');
-  r.innerHTML = '<div class="flex items-center gap-2"><div class="loading"></div> กำลังเช็ค...</div>';
-  
-  const result = await checkGiftAPI(input);
-  
-  if (result.success) {
-    r.innerHTML = `
-      <div class="bg-green-50 border-2 border-green-300 rounded-xl p-4">
-        <p class="text-green-700 font-bold">✅ ซองใช้งานได้</p>
-        <p>มูลค่า: <strong>฿${result.amount}</strong></p>
-        <p>หมดอายุ: <strong>${result.expiresAt}</strong></p>
-        <p>สถานะ: <strong>${result.status}</strong></p>
+  document.getElementById('statActiveSites').textContent = db.sites.filter(s=>s.status==='active').length;
+  const mrr = db.sites.filter(s=>s.status==='active').reduce((s,site) => s + site.price, 0);
+  document.getElementById('statMRR').textContent = '฿' + mrr.toLocaleString();
+  const monthAgo = Date.now() - 30*24*60*60*1000;
+  document.getElementById('statNew').textContent = db.members.filter(m => new Date(m.createdAt).getTime() > monthAgo).length;
+  document.getElementById('recentRentals').innerHTML = db.sites.slice(-5).reverse().map(s => `
+    <div class="flex justify-between items-center py-3 border-b border-white/5">
+      <div>
+        <div class="font-bold text-white">${s.shopname}</div>
+        <div class="text-xs text-gray-500">${s.memberName} • ${s.domain}.${CONFIG.DOMAIN}</div>
       </div>
-    `;
-  } else {
-    r.innerHTML = `<div class="bg-red-50 border-2 border-red-300 rounded-xl p-4"><p class="text-red-700">❌ ${result.message}</p></div>`;
-  }
-}
-
-function renderSettings() {
-  document.getElementById('setPhone').value = db.settings.phone;
-  document.getElementById('setApi').value = db.settings.api || '';
-  document.getElementById('setToken').value = db.settings.token || '';
-  document.getElementById('setMode').value = db.settings.mode;
-  document.getElementById('setMinTopup').value = db.settings.minTopup || CONFIG.MIN_TOPUP;
-  document.getElementById('setMaxTopup').value = db.settings.maxTopup || CONFIG.MAX_TOPUP;
-}
-
-function saveSettings() {
-  db.settings.phone = document.getElementById('setPhone').value;
-  db.settings.api = document.getElementById('setApi').value;
-  db.settings.token = document.getElementById('setToken').value;
-  db.settings.mode = document.getElementById('setMode').value;
-  db.settings.minTopup = parseInt(document.getElementById('setMinTopup').value) || CONFIG.MIN_TOPUP;
-  db.settings.maxTopup = parseInt(document.getElementById('setMaxTopup').value) || CONFIG.MAX_TOPUP;
-  saveDB();
-  toast('บันทึกการตั้งค่า');
-}
-
-async function testAPI() {
-  const r = document.getElementById('apiTestResult');
-  r.innerHTML = '<div class="flex items-center gap-2 mt-3"><div class="loading"></div> กำลังทดสอบ...</div>';
-  
-  if (!db.settings.api) {
-    r.innerHTML = '<div class="bg-red-50 border-2 border-red-300 rounded-xl p-3 mt-3"><p class="text-red-700">❌ ยังไม่ได้ตั้ง API URL</p></div>';
-    return;
-  }
-  
-  try {
-    const res = await fetch(`${db.settings.api}/health`, {
-      headers: { 'Authorization': `Bearer ${db.settings.token}` }
-    });
-    if (res.ok) {
-      r.innerHTML = '<div class="bg-green-50 border-2 border-green-300 rounded-xl p-3 mt-3"><p class="text-green-700">✅ API เชื่อมต่อได้</p></div>';
-    } else {
-      r.innerHTML = `<div class="bg-red-50 border-2 border-red-300 rounded-xl p-3 mt-3"><p class="text-red-700">❌ API ตอบ ${res.status}</p></div>`;
-    }
-  } catch (e) {
-    r.innerHTML = `<div class="bg-red-50 border-2 border-red-300 rounded-xl p-3 mt-3"><p class="text-red-700">❌ เชื่อมต่อไม่ได้: ${e.message}</p></div>`;
-  }
-}
-
-// ===== API Calls =====
-async function checkGiftAPI(input) {
-  // ถ้ามี API จริง จะเรียก backend
-  if (db.settings.api && db.settings.token) {
-    try {
-      const url = `${db.settings.api}/gift/check?${input.startsWith('http') ? 'link' : 'phone'}=${encodeURIComponent(input)}`;
-      const res = await fetch(url, {
-        headers: { 'Authorization': `Bearer ${db.settings.token}` }
-      });
-      const data = await res.json();
-      if (data.status === 'success') {
-        return {
-          success: true,
-          amount: data.amount,
-          expiresAt: new Date(data.expires_at).toLocaleDateString('th-TH'),
-          status: 'ใช้งานได้',
-          daysLeft: Math.ceil((new Date(data.expires_at) - new Date()) / (1000*60*60*24))
-        };
-      } else {
-        return { success: false, message: data.message || 'ซองไม่สามารถใช้งานได้' };
-      }
-    } catch (e) {
-      return { success: false, message: 'ไม่สามารถเชื่อมต่อ API: ' + e.message };
-    }
-  }
-  
-  // Fallback: จำลองผลลัพธ์
-  return simulateGiftCheck(input);
-}
-
-function simulateGiftCheck(input) {
-  // ตรวจสอบรูปแบบ input
-  const isLink = input.startsWith('http');
-  if (isLink && !validateGiftLink(input)) {
-    return { success: false, message: 'ลิงก์ซองไม่ถูกต้อง (ต้องขึ้นต้นด้วย https://gift.truemoney.com)' };
-  }
-  if (!isLink && !validatePhone(input)) {
-    return { success: false, message: 'เบอร์โทรไม่ถูกต้อง (10 หลัก)' };
-  }
-  
-  // จำลอง: 10% โอกาสที่ซองจะหมดอายุ
-  if (Math.random() < 0.1) {
-    return { success: false, message: 'ซองนี้หมดอายุแล้วหรือถูกใช้ไปแล้ว' };
-  }
-  
-  const amounts = [50, 100, 200, 300, 500, 1000, 1500, 2000];
-  const amount = amounts[Math.floor(Math.random() * amounts.length)];
-  const daysLeft = Math.floor(Math.random() * 14) + 1;
-  const expiresAt = new Date(Date.now() + daysLeft * 24 * 60 * 60 * 1000);
-  
-  return {
-    success: true,
-    amount,
-    expiresAt: expiresAt.toLocaleDateString('th-TH'),
-    status: 'ใช้งานได้',
-    daysLeft,
-    expiresAtRaw: expiresAt.toISOString()
-  };
-}
-
-// ===== Member Tabs =====
-function showMemberTab(tab) {
-  const content = document.getElementById('memberContent');
-  document.getElementById('minTopupDisplay').textContent = (db.settings.minTopup || CONFIG.MIN_TOPUP).toLocaleString();
-  document.getElementById('maxTopupDisplay').textContent = (db.settings.maxTopup || CONFIG.MAX_TOPUP).toLocaleString();
-  
-  if (tab === 'shop') {
-    content.innerHTML = `
-      <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><svg class="icon"><use href="#i-cart"/></svg> สินค้าทั้งหมด</h3>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="shopGrid"></div>
-      <div class="mt-6 bg-purple-50 p-4 rounded-xl">
-        <h4 class="font-bold mb-2 flex items-center gap-2"><svg class="icon"><use href="#i-cart"/></svg> ตะกร้า (${cart.length})</h4>
-        <div id="cartList"></div>
-        <div class="mt-3 flex justify-between items-center">
-          <div class="font-bold text-xl">รวม: <span id="cartTotal" class="text-purple-600">฿0</span></div>
-          <button onclick="checkout()" class="gradient-bg text-white px-6 py-2 rounded-lg flex items-center gap-2">
-            <svg class="icon"><use href="#i-check"/></svg> ชำระเงิน
-          </button>
-        </div>
-      </div>
-    `;
-    renderShop();
-  } else if (tab === 'topup') {
-    content.innerHTML = `
-      <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><svg class="icon"><use href="#i-phone"/></svg> เติมเงิน TrueMoney</h3>
-      <div class="wallet-card text-white p-6 rounded-xl mb-4">
-        <p>ยอดเงินปัจจุบัน</p>
-        <div class="text-4xl font-bold">฿${currentMember.wallet.toLocaleString()}</div>
-      </div>
-      <button onclick="openModal('topupModal')" class="tm-btn text-white px-6 py-3 rounded-lg flex items-center gap-2">
-        <svg class="icon"><use href="#i-phone"/></svg> เติมเงินผ่าน TrueMoney
-      </button>
-      <h4 class="font-bold mt-6 mb-3 flex items-center gap-2"><svg class="icon"><use href="#i-clock"/></svg> ประวัติเติมเงิน</h4>
-      <div id="memberTopupHistory"></div>
-    `;
-    renderMemberTopupHistory();
-  } else if (tab === 'gift') {
-    content.innerHTML = `
-      <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><svg class="icon"><use href="#i-gift"/></svg> เช็ค/รับซองของขวัญ</h3>
-      <div class="gift-gradient text-white p-4 rounded-xl mb-4 pulse">
-        <p class="text-sm opacity-90">เบอร์รับซอง</p>
-        <div class="text-3xl font-bold">098-878-5068</div>
-      </div>
-      <button onclick="openModal('giftModal')" class="gift-gradient text-white px-6 py-3 rounded-lg flex items-center gap-2">
-        <svg class="icon"><use href="#i-search"/></svg> เช็คซอง
-      </button>
-      <h4 class="font-bold mt-6 mb-3">ซองที่รับแล้ว</h4>
-      <div id="memberGiftHistory"></div>
-    `;
-    renderMemberGiftHistory();
-  } else if (tab === 'history') {
-    const myOrders = db.orders.filter(o => o.memberName === currentMember.username);
-    content.innerHTML = `
-      <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><svg class="icon"><use href="#i-list"/></svg> ประวัติการซื้อ</h3>
-      ${myOrders.length ? myOrders.slice().reverse().map(o => `
-        <div class="border rounded-xl p-4 mb-3">
-          <div class="flex justify-between"><span class="font-bold">${o.code}</span><span class="text-sm text-gray-500">${o.date}</span></div>
-          <div class="text-sm text-gray-600 mt-1">${o.items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
-          <div class="flex justify-between mt-2"><span class="font-bold text-green-600">฿${o.total.toLocaleString()}</span><span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">${o.status}</span></div>
-        </div>
-      `).join('') : '<p class="text-gray-500 text-center py-8">ยังไม่มี</p>'}
-    `;
-  }
-}
-
-function renderShop() {
-  document.getElementById('shopGrid').innerHTML = db.products.map((p,i) => `
-    <div class="bg-white border rounded-xl overflow-hidden card-hover">
-      <div class="h-32 bg-gray-100 flex items-center justify-center">
-        <svg class="icon-xl text-purple-600"><use href="#${p.icon}"/></svg>
-      </div>
-      <div class="p-3">
-        <h4 class="font-bold text-sm">${p.name}</h4>
-        <p class="text-xs text-gray-500 mb-2">${p.desc||''}</p>
-        <div class="flex justify-between items-center">
-          <span class="font-bold text-purple-600">฿${p.price.toLocaleString()}</span>
-          <button onclick="addToCart(${i})" class="gradient-bg text-white px-3 py-1 rounded text-sm flex items-center gap-1" ${p.stock<=0?'disabled':''}>
-            ${p.stock<=0?'<svg class="icon"><use href="#i-x"/></svg> หมด':'<svg class="icon"><use href="#i-cart"/></svg> ใส่ตะกร้า'}
-          </button>
-        </div>
+      <div class="text-right">
+        <div class="font-bold gradient-text">฿${s.price}/เดือน</div>
+        <div class="text-xs text-gray-500">${new Date(s.createdAt).toLocaleDateString('th-TH')}</div>
       </div>
     </div>
-  `).join('');
+  `).join('') || '<p class="text-gray-500 text-center py-4">ยังไม่มี</p>';
 }
 
-function addToCart(idx) {
-  const p = db.products[idx];
-  if (p.stock <= 0) { toast('สินค้าหมด', 'red'); return; }
-  const ex = cart.find(c => c.id === p.id);
-  if (ex) ex.qty++;
-  else cart.push({ ...p, qty: 1 });
-  renderCart();
-  toast(`เพิ่ม ${p.name}`);
+function renderTenants() {
+  document.getElementById('tenantsTable').innerHTML = db.members.length ? db.members.map((m,i) => {
+    const userSite = db.sites.find(s=>s.memberName===m.username);
+    return `<tr class="border-b border-white/5"><td class="py-3 text-white">${m.name}</td><td class="py-3 text-gray-400 font-mono">${m.username}</td><td class="py-3 gradient-text font-bold">${(userSite?.plan||'-').toUpperCase()}</td><td class="py-3 text-white">${db.sites.filter(s=>s.memberName===m.username).length}</td><td class="py-3 text-orange-400 text-sm">${userSite?.expiresAt ? new Date(userSite.expiresAt).toLocaleDateString('th-TH') : '-'}</td><td class="py-3"><button onclick="deleteMember(${i})" class="text-red-400 text-sm flex items-center gap-1"><svg class="icon-sm"><use href="#i-trash"/></svg></button></td></tr>`;
+  }).join('') : '<tr><td colspan="6" class="py-8 text-center text-gray-500">ยังไม่มี</td></tr>';
 }
 
-function renderCart() {
-  const list = document.getElementById('cartList');
-  list.innerHTML = cart.length ? cart.map((c,i) => `
-    <div class="flex justify-between items-center py-2 border-b">
-      <div class="flex items-center gap-2">
-        <svg class="icon text-purple-600"><use href="#${c.icon}"/></svg>
-        ${c.name} x${c.qty}
-      </div>
-      <div class="flex items-center gap-2">
-        <button onclick="changeQty(${i},-1)" class="px-2 bg-gray-200 rounded"><svg class="icon"><use href="#i-minus"/></svg></button>
-        <span>฿${(c.price*c.qty).toLocaleString()}</span>
-        <button onclick="changeQty(${i},1)" class="px-2 bg-gray-200 rounded"><svg class="icon"><use href="#i-plus"/></svg></button>
-        <button onclick="cart.splice(${i},1);renderCart();" class="text-red-500 ml-2"><svg class="icon"><use href="#i-x"/></svg></button>
-      </div>
-    </div>
-  `).join('') : '<p class="text-gray-500 py-2 text-center">ตะกร้าว่าง</p>';
-  const total = cart.reduce((s,c) => s + c.price*c.qty, 0);
-  document.getElementById('cartTotal').textContent = '฿' + total.toLocaleString();
+function deleteMember(i) { if (confirm('ลบ?')) { db.members.splice(i,1); saveDB(); renderTenants(); } }
+
+function renderSites() {
+  document.getElementById('sitesTable').innerHTML = db.sites.length ? db.sites.map(s => `<tr class="border-b border-white/5"><td class="py-3 text-white font-mono text-xs">${s.domain}.${CONFIG.DOMAIN}</td><td class="py-3 text-gray-300">${s.memberName}</td><td class="py-3 text-white">${s.products.length}</td><td class="py-3 gradient-text font-bold">฿${(s.orders||[]).reduce((sum,o)=>sum+o.total,0).toLocaleString()}</td><td class="py-3"><span class="px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">ใช้งาน</span></td></tr>`).join('') : '<tr><td colspan="5" class="py-8 text-center text-gray-500">ยังไม่มี</td></tr>';
 }
 
-function changeQty(i, d) {
-  cart[i].qty += d;
-  if (cart[i].qty <= 0) cart.splice(i,1);
-  renderCart();
+function renderRevenue() {
+  const todayRev = db.payments.filter(p => new Date(p.date).toDateString() === new Date().toDateString() && p.status==='verified').reduce((s,p)=>s+p.amount,0);
+  const monthRev = db.payments.filter(p => new Date(p.date).getMonth() === new Date().getMonth() && p.status==='verified').reduce((s,p)=>s+p.amount,0);
+  const allRev = db.payments.filter(p => p.status==='verified').reduce((s,p)=>s+p.amount,0);
+  document.getElementById('revToday').textContent = '฿' + todayRev.toLocaleString();
+  document.getElementById('revMonth').textContent = '฿' + monthRev.toLocaleString();
+  document.getElementById('revAll').textContent = '฿' + allRev.toLocaleString();
+  document.getElementById('revenueHistory').innerHTML = db.payments.slice().reverse().map(p => `<div class="flex justify-between items-center py-3 border-b border-white/5"><div><div class="font-bold text-white">${p.memberName}</div><div class="text-xs text-gray-500">${p.plan.toUpperCase()} • ${p.date}</div></div><div class="font-bold gradient-text">+฿${p.amount.toLocaleString()}</div></div>`).join('') || '<p class="text-gray-500 text-center py-4">ยังไม่มี</p>';
 }
 
-function checkout() {
-  if (cart.length === 0) { toast('ตะกร้าว่าง', 'red'); return; }
-  const total = cart.reduce((s,c) => s + c.price*c.qty, 0);
-  if (currentMember.wallet < total) { toast(`Wallet ฿${currentMember.wallet} ไม่พอ`, 'red'); return; }
-  
-  // ตรวจสอบสต็อกก่อน
-  for (const c of cart) {
-    const p = db.products.find(p => p.id === c.id);
-    if (!p || p.stock < c.qty) {
-      toast(`${c.name} สต็อกไม่พอ`, 'red');
-      return;
-    }
-  }
-  
-  if (!confirm(`ยืนยันซื้อ ฿${total.toLocaleString()} หักจาก Wallet?`)) return;
-
-  currentMember.wallet -= total;
-  const member = db.members.find(m => m.username === currentMember.username);
-  if (member) member.wallet = currentMember.wallet;
-
-  cart.forEach(c => {
-    const p = db.products.find(p => p.id === c.id);
-    if (p) { p.stock -= c.qty; p.sold = (p.sold||0) + c.qty; }
-  });
-
-  const order = {
-    code: 'NS' + Date.now().toString().slice(-8),
-    memberName: currentMember.username,
-    items: cart.map(c => ({ name:c.name, icon:c.icon, qty:c.qty, price:c.price })),
-    total, status: 'สำเร็จ',
-    date: new Date().toLocaleString('th-TH')
-  };
-  db.orders.push(order);
-  db.transactions.push({ date: order.date, type: 'ซื้อสินค้า', detail: currentMember.username, amount: -total });
-  saveDB();
-  cart = [];
-  document.getElementById('walletBalance').textContent = '฿' + currentMember.wallet.toLocaleString();
-  updateNav();
-  renderCart();
-  renderShop();
-  toast(`ซื้อสำเร็จ ${order.code}`);
-}
-
-function submitTopup() {
-  ['topupAmount','topupPhone','topupTime','topupSlip'].forEach(k => hideError(k+'Error'));
-  
-  const amount = parseInt(document.getElementById('topupAmount').value);
-  const senderPhone = document.getElementById('topupPhone').value.trim().replace(/[-\s]/g, '');
-  const time = document.getElementById('topupTime').value;
-  const slipFile = document.getElementById('topupSlip').files[0];
-  
-  const minTopup = db.settings.minTopup || CONFIG.MIN_TOPUP;
-  const maxTopup = db.settings.maxTopup || CONFIG.MAX_TOPUP;
-  
-  let ok = true;
-  if (!amount || amount < minTopup) { showError('topupAmountError', `ขั้นต่ำ ${minTopup} บาท`); ok = false; }
-  if (amount > maxTopup) { showError('topupAmountError', `สูงสุด ${maxTopup.toLocaleString()} บาท`); ok = false; }
-  if (!validatePhone(senderPhone)) { showError('topupPhoneError', 'เบอร์โทรไม่ถูกต้อง'); ok = false; }
-  if (!time) { showError('topupTimeError', 'กรอกเวลาที่โอน'); ok = false; }
-  
-  // ตรวจสอบเวลาไม่เกิน 24 ชม.
-  if (time) {
-    const txTime = new Date(time);
-    const now = new Date();
-    const diffHours = (now - txTime) / (1000 * 60 * 60);
-    if (diffHours > 24) { showError('topupTimeError', 'เวลาโอนเกิน 24 ชม.'); ok = false; }
-    if (diffHours < 0) { showError('topupTimeError', 'เวลาโอนอนาคต'); ok = false; }
-  }
-  
-  if (!ok) { toast('ตรวจสอบข้อมูล', 'red'); return; }
-  
-  const saveSlip = (dataUrl) => {
-    db.topups.push({
-      id: Date.now().toString(),
-      memberName: currentMember.username,
-      senderPhone, amount, time, slip: dataUrl || null,
-      status: 'รอ',
-      date: new Date().toLocaleString('th-TH')
-    });
-    db.transactions.push({ date: new Date().toLocaleString('th-TH'), type: 'แจ้งเติมเงิน', detail: currentMember.username, amount });
-    saveDB();
-    closeModal('topupModal');
-    toast('แจ้งเติมเงินแล้ว รออนุมัติ');
-    showMemberTab('topup');
-  };
-
-  if (slipFile) {
-    if (slipFile.size > 5 * 1024 * 1024) { showError('topupSlipError', 'ไฟล์ใหญ่เกิน 5MB'); return; }
-    const reader = new FileReader();
-    reader.onload = e => saveSlip(e.target.result);
-    reader.readAsDataURL(slipFile);
-  } else {
-    if (!confirm('ไม่อัพโหลดสลิป ดำเนินการต่อ?')) return;
-    saveSlip(null);
-  }
-}
-
-function renderMemberTopupHistory() {
-  const list = db.topups.filter(t => t.memberName === currentMember.username);
-  document.getElementById('memberTopupHistory').innerHTML = list.length ? list.slice().reverse().map(t => `
-    <div class="border rounded-lg p-3 mb-2 flex justify-between items-center">
-      <div><div class="font-bold">฿${t.amount.toLocaleString()}</div><div class="text-xs text-gray-500">${t.date} • ${t.senderPhone||'-'}</div></div>
-      <span class="px-2 py-1 rounded text-xs ${t.status==='อนุมัติ'?'bg-green-100 text-green-700':t.status==='ปฏิเสธ'?'bg-red-100 text-red-700':'bg-yellow-100 text-yellow-700'}">${t.status}</span>
-    </div>
-  `).join('') : '<p class="text-gray-500 text-center py-4">ยังไม่มี</p>';
-}
-
-function toggleCheckInput() {
-  const method = document.getElementById('checkMethod').value;
-  document.getElementById('linkInput').classList.toggle('hidden', method !== 'link');
-  document.getElementById('phoneInput').classList.toggle('hidden', method !== 'phone');
-}
-
-async function checkGift() {
-  const method = document.getElementById('checkMethod').value;
-  hideError('giftLinkError');
-  hideError('giftPhoneError');
-  
-  let input = '';
-  if (method === 'link') {
-    input = document.getElementById('giftLink').value.trim();
-    if (!input) { showError('giftLinkError', 'กรอกลิงก์ซอง'); return; }
-  } else {
-    input = document.getElementById('giftPhone').value.trim().replace(/[-\s]/g, '');
-    if (!input) { showError('giftPhoneError', 'กรอกเบอร์โทร'); return; }
-  }
-  
-  const btn = document.getElementById('checkBtn');
-  btn.innerHTML = '<div class="loading"></div> กำลังเช็ค...';
-  btn.disabled = true;
-
-  const result = await checkGiftAPI(input);
-  
-  btn.innerHTML = '<svg class="icon"><use href="#i-search"/></svg> เช็คซอง';
-  btn.disabled = false;
-
-  const r = document.getElementById('giftResult');
-  if (result.success) {
-    r.innerHTML = `
-      <div class="bg-green-50 border-2 border-green-400 rounded-xl p-4 mt-4">
-        <div class="flex items-center gap-2 mb-2"><svg class="icon text-green-600"><use href="#i-check"/></svg><span class="font-bold text-lg text-green-700">ซองใช้งานได้</span></div>
-        <div class="space-y-1 text-sm">
-          <p>มูลค่า: <span class="text-2xl font-bold text-purple-600">฿${result.amount}</span></p>
-          <p>หมดอายุ: ${result.expiresAt} (${result.daysLeft} วัน)</p>
-          <p>สถานะ: ${result.status}</p>
-        </div>
-        <button onclick="redeemGift(${result.amount},'${input}','${result.expiresAtRaw||result.expiresAt}')" class="w-full gift-gradient text-white py-2 rounded-lg font-bold mt-3 flex items-center justify-center gap-2">
-          <svg class="icon"><use href="#i-gift"/></svg> รับเงินเข้า Wallet
-        </button>
-      </div>
-    `;
-  } else {
-    r.innerHTML = `<div class="bg-red-50 border-2 border-red-400 rounded-xl p-4 mt-4"><p class="text-red-700">❌ ${result.message}</p></div>`;
-  }
-}
-
-function redeemGift(amount, source, expiresAt) {
-  if (!confirm(`ยืนยันรับเงิน ฿${amount} เข้า Wallet?`)) return;
-  
-  currentMember.wallet += amount;
-  const member = db.members.find(m => m.username === currentMember.username);
-  if (member) member.wallet = currentMember.wallet;
-
-  db.gifts.push({
-    id: Date.now().toString(),
-    memberName: currentMember.username,
-    amount, source, expiresAt, expired: false,
-    status: 'สำเร็จ',
-    date: new Date().toLocaleString('th-TH')
-  });
-  db.transactions.push({ date: new Date().toLocaleString('th-TH'), type: 'รับซอง', detail: currentMember.username, amount });
-  saveDB();
-  
-  document.getElementById('walletBalance').textContent = '฿' + currentMember.wallet.toLocaleString();
-  updateNav();
-  document.getElementById('giftResult').innerHTML = '';
-  closeModal('giftModal');
-  toast(`รับเงิน ฿${amount} สำเร็จ`);
-  showMemberTab('gift');
-}
-
-function renderMemberGiftHistory() {
-  const list = db.gifts.filter(g => g.memberName === currentMember.username);
-  document.getElementById('memberGiftHistory').innerHTML = list.length ? list.slice().reverse().map(g => `
-    <div class="border rounded-lg p-3 mb-2 flex justify-between items-center">
-      <div><div class="font-bold">฿${g.amount}</div><div class="text-xs text-gray-500">${g.date}</div></div>
-      <div class="text-right"><span class="px-2 py-1 rounded text-xs ${g.expired?'bg-red-100 text-red-700':'bg-green-100 text-green-700'}">${g.expired?'หมดอายุ':g.expiresAt}</span></div>
-    </div>
-  `).join('') : '<p class="text-gray-500 text-center py-4">ยังไม่มี</p>';
-}
-
-// ===== Init =====
-window.addEventListener('load', () => {
-  updateNav();
-  
-  // Features cards
-  document.getElementById('featureCards').innerHTML = [
-    { icon: 'i-phone', title: 'TrueMoney Wallet', desc: 'โอนเข้า 0988785068', color: 'text-cyan-600', bg: 'tm-gradient' },
-    { icon: 'i-gift', title: 'ซองของขวัญ', desc: 'เช็คยอด + วันหมดอายุ', color: 'text-pink-600', bg: 'gift-gradient' },
-    { icon: 'i-wallet', title: 'Wallet ในตัว', desc: 'เติมครั้งเดียว ซื้อได้เรื่อยๆ', color: 'text-yellow-600', bg: 'wallet-card' }
-  ].map(f => `
-    <div class="bg-white p-6 rounded-xl shadow text-center card-hover">
-      <div class="${f.bg} text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
-        <svg class="icon-xl"><use href="#${f.icon}"/></svg>
-      </div>
-      <h4 class="font-bold text-lg">${f.title}</h4>
-      <p class="text-gray-600 text-sm mt-2">${f.desc}</p>
-    </div>
-  `).join('');
-  
-  // Preview products
-  document.getElementById('previewProducts').innerHTML = db.products.slice(0,4).map(p => `
-    <div class="bg-white rounded-xl shadow overflow-hidden card-hover">
-      <div class="h-32 bg-gray-100 flex items-center justify-center">
-        <svg class="icon-xl text-purple-600"><use href="#${p.icon}"/></svg>
-      </div>
-      <div class="p-3">
-        <h4 class="font-bold text-sm">${p.name}</h4>
-        <div class="font-bold text-purple-600 mt-1">฿${p.price.toLocaleString()}</div>
-      </div>
-    </div>
-  `).join('');
-});
+window.addEventListener('load', () => { updateNav(); });
 </script>
 
 </body>
