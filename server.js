@@ -1,288 +1,437 @@
-const state = {
-  token: localStorage.getItem('hp_token') || null,
-  user: JSON.parse(localStorage.getItem('hp_user') || 'null'),
-  currentPkg: null
+const express = require('express');
+const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const JWT_SECRET = process.env.JWT_SECRET || 'hiddenpro_super_secret_2026_change_me_now';
+const DATA_DIR = path.join(__dirname, 'data');
+
+// ===== PREDEFINED ADMIN =====
+const ADMIN_ACCOUNT = {
+  username: 'nextrastore',
+  email: 'admin@nextrastore.com',
+  password: 'passnextrastore'
 };
 
-async function api(path, opts = {}) {
-  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
-  if (state.token) headers['Authorization'] = 'Bearer ' + state.token;
-  const res = await fetch('/api' + path, {
-    method: opts.method || 'GET',
-    headers,
-    body: opts.body ? JSON.stringify(opts.body) : undefined
+// ===== MIDDLEWARE =====
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname));
+
+// ===== DATABASE =====
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
+
+const dbFiles = {
+  users: path.join(DATA_DIR, 'users.json'),
+  orders: path.join(DATA_DIR, 'orders.json'),
+  logs: path.join(DATA_DIR, 'logs.json'),
+  codes: path.join(DATA_DIR, 'codes.json')
+};
+
+for (const file of Object.values(dbFiles)) {
+  if (!fs.existsSync(file)) fs.writeFileSync(file, '[]');
+}
+
+const readDB = (key) => JSON.parse(fs.readFileSync(dbFiles[key], 'utf-8'));
+const writeDB = (key, data) => fs.writeFileSync(dbFiles[key], JSON.stringify(data, null, 2));
+
+const logEvent = (type, message, meta = {}) => {
+  const logs = readDB('logs');
+  logs.push({
+    id: crypto.randomBytes(6).toString('hex'),
+    type,
+    message,
+    meta,
+    timestamp: new Date().toISOString()
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Error');
-  return data;
-}
+  if (logs.length > 2000) logs.shift();
+  writeDB('logs', logs);
+};
 
-function toast(msg, type = 'success') {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast show ' + type;
-  setTimeout(() => el.classList.remove('show'), 3000);
-}
+// ===== ENSURE PREDEFINED ADMIN =====
+function ensureAdmin() {
+  const users = readDB('users');
+  let admin = users.find(u => u.username === ADMIN_ACCOUNT.username);
 
-function openModal(name) { document.getElementById(name + 'Modal').classList.add('show'); }
-function closeModal(name) { document.getElementById(name + 'Modal').classList.remove('show'); }
-function switchModal(from, to) { closeModal(from); setTimeout(() => openModal(to), 200); }
-function scrollToEl(sel) { setTimeout(() => document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth' }), 200); }
-
-function toggleMobile() { document.getElementById('navMenu').classList.toggle('show'); }
-
-function updateNav() {
-  const isLogged = !!state.token;
-  document.getElementById('navActions').style.display = isLogged ? 'none' : 'flex';
-  document.getElementById('navUser').style.display = isLogged ? 'flex' : 'none';
-  if (isLogged && state.user) {
-    document.getElementById('navUsername').textContent = state.user.username;
-    const adminLink = document.getElementById('navAdmin');
-    if (state.user.role === 'admin') adminLink.style.display = 'block';
+  if (!admin) {
+    const hash = crypto.createHash('sha256').update(ADMIN_ACCOUNT.password + JWT_SECRET).digest('hex');
+    admin = {
+      id: crypto.randomBytes(8).toString('hex'),
+      username: ADMIN_ACCOUNT.username,
+      email: ADMIN_ACCOUNT.email,
+      password: hash,
+      role: 'admin',
+      credits: 999999,
+      activePkg: 'lifetime',
+      expiresAt: new Date(Date.now() + 99999 * 86400000).toISOString(),
+      hwid: null,
+      banned: false,
+      createdAt: new Date().toISOString()
+    };
+    users.push(admin);
+    writeDB('users', users);
+    console.log('✅ Admin created:', ADMIN_ACCOUNT.username);
+  } else {
+    const hash = crypto.createHash('sha256').update(ADMIN_ACCOUNT.password + JWT_SECRET).digest('hex');
+    let changed = false;
+    if (admin.password !== hash) { admin.password = hash; changed = true; }
+    if (admin.role !== 'admin') { admin.role = 'admin'; changed = true; }
+    if (changed) {
+      writeDB('users', users);
+      console.log('🔄 Admin synced:', ADMIN_ACCOUNT.username);
+    }
   }
+  logEvent('admin-init', `Admin ready: ${ADMIN_ACCOUNT.username}`);
 }
 
-function showPage(name) {
-  if (name === 'admin' && (!state.user || state.user.role !== 'admin')) {
-    toast('ต้องเข้าสู่ระบบในฐานะแอดมิน', 'error');
-    return;
+ensureAdmin();
+
+// ===== AUTH MIDDLEWARE =====
+const authMiddleware = (req, res, next) => {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ error: 'กรุณาเข้าสู่ระบบก่อน' });
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch (e) {
+    res.status(401).json({ error: 'Token ไม่ถูกต้องหรือหมดอายุ' });
   }
-  if ((name === 'dashboard' || name === 'admin') && !state.token) {
-    openModal('login');
-    return;
-  }
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  document.querySelectorAll('#navMenu a').forEach(a => {
-    a.classList.toggle('active', a.dataset.page === name);
-  });
-  if (name === 'dashboard') loadDashboard();
-  if (name === 'admin') loadAdmin();
-}
+};
 
-function showHome() { showPage('home'); }
+const adminOnly = (req, res, next) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ error: 'ต้องเป็นแอดมินเท่านั้น' });
+  next();
+};
 
-async function handleRegister(e) {
-  e.preventDefault();
-  const fd = new FormData(e.target);
+// ===== PACKAGES CONFIG =====
+const PACKAGES = {
+  daily:    { name: 'DAILY PASS',    price: 49,    days: 1,     features: ['aimbot', 'esp', 'anti-ban-basic'] },
+  weekly:   { name: 'WEEKLY',        price: 249,   days: 7,     features: ['aimbot-pro', 'wallhack', 'esp', 'anti-ban'] },
+  monthly:  { name: 'MONTHLY VIP',   price: 799,   days: 30,    features: ['all'], popular: true },
+  season:   { name: 'SEASON PASS',   price: 1899,  days: 90,    features: ['all', 'admin-tools', 'skins'] },
+  lifetime: { name: 'LIFETIME',      price: 3999,  days: 99999, features: ['all', 'lifetime', 'pc-mobile', 'warranty'] }
+};
+
+// ===== ROUTES: AUTH =====
+app.post('/api/register', (req, res) => {
   try {
-    const data = await api('/register', {
-      method: 'POST',
-      body: { username: fd.get('username'), email: fd.get('email'), password: fd.get('password') }
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) return res.status(400).json({ error: 'กรอกข้อมูลให้ครบทุกช่อง' });
+    if (username.length < 3) return res.status(400).json({ error: 'username ต้องมีอย่างน้อย 3 ตัวอักษร' });
+    if (password.length < 6) return res.status(400).json({ error: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' });
+    if (!email.includes('@')) return res.status(400).json({ error: 'อีเมลไม่ถูกต้อง' });
+
+    const users = readDB('users');
+    if (users.find(u => u.username === username)) return res.status(400).json({ error: 'username นี้ถูกใช้แล้ว' });
+    if (users.find(u => u.email === email)) return res.status(400).json({ error: 'อีเมลนี้ถูกใช้แล้ว' });
+
+    const hash = crypto.createHash('sha256').update(password + JWT_SECRET).digest('hex');
+    const newUser = {
+      id: crypto.randomBytes(8).toString('hex'),
+      username,
+      email,
+      password: hash,
+      role: 'user',
+      credits: 0,
+      activePkg: null,
+      expiresAt: null,
+      hwid: null,
+      banned: false,
+      createdAt: new Date().toISOString()
+    };
+    users.push(newUser);
+    writeDB('users', users);
+    logEvent('register', `New user: ${username}`, { id: newUser.id });
+
+    const token = jwt.sign(
+      { id: newUser.id, username: newUser.username, role: newUser.role },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    res.json({
+      success: true,
+      message: 'สมัครสมาชิกสำเร็จ',
+      token,
+      user: { id: newUser.id, username: newUser.username, email: newUser.email, role: newUser.role }
     });
-    state.token = data.token;
-    state.user = data.user;
-    localStorage.setItem('hp_token', data.token);
-    localStorage.setItem('hp_user', JSON.stringify(data.user));
-    updateNav();
-    closeModal('register');
-    toast(data.message);
-    showPage('dashboard');
-  } catch (err) { toast(err.message, 'error'); }
-}
-
-async function handleLogin(e) {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  try {
-    const data = await api('/login', {
-      method: 'POST',
-      body: { username: fd.get('username'), password: fd.get('password') }
-    });
-    state.token = data.token;
-    state.user = data.user;
-    localStorage.setItem('hp_token', data.token);
-    localStorage.setItem('hp_user', JSON.stringify(data.user));
-    updateNav();
-    closeModal('login');
-    toast('เข้าสู่ระบบสำเร็จ!');
-    showPage('dashboard');
-  } catch (err) { toast(err.message, 'error'); }
-}
-
-function logout() {
-  state.token = null;
-  state.user = null;
-  localStorage.removeItem('hp_token');
-  localStorage.removeItem('hp_user');
-  updateNav();
-  showHome();
-  toast('ออกจากระบบแล้ว');
-}
-
-function buyPkg(pkgId) {
-  if (!state.token) { openModal('login'); return; }
-  state.currentPkg = pkgId;
-  const prices = { daily: 49, weekly: 249, monthly: 799, season: 1899, lifetime: 3999 };
-  const names = { daily: 'DAILY PASS', weekly: 'WEEKLY', monthly: 'MONTHLY VIP', season: 'SEASON PASS', lifetime: 'LIFETIME' };
-  document.getElementById('buyPkgName').textContent = names[pkgId];
-  document.getElementById('buyPkgPrice').textContent = '฿' + prices[pkgId];
-  openModal('buy');
-}
-
-async function handleBuy(e) {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  try {
-    const data = await api('/orders/create', {
-      method: 'POST',
-      body: { pkgId: state.currentPkg, method: fd.get('method'), slip: fd.get('slip') }
-    });
-    closeModal('buy');
-    toast('ส่งออเดอร์แล้ว! รอแอดมินอนุมัติ (' + data.order.id + ')');
-    if (document.getElementById('page-dashboard').classList.contains('active')) loadDashboard();
-  } catch (err) { toast(err.message, 'error'); }
-}
-
-async function handleRedeem(e) {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  try {
-    const data = await api('/redeem', { method: 'POST', body: { code: fd.get('code') } });
-    closeModal('redeem');
-    toast(data.message);
-    if (document.getElementById('page-dashboard').classList.contains('active')) loadDashboard();
-  } catch (err) { toast(err.message, 'error'); }
-}
-
-async function loadDashboard() {
-  if (!state.token) return;
-  try {
-    const me = await api('/me');
-    state.user = { ...state.user, ...me };
-    localStorage.setItem('hp_user', JSON.stringify(state.user));
-    document.getElementById('dashUsername').textContent = me.username;
-    document.getElementById('dashPkg').textContent = me.activePkg ? me.activePkg.toUpperCase() : 'ยังไม่มี';
-    document.getElementById('dashExpire').textContent = me.expiresAt ? new Date(me.expiresAt).toLocaleString('th-TH') : '-';
-    document.getElementById('dashCredits').textContent = me.credits || 0;
-    const orders = await api('/orders/my');
-    document.getElementById('dashOrders').textContent = orders.length;
-    document.getElementById('orderList').innerHTML = orders.length ? orders.map(o => `
-      <div class="order-item">
-        <div><strong>${o.pkgName}</strong><span class="order-id">${o.id}</span></div>
-        <div>฿${o.amount} • ${o.method}</div>
-        <div class="status status-${o.status}">${o.status}</div>
-      </div>
-    `).join('') : '<p style="text-align:center;color:var(--text-muted);">ยังไม่มีออเดอร์</p>';
-  } catch (err) { toast(err.message, 'error'); }
-}
-
-async function loadAdmin() {
-  if (!state.token) return;
-  try {
-    const stats = await api('/admin/stats');
-    document.getElementById('statUsers').textContent = stats.totalUsers;
-    document.getElementById('statOrders').textContent = stats.totalOrders;
-    document.getElementById('statPending').textContent = stats.pendingOrders;
-    document.getElementById('statRevenue').textContent = '฿' + stats.totalRevenue.toLocaleString();
-
-    const orders = await api('/admin/orders');
-    document.getElementById('adminOrderList').innerHTML = orders.length ? orders.map(o => `
-      <div class="order-item admin">
-        <div><strong>${o.pkgName}</strong> <span class="order-id">${o.id}</span><br><small>@${o.username} • ${new Date(o.createdAt).toLocaleString('th-TH')}</small></div>
-        <div>฿${o.amount} • ${o.method}</div>
-        <div class="status status-${o.status}">${o.status}</div>
-        <div class="admin-actions">${o.status === 'pending' ? `<button class="btn-approve" onclick="approveOrder('${o.id}')">✓</button><button class="btn-reject" onclick="rejectOrder('${o.id}')">✗</button>` : '<small>✓</small>'}</div>
-      </div>
-    `).join('') : '<p style="text-align:center;color:var(--text-muted);">ไม่มีออเดอร์</p>';
-
-    const users = await api('/admin/users');
-    document.getElementById('adminUserList').innerHTML = users.map(u => `
-      <div class="user-item">
-        <div class="user-info"><strong>${u.username}</strong> ${u.role === 'admin' ? '<span class="badge-admin">ADMIN</span>' : ''} ${u.banned ? '<span class="badge-banned">BAN</span>' : ''}<br><small>${u.email}</small></div>
-        <div>${u.activePkg || '-'}</div>
-        <div class="admin-actions">${u.role !== 'admin' ? `<button class="btn-${u.banned ? 'approve' : 'reject'}" onclick="banUser('${u.id}', ${!u.banned})">${u.banned ? 'ปลด' : 'แบน'}</button>` : ''}</div>
-      </div>
-    `).join('');
-
-    const codes = await api('/admin/codes');
-    document.getElementById('adminCodeList').innerHTML = codes.length ? codes.map(c => `
-      <div class="code-item"><code>${c.code}</code><span>${c.type} ${c.type === 'credits' ? '฿' + c.value : c.pkgId}</span><span>ใช้ ${c.used || 0}/${c.maxUse}</span></div>
-    `).join('') : '<p style="text-align:center;color:var(--text-muted);">ยังไม่มีโค้ด</p>';
-
-    const logs = await api('/admin/logs');
-    document.getElementById('adminLogList').innerHTML = logs.length ? logs.map(l => `
-      <div class="log-item log-${l.type}"><span class="log-time">${new Date(l.timestamp).toLocaleTimeString('th-TH')}</span><span class="log-type">${l.type}</span><span>${l.message}</span></div>
-    `).join('') : '<p style="text-align:center;color:var(--text-muted);">ไม่มี log</p>';
-  } catch (err) { toast(err.message, 'error'); }
-}
-
-async function approveOrder(id) {
-  if (!confirm('อนุมัติ ' + id + '?')) return;
-  try { await api('/admin/orders/approve', { method: 'POST', body: { orderId: id } }); toast('อนุมัติแล้ว'); loadAdmin(); }
-  catch (err) { toast(err.message, 'error'); }
-}
-
-async function rejectOrder(id) {
-  const reason = prompt('เหตุผล:');
-  if (reason === null) return;
-  try { await api('/admin/orders/reject', { method: 'POST', body: { orderId: id, reason } }); toast('ปฏิเสธแล้ว'); loadAdmin(); }
-  catch (err) { toast(err.message, 'error'); }
-}
-
-async function banUser(id, banned) {
-  if (!confirm(`${banned ? 'แบน' : 'ปลดแบน'}?`)) return;
-  try { await api('/admin/users/ban', { method: 'POST', body: { userId: id, banned } }); toast('สำเร็จ'); loadAdmin(); }
-  catch (err) { toast(err.message, 'error'); }
-}
-
-async function createCode(e) {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  try {
-    const data = await api('/admin/codes/create', { method: 'POST', body: {
-      code: fd.get('code') || null,
-      type: fd.get('type'),
-      value: Number(fd.get('value')),
-      pkgId: fd.get('pkgId') || null
-    }});
-    toast('สร้างโค้ด ' + data.code.code + ' แล้ว!');
-    e.target.reset();
-    loadAdmin();
-  } catch (err) { toast(err.message, 'error'); }
-}
-
-document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('tab')) {
-    const tab = e.target.dataset.tab;
-    document.querySelectorAll('.admin-tabs .tab').forEach(t => t.classList.toggle('active', t === e.target));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
   }
 });
 
-const animateCount = (el) => {
-  const target = Number(el.dataset.count);
-  const duration = 2000;
-  const step = target / (duration / 16);
-  let cur = 0;
-  const t = setInterval(() => {
-    cur += step;
-    if (cur >= target) { cur = target; clearInterval(t); }
-    el.textContent = Math.floor(cur).toLocaleString();
-  }, 16);
-};
-const counterObs = new IntersectionObserver((entries) => {
-  entries.forEach(en => {
-    if (en.isIntersecting) { animateCount(en.target); counterObs.unobserve(en.target); }
-  });
-}, { threshold: 0.5 });
-document.querySelectorAll('.stat-num').forEach(el => counterObs.observe(el));
+app.post('/api/login', (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) return res.status(400).json({ error: 'กรอก username และรหัสผ่าน' });
 
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', (e) => {
-    const href = a.getAttribute('href');
-    if (href.length > 1) {
-      const el = document.querySelector(href);
-      if (el) {
-        e.preventDefault();
-        const page = a.dataset.page;
-        if (page) showPage(page);
-        setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 200);
+    const users = readDB('users');
+    const user = users.find(u => u.username === username || u.email === username);
+    if (!user) return res.status(401).json({ error: 'ไม่พบผู้ใช้นี้' });
+    if (user.banned) return res.status(403).json({ error: 'บัญชีถูกระงับการใช้งาน' });
+
+    const hash = crypto.createHash('sha256').update(password + JWT_SECRET).digest('hex');
+    if (user.password !== hash) return res.status(401).json({ error: 'รหัสผ่านไม่ถูกต้อง' });
+
+    const token = jwt.sign(
+      { id: user.id, username: user.username, role: user.role },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    logEvent('login', `User login: ${user.username}`);
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id, username: user.username, email: user.email,
+        role: user.role, credits: user.credits,
+        activePkg: user.activePkg, expiresAt: user.expiresAt
+      }
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+  }
+});
+
+app.get('/api/me', authMiddleware, (req, res) => {
+  const users = readDB('users');
+  const user = users.find(u => u.id === req.user.id);
+  if (!user) return res.status(404).json({ error: 'ไม่พบผู้ใช้' });
+  res.json({
+    id: user.id, username: user.username, email: user.email,
+    role: user.role, credits: user.credits,
+    activePkg: user.activePkg, expiresAt: user.expiresAt, hwid: user.hwid
+  });
+});
+
+// ===== ROUTES: PACKAGES =====
+app.get('/api/packages', (req, res) => res.json(PACKAGES));
+
+// ===== ROUTES: ORDERS =====
+app.post('/api/orders/create', authMiddleware, (req, res) => {
+  try {
+    const { pkgId, method, slip, truemoneyUrl } = req.body;
+    const pkg = PACKAGES[pkgId];
+    if (!pkg) return res.status(400).json({ error: 'ไม่พบแพ็คเกจนี้' });
+    if (!method) return res.status(400).json({ error: 'กรุณาเลือกวิธีชำระเงิน' });
+
+    const orders = readDB('orders');
+    const order = {
+      id: 'ORD' + Date.now() + crypto.randomBytes(2).toString('hex').toUpperCase(),
+      userId: req.user.id,
+      username: req.user.username,
+      pkgId,
+      pkgName: pkg.name,
+      amount: pkg.price,
+      method,
+      slip: slip || null,
+      truemoneyUrl: truemoneyUrl || null,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      approvedAt: null,
+      rejectReason: null
+    };
+    orders.push(order);
+    writeDB('orders', orders);
+    logEvent('order', `New order ${order.id}`, { user: req.user.username, pkgId, amount: pkg.price });
+    res.json({ success: true, order });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+  }
+});
+
+app.get('/api/orders/my', authMiddleware, (req, res) => {
+  const orders = readDB('orders');
+  const my = orders
+    .filter(o => o.userId === req.user.id)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  res.json(my);
+});
+
+// ===== ROUTES: REDEEM CODE =====
+app.post('/api/redeem', authMiddleware, (req, res) => {
+  try {
+    const { code } = req.body;
+    if (!code) return res.status(400).json({ error: 'กรุณากรอกโค้ด' });
+
+    const codes = readDB('codes');
+    const codeData = codes.find(c => c.code === code.toUpperCase());
+    if (!codeData) return res.status(404).json({ error: 'โค้ดไม่ถูกต้อง' });
+    if (codeData.used >= codeData.maxUse) return res.status(400).json({ error: 'โค้ดนี้ถูกใช้ไปแล้ว' });
+    if (codeData.expiresAt && new Date(codeData.expiresAt) < new Date()) {
+      return res.status(400).json({ error: 'โค้ดหมดอายุ' });
+    }
+
+    const users = readDB('users');
+    const user = users.find(u => u.id === req.user.id);
+    if (!user) return res.status(404).json({ error: 'ไม่พบผู้ใช้' });
+
+    if (codeData.type === 'credits') {
+      user.credits += codeData.value;
+    } else if (codeData.type === 'package') {
+      const pkg = PACKAGES[codeData.pkgId];
+      if (pkg) {
+        const start = user.expiresAt && new Date(user.expiresAt) > new Date() ? new Date(user.expiresAt) : new Date();
+        const exp = new Date(start.getTime() + pkg.days * 86400000);
+        user.activePkg = codeData.pkgId;
+        user.expiresAt = exp.toISOString();
       }
     }
+
+    codeData.used = (codeData.used || 0) + 1;
+    codeData.usedBy = codeData.usedBy || [];
+    codeData.usedBy.push({ username: req.user.username, at: new Date().toISOString() });
+
+    writeDB('users', users);
+    writeDB('codes', codes);
+    logEvent('redeem', `Code ${code} redeemed by ${user.username}`);
+    res.json({ success: true, message: 'ใช้โค้ดสำเร็จ!', codeData });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+  }
+});
+
+// ===== ROUTES: ADMIN =====
+app.get('/api/admin/orders', authMiddleware, adminOnly, (req, res) => {
+  const orders = readDB('orders');
+  res.json(orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+});
+
+app.post('/api/admin/orders/approve', authMiddleware, adminOnly, (req, res) => {
+  try {
+    const { orderId } = req.body;
+    const orders = readDB('orders');
+    const order = orders.find(o => o.id === orderId);
+    if (!order) return res.status(404).json({ error: 'ไม่พบออเดอร์' });
+    if (order.status !== 'pending') return res.status(400).json({ error: 'ออเดอร์นี้ดำเนินการไปแล้ว' });
+
+    order.status = 'approved';
+    order.approvedAt = new Date().toISOString();
+    writeDB('orders', orders);
+
+    const users = readDB('users');
+    const user = users.find(u => u.id === order.userId);
+    if (user) {
+      const pkg = PACKAGES[order.pkgId];
+      const start = user.expiresAt && new Date(user.expiresAt) > new Date() ? new Date(user.expiresAt) : new Date();
+      const exp = new Date(start.getTime() + pkg.days * 86400000);
+      user.activePkg = order.pkgId;
+      user.expiresAt = exp.toISOString();
+      writeDB('users', users);
+    }
+
+    logEvent('approve', `Approved ${orderId}`, { by: req.user.username });
+    res.json({ success: true, order });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+  }
+});
+
+app.post('/api/admin/orders/reject', authMiddleware, adminOnly, (req, res) => {
+  try {
+    const { orderId, reason } = req.body;
+    const orders = readDB('orders');
+    const order = orders.find(o => o.id === orderId);
+    if (!order) return res.status(404).json({ error: 'ไม่พบออเดอร์' });
+    order.status = 'rejected';
+    order.rejectReason = reason || '';
+    writeDB('orders', orders);
+    logEvent('reject', `Rejected ${orderId}`, { by: req.user.username });
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+  }
+});
+
+app.get('/api/admin/users', authMiddleware, adminOnly, (req, res) => {
+  const users = readDB('users').map(u => ({
+    id: u.id, username: u.username, email: u.email,
+    role: u.role, credits: u.credits,
+    activePkg: u.activePkg, expiresAt: u.expiresAt,
+    banned: u.banned, createdAt: u.createdAt
+  }));
+  res.json(users);
+});
+
+app.post('/api/admin/users/ban', authMiddleware, adminOnly, (req, res) => {
+  try {
+    const { userId, banned } = req.body;
+    const users = readDB('users');
+    const user = users.find(u => u.id === userId);
+    if (!user) return res.status(404).json({ error: 'ไม่พบผู้ใช้' });
+    if (user.role === 'admin') return res.status(400).json({ error: 'ไม่สามารถแบนแอดมิน' });
+    user.banned = !!banned;
+    writeDB('users', users);
+    logEvent('ban', `${banned ? 'Banned' : 'Unbanned'} ${user.username}`, { by: req.user.username });
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+  }
+});
+
+app.post('/api/admin/codes/create', authMiddleware, adminOnly, (req, res) => {
+  try {
+    const { code, type, value, pkgId, maxUse, expiresAt } = req.body;
+    const codes = readDB('codes');
+    const newCode = {
+      id: crypto.randomBytes(6).toString('hex'),
+      code: (code || crypto.randomBytes(4).toString('hex').toUpperCase()).toUpperCase(),
+      type: type || 'credits',
+      value: value || 100,
+      pkgId: pkgId || null,
+      maxUse: maxUse || 1,
+      used: 0,
+      usedBy: [],
+      expiresAt: expiresAt || null,
+      createdAt: new Date().toISOString()
+    };
+    codes.push(newCode);
+    writeDB('codes', codes);
+    logEvent('code-create', `Created code ${newCode.code}`, { by: req.user.username });
+    res.json({ success: true, code: newCode });
+  } catch (e) {
+    res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+  }
+});
+
+app.get('/api/admin/codes', authMiddleware, adminOnly, (req, res) => {
+  res.json(readDB('codes'));
+});
+
+app.get('/api/admin/stats', authMiddleware, adminOnly, (req, res) => {
+  const users = readDB('users');
+  const orders = readDB('orders');
+  const totalRevenue = orders.filter(o => o.status === 'approved').reduce((s, o) => s + o.amount, 0);
+  res.json({
+    totalUsers: users.length,
+    totalOrders: orders.length,
+    pendingOrders: orders.filter(o => o.status === 'pending').length,
+    approvedOrders: orders.filter(o => o.status === 'approved').length,
+    rejectedOrders: orders.filter(o => o.status === 'rejected').length,
+    totalRevenue,
+    activeUsers: users.filter(u => u.expiresAt && new Date(u.expiresAt) > new Date()).length
   });
 });
 
-updateNav();
+app.get('/api/admin/logs', authMiddleware, adminOnly, (req, res) => {
+  const logs = readDB('logs');
+  res.json(logs.slice(-200).reverse());
+});
+
+// ===== FALLBACK =====
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(PORT, () => {
+  console.log(`🔥 HIDDEN PRO server running on http://localhost:${PORT}`);
+});
