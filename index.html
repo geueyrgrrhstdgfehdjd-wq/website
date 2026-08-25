@@ -9,7 +9,6 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar">
   <div class="nav-wrap">
     <a href="#" class="logo" onclick="showHome();return false;">
@@ -38,7 +37,6 @@
   </div>
 </nav>
 
-<!-- HERO PAGE -->
 <section id="page-home" class="page active">
   <section class="hero">
     <div class="hero-bg"></div>
@@ -50,16 +48,14 @@
         <span class="title-line2">PRO<span class="fire-emoji">🔥</span></span>
       </h1>
       <p class="hero-sub">บริการขายโปรแกรมเมอร์ฟรีไฟ • เข้าใช้งานง่าย • ปลอดภัย 100% • อัปเดตทุกแพตช์</p>
-      
       <div class="hero-stats">
         <div class="stat"><div class="stat-num" data-count="5847">0</div><div class="stat-label">ผู้ใช้งาน</div></div>
         <div class="stat"><div class="stat-num" data-count="12490">0</div><div class="stat-label">ออเดอร์สำเร็จ</div></div>
         <div class="stat"><div class="stat-num" data-count="99">0</div><div class="stat-label">% อัปไทม์</div></div>
         <div class="stat"><div class="stat-num" data-count="24">0</div><div class="stat-label">ชม. ซัพพอร์ต</div></div>
       </div>
-
       <div class="hero-cta">
-        <button class="btn-primary" onclick="showPage('packages');scrollTo('#packages');">🔥 ดูแพ็คเกจ</button>
+        <button class="btn-primary" onclick="showPage('packages');scrollToEl('#packages');">🔥 ดูแพ็คเกจ</button>
         <button class="btn-secondary" onclick="openModal('login')">⚡ เข้าสู่ระบบ</button>
       </div>
     </div>
@@ -107,27 +103,14 @@
         <p class="section-sub">รีวิวจริงจากผู้ใช้งานจริง ไม่ปลอม ไม่แต่ง</p>
       </div>
       <div class="review-grid">
-        <div class="review">
-          <div class="review-stars">★★★★★</div>
-          <p class="review-text">"โหดมาก ใช้มา 3 เดือนแล้วไม่โดนแบนเลย แมทช์แต่ละทีได้บัวเยอะมาก คุ้มสุดๆ"</p>
-          <div class="review-author"><div class="avatar" style="background:linear-gradient(135deg,#ff5722,#ff9800)">เอ</div><div><strong>เอกพล</strong><span>VIP รายเดือน • ใช้งาน 90 วัน</span></div></div>
-        </div>
-        <div class="review">
-          <div class="review-stars">★★★★★</div>
-          <p class="review-text">"เร็ว แม่น ปลอดภัย ทีมงานตอบไว แนะนำเลย โดยเฉพาะแพ็คเกจซีซั่นคุ้มมาก"</p>
-          <div class="review-author"><div class="avatar" style="background:linear-gradient(135deg,#e91e63,#9c27b0)">ม</div><div><strong>มิ้นท์</strong><span>Season Pass • ใช้งาน 45 วัน</span></div></div>
-        </div>
-        <div class="review">
-          <div class="review-stars">★★★★★</div>
-          <p class="review-text">"เริ่มจาก DAILY ลองของ แล้วอัปเป็น LIFETIME เลย ใช้ได้ทุกแมพ ปืนแม่นสุดๆ ชนะ 95% ของแมทช์"</p>
-          <div class="review-author"><div class="avatar" style="background:linear-gradient(135deg,#2196f3,#00bcd4)">ซ</div><div><strong>ซันเซ็ท</strong><span>Lifetime • ใช้งาน 6 เดือน</span></div></div>
-        </div>
+        <div class="review"><div class="review-stars">★★★★★</div><p class="review-text">"โหดมาก ใช้มา 3 เดือนแล้วไม่โดนแบนเลย แมทช์แต่ละทีได้บัวเยอะมาก คุ้มสุดๆ"</p><div class="review-author"><div class="avatar" style="background:linear-gradient(135deg,#ff5722,#ff9800)">เอ</div><div><strong>เอกพล</strong><span>VIP รายเดือน • ใช้งาน 90 วัน</span></div></div></div>
+        <div class="review"><div class="review-stars">★★★★★</div><p class="review-text">"เร็ว แม่น ปลอดภัย ทีมงานตอบไว แนะนำเลย โดยเฉพาะแพ็คเกจซีซั่นคุ้มมาก"</p><div class="review-author"><div class="avatar" style="background:linear-gradient(135deg,#e91e63,#9c27b0)">ม</div><div><strong>มิ้นท์</strong><span>Season Pass • ใช้งาน 45 วัน</span></div></div></div>
+        <div class="review"><div class="review-stars">★★★★★</div><p class="review-text">"เริ่มจาก DAILY ลองของ แล้วอัปเป็น LIFETIME เลย ใช้ได้ทุกแมพ ปืนแม่นสุดๆ ชนะ 95% ของแมทช์"</p><div class="review-author"><div class="avatar" style="background:linear-gradient(135deg,#2196f3,#00bcd4)">ซ</div><div><strong>ซันเซ็ท</strong><span>Lifetime • ใช้งาน 6 เดือน</span></div></div></div>
       </div>
     </div>
   </section>
 </section>
 
-<!-- PACKAGES PAGE -->
 <section id="page-packages" class="page">
   <div class="container" style="padding-top:120px; padding-bottom:80px;">
     <div class="section-head">
@@ -145,7 +128,6 @@
   </div>
 </section>
 
-<!-- DASHBOARD -->
 <section id="page-dashboard" class="page">
   <div class="container" style="padding-top:120px; padding-bottom:80px;">
     <div class="section-head">
@@ -165,65 +147,43 @@
   </div>
 </section>
 
-<!-- ADMIN -->
 <section id="page-admin" class="page">
   <div class="container" style="padding-top:120px; padding-bottom:80px;">
     <div class="section-head">
       <span class="section-tag">🛡️ Admin Panel</span>
       <h2 class="section-title">แผงควบคุม <span class="accent">แอดมิน</span></h2>
     </div>
-    
-    <div class="dash-grid" id="adminStats">
+    <div class="dash-grid">
       <div class="dash-card"><div class="dash-icon">👥</div><h3>ผู้ใช้ทั้งหมด</h3><p id="statUsers">0</p></div>
       <div class="dash-card"><div class="dash-icon">📦</div><h3>ออเดอร์ทั้งหมด</h3><p id="statOrders">0</p></div>
       <div class="dash-card"><div class="dash-icon">⏳</div><h3>รออนุมัติ</h3><p id="statPending">0</p></div>
       <div class="dash-card"><div class="dash-icon">💵</div><h3>รายได้รวม</h3><p id="statRevenue">฿0</p></div>
     </div>
-
     <div class="admin-tabs">
       <button class="tab active" data-tab="orders">ออเดอร์</button>
       <button class="tab" data-tab="users">ผู้ใช้</button>
       <button class="tab" data-tab="codes">โค้ด</button>
       <button class="tab" data-tab="logs">Logs</button>
     </div>
-
-    <div class="tab-panel active" id="tab-orders">
-      <div class="order-list" id="adminOrderList"></div>
-    </div>
-
-    <div class="tab-panel" id="tab-users">
-      <div class="user-list" id="adminUserList"></div>
-    </div>
-
+    <div class="tab-panel active" id="tab-orders"><div class="order-list" id="adminOrderList"></div></div>
+    <div class="tab-panel" id="tab-users"><div class="user-list" id="adminUserList"></div></div>
     <div class="tab-panel" id="tab-codes">
       <div class="code-create">
         <h3>สร้างโค้ดใหม่</h3>
         <form onsubmit="createCode(event)">
           <input type="text" name="code" placeholder="โค้ด (เว้นว่างสุ่มให้)">
-          <select name="type">
-            <option value="credits">เครดิต</option>
-            <option value="package">แพ็คเกจ</option>
-          </select>
+          <select name="type"><option value="credits">เครดิต</option><option value="package">แพ็คเกจ</option></select>
           <input type="number" name="value" placeholder="มูลค่า" value="100">
-          <select name="pkgId">
-            <option value="">-เลือกแพ็คเกจ-</option>
-            <option value="daily">daily</option><option value="weekly">weekly</option>
-            <option value="monthly">monthly</option><option value="season">season</option>
-            <option value="lifetime">lifetime</option>
-          </select>
+          <select name="pkgId"><option value="">-เลือกแพ็คเกจ-</option><option value="daily">daily</option><option value="weekly">weekly</option><option value="monthly">monthly</option><option value="season">season</option><option value="lifetime">lifetime</option></select>
           <button type="submit" class="btn-primary">สร้างโค้ด</button>
         </form>
       </div>
       <div class="code-list" id="adminCodeList"></div>
     </div>
-
-    <div class="tab-panel" id="tab-logs">
-      <div class="log-list" id="adminLogList"></div>
-    </div>
+    <div class="tab-panel" id="tab-logs"><div class="log-list" id="adminLogList"></div></div>
   </div>
 </section>
 
-<!-- CONTACT -->
 <section id="page-contact" class="page">
   <div class="container" style="padding-top:120px; padding-bottom:80px;">
     <div class="section-head">
@@ -239,7 +199,6 @@
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="footer">
   <div class="container">
     <div class="footer-grid">
@@ -255,7 +214,6 @@
   </div>
 </footer>
 
-<!-- MODAL: LOGIN -->
 <div class="modal" id="loginModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('login')">×</button>
@@ -269,7 +227,6 @@
   </div>
 </div>
 
-<!-- MODAL: REGISTER -->
 <div class="modal" id="registerModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('register')">×</button>
@@ -284,7 +241,6 @@
   </div>
 </div>
 
-<!-- MODAL: BUY PACKAGE -->
 <div class="modal" id="buyModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('buy')">×</button>
@@ -300,17 +256,12 @@
           <option value="usdt">USDT (TRC20)</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>ลิงก์สลิป / URL</label>
-        <input type="text" name="slip" placeholder="วางลิงก์รูปสลิป หรือ URL">
-      </div>
-      <div id="paymentInfo" class="payment-info"></div>
+      <div class="form-group"><label>ลิงก์สลิป / URL</label><input type="text" name="slip" placeholder="วางลิงก์รูปสลิป หรือ URL"></div>
       <button type="submit" class="btn-primary full">🔥 ยืนยันการสั่งซื้อ</button>
     </form>
   </div>
 </div>
 
-<!-- MODAL: REDEEM CODE -->
 <div class="modal" id="redeemModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('redeem')">×</button>
