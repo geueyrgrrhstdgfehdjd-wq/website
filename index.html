@@ -3,1309 +3,327 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NextraStore Pro - แพลตฟอร์มให้เช่าเว็บอันดับ 1</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-  * { font-family: 'Prompt', sans-serif; }
-  body { background: #050507; color: #e5e7eb; min-height: 100vh; overflow-x: hidden; }
-  .glass { background: rgba(15, 15, 25, 0.7); backdrop-filter: blur(24px) saturate(180%); border: 1px solid rgba(255,255,255,0.08); }
-  .glass-strong { background: rgba(20, 20, 35, 0.85); backdrop-filter: blur(30px) saturate(200%); border: 1px solid rgba(255,255,255,0.12); }
-  .glass-light { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); }
-  .gradient-text { background: linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #f97316 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .gradient-text-2 { background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .btn-glow { box-shadow: 0 0 30px rgba(167, 139, 250, 0.4); transition: all 0.3s; position: relative; overflow: hidden; }
-  .btn-glow:hover { box-shadow: 0 0 60px rgba(167, 139, 250, 0.8); transform: translateY(-2px); }
-  .btn-glow::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s; }
-  .btn-glow:hover::before { left: 100%; }
-  .input-glow:focus { border-color: #a78bfa; box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2); }
-  .float { animation: float 6s ease-in-out infinite; }
-  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-  .pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
-  @keyframes pulse-slow { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-  .slide-up { animation: slideUp 0.5s ease-out; }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  .blob { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.4; z-index: 0; pointer-events: none; }
-  .pricing-popular { position: relative; }
-  .pricing-popular::before { content: '🔥 ยอดนิยม'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; padding: 4px 16px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; z-index: 10; }
-  .step-active { background: linear-gradient(135deg, #a78bfa, #ec4899); color: white; }
-  .step-done { background: #10b981; color: white; }
-  .step-pending { background: rgba(255,255,255,0.1); color: #6b7280; }
-  .modal { display: none; }
-  .modal.active { display: flex; }
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: #0a0a0f; }
-  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #a78bfa, #ec4899); border-radius: 4px; }
-  .icon { width: 24px; height: 24px; stroke-width: 2; }
-  .icon-sm { width: 18px; height: 18px; stroke-width: 2; }
-  .icon-lg { width: 40px; height: 40px; stroke-width: 1.5; }
-  .icon-xl { width: 56px; height: 56px; stroke-width: 1.5; }
-  .grid-bg { background-image: linear-gradient(rgba(167, 139, 250, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(167, 139, 250, 0.05) 1px, transparent 1px); background-size: 50px 50px; }
-  .nav-active { background: rgba(167, 139, 250, 0.15); border-left: 3px solid #a78bfa; }
-  .stat-card { position: relative; overflow: hidden; }
-  .stat-card::after { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: radial-gradient(circle, rgba(167, 139, 250, 0.2), transparent); border-radius: 50%; transform: translate(30%, -30%); }
-  .rotate-360 { animation: rotate360 20s linear infinite; }
-  @keyframes rotate360 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-</style>
+<title>HIDDEN PRO • Free Fire Pro Shop</title>
+<link rel="stylesheet" href="/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=Russo+One&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="2" y1="12" x2="22" y2="12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09zM12 15l-3-3a22 22 0 012-4.95A12.94 12.94 0 0122 2c0 2.72-.78 7.5-6 11a22 22 0 01-4 2zM9 12H4s.55-3.03 2-4c1.62-1.08 3 0 3 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-3 0-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
-    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M16 7a4 4 0 11-8 0 4 4 0 018 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
-    <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="12 5 19 12 12 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="12 19 5 12 12 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-bolt" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1" fill="currentColor"/><circle cx="20" cy="21" r="1" fill="currentColor"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 010-4h12v4M4 6v12a2 2 0 002 2h14v-4M18 12a1 1 0 100 2 1 1 0 000-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-gift" viewBox="0 0 24 24"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.35-4.35" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
-    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
-    <symbol id="i-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-shirt" viewBox="0 0 24 24"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
-    <symbol id="i-shoe" viewBox="0 0 24 24"><path d="M3 17h18v3H3zM5 12l3-5 4 2 4-2 3 5v5H5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
-    <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0118 0v6M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
-    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
-    <symbol id="i-watch" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 10v2l1 1M9 6V3h6v3M9 18v3h6v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-mug" viewBox="0 0 24 24"><path d="M18 8h2a2 2 0 012 2v3a2 2 0 01-2 2h-2M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
-    <symbol id="i-credit-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="1" y1="10" x2="23" y2="10" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-trending-up" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="17 6 23 6 23 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-package" viewBox="0 0 24 24"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><polyline points="3.27 6.96 12 12.01 20.73 6.96" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="22.08" x2="12" y2="12" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-    <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-mail" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-  </defs>
-</svg>
-
-<div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-  <div class="blob bg-purple-600 w-[500px] h-[500px] top-0 left-0 float"></div>
-  <div class="blob bg-pink-600 w-[500px] h-[500px] bottom-0 right-0 float" style="animation-delay: 2s;"></div>
-  <div class="blob bg-cyan-600 w-[400px] h-[400px] top-1/2 left-1/2 float" style="animation-delay: 4s;"></div>
-</div>
-
-<nav class="fixed top-0 left-0 right-0 z-50 glass-strong">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <div onclick="goHome()" class="flex items-center gap-2 cursor-pointer group">
-      <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center group-hover:scale-110 transition shadow-lg shadow-purple-500/30">
-        <svg class="icon text-white"><use href="#i-globe"/></svg>
-      </div>
-      <div>
-        <h1 class="text-xl font-black gradient-text leading-none">NextraStore</h1>
-        <p class="text-[10px] text-gray-500 leading-none mt-1">PRO PLATFORM</p>
-      </div>
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-wrap">
+    <a href="#" class="logo" onclick="showHome();return false;">
+      <span class="logo-icon">🔥</span>
+      <span class="logo-text">HIDDEN<span class="logo-accent">PRO</span></span>
+    </a>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#home" class="active" data-page="home">หน้าแรก</a></li>
+      <li><a href="#packages" data-page="packages">แพ็คเกจ</a></li>
+      <li><a href="#features" data-page="features">ฟีเจอร์</a></li>
+      <li><a href="#reviews" data-page="reviews">รีวิว</a></li>
+      <li><a href="#contact" data-page="contact">ติดต่อ</a></li>
+      <li id="navAdmin" style="display:none;"><a href="#" data-page="admin">แอดมิน</a></li>
+    </ul>
+    <div class="nav-actions" id="navActions">
+      <button class="btn-login" onclick="openModal('login')">เข้าสู่ระบบ</button>
+      <button class="btn-register" onclick="openModal('register')">สมัครสมาชิก</button>
     </div>
-    <div class="flex gap-2 items-center" id="navButtons"></div>
+    <div class="nav-user" id="navUser" style="display:none;">
+      <span class="nav-username" id="navUsername">User</span>
+      <button class="btn-redeem" onclick="openModal('redeem')">🎁 ใช้โค้ด</button>
+      <button class="btn-dashboard" onclick="showPage('dashboard')">แดชบอร์ด</button>
+      <button class="btn-logout" onclick="logout()">ออก</button>
+    </div>
+    <button class="hamburger" onclick="toggleMobile()">☰</button>
   </div>
 </nav>
 
-<div id="homePage" class="pt-24 pb-12 px-6 grid-bg">
-  <div class="max-w-6xl mx-auto relative">
-    <div class="text-center mb-20">
-      <div class="inline-block mb-4">
-        <span class="px-4 py-1.5 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-sm font-semibold flex items-center gap-2">
-          <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-          แพลตฟอร์มให้เช่าเว็บ #1 ของไทย
-        </span>
-      </div>
-      <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
-        <span class="gradient-text">เปิดร้านค้าออนไลน์</span><br>
-        <span class="text-white">ในราคา <span class="gradient-text">129฿</span>/เดือน</span>
+<!-- HERO PAGE -->
+<section id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-particles"></div>
+    <div class="hero-content">
+      <div class="hero-badge">⚡ #1 PRO SHOP IN THAILAND ⚡</div>
+      <h1 class="hero-title">
+        <span class="title-line1">HIDDEN</span>
+        <span class="title-line2">PRO<span class="fire-emoji">🔥</span></span>
       </h1>
-      <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">ได้เว็บขายของ + หลังบ้านจัดการ + subdomain ส่วนตัว + ระบบ Wallet ครบจบในที่เดียว ไม่ต้องเขียนโค้ด</p>
-      <div class="flex gap-4 justify-center flex-wrap">
-        <button onclick="scrollToPricing()" class="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white px-8 py-4 rounded-2xl font-bold btn-glow flex items-center gap-2">
-          <svg class="icon"><use href="#i-rocket"/></svg> เริ่มใช้งานเลย
-        </button>
-        <button onclick="openModal('demoModal')" class="glass-light text-white px-8 py-4 rounded-2xl font-bold hover:bg-white/10 flex items-center gap-2">
-          <svg class="icon"><use href="#i-eye"/></svg> ดูตัวอย่างเว็บ
-        </button>
+      <p class="hero-sub">บริการขายโปรแกรมเมอร์ฟรีไฟ • เข้าใช้งานง่าย • ปลอดภัย 100% • อัปเดตทุกแพตช์</p>
+      
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num" data-count="5847">0</div><div class="stat-label">ผู้ใช้งาน</div></div>
+        <div class="stat"><div class="stat-num" data-count="12490">0</div><div class="stat-label">ออเดอร์สำเร็จ</div></div>
+        <div class="stat"><div class="stat-num" data-count="99">0</div><div class="stat-label">% อัปไทม์</div></div>
+        <div class="stat"><div class="stat-num" data-count="24">0</div><div class="stat-label">ชม. ซัพพอร์ต</div></div>
+      </div>
+
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="showPage('packages');scrollTo('#packages');">🔥 ดูแพ็คเกจ</button>
+        <button class="btn-secondary" onclick="openModal('login')">⚡ เข้าสู่ระบบ</button>
       </div>
     </div>
+    <div class="hero-scroll"><span>เลื่อนลง</span><div class="scroll-arrow"></div></div>
+  </section>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-      <div class="glass-strong rounded-3xl p-8 hover:scale-105 transition cursor-pointer stat-card">
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center mb-4 pulse-slow shadow-lg shadow-cyan-500/30">
-          <svg class="icon-xl text-white"><use href="#i-bolt"/></svg>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-2">ตั้งร้านใน 1 นาที</h3>
-        <p class="text-gray-400">เลือกแพ็กเกจ → กรอกข้อมูล → ได้เว็บทันที</p>
-      </div>
-      <div class="glass-strong rounded-3xl p-8 hover:scale-105 transition cursor-pointer stat-card">
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4 pulse-slow shadow-lg shadow-purple-500/30">
-          <svg class="icon-xl text-white"><use href="#i-cart"/></svg>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-2">ระบบขายของครบ</h3>
-        <p class="text-gray-400">ตะกร้า ชำระเงิน ออเดอร์ สต็อก จัดการง่าย</p>
-      </div>
-      <div class="glass-strong rounded-3xl p-8 hover:scale-105 transition cursor-pointer stat-card">
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mb-4 pulse-slow shadow-lg shadow-orange-500/30">
-          <svg class="icon-xl text-white"><use href="#i-wallet"/></svg>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-2">ระบบ Wallet ในตัว</h3>
-        <p class="text-gray-400">ลูกค้าเติมเงินครั้งเดียว ซื้อของหักอัตโนมัติ</p>
-      </div>
-    </div>
-
-    <div id="pricing" class="mb-20">
-      <div class="text-center mb-10">
-        <h2 class="text-4xl md:text-5xl font-black text-white mb-3">แพ็กเกจ <span class="gradient-text">ราคาถูกสุด</span></h2>
-        <p class="text-gray-400">เริ่มต้นแค่ 129 บาท ฟรี 7 วันแรก ไม่พอใจยกเลิกได้</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="glass rounded-3xl p-8 hover:scale-105 transition">
-          <div class="text-sm text-gray-400 font-semibold mb-2">Basic</div>
-          <div class="flex items-baseline gap-1 mb-1">
-            <span class="text-5xl font-black text-white">฿129</span>
-            <span class="text-gray-400">/เดือน</span>
-          </div>
-          <p class="text-sm text-gray-500 mb-6">เริ่มต้นขายของ</p>
-          <ul class="space-y-3 mb-8 text-sm">
-            <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> สินค้าไม่เกิน 50 ชิ้น</li>
-            <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> Subdomain ฟรี</li>
-            <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> หลังบ้านจัดการ</li>
-            <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> ระบบ Wallet</li>
-          </ul>
-          <button onclick="selectPlan('basic', 129)" class="w-full glass-light text-white py-3 rounded-xl font-bold hover:bg-white/10 transition">เลือกแพ็กเกจ</button>
-        </div>
-        <div class="glass rounded-3xl p-8 pricing-popular border-2 border-purple-500/40 transform md:scale-105 relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl"></div>
-          <div class="relative">
-            <div class="text-sm gradient-text font-semibold mb-2">Pro ⭐ แนะนำ</div>
-            <div class="flex items-baseline gap-1 mb-1">
-              <span class="text-5xl font-black gradient-text">฿299</span>
-              <span class="text-gray-400">/เดือน</span>
-            </div>
-            <p class="text-sm text-gray-500 mb-6">สำหรับร้านจริงจัง</p>
-            <ul class="space-y-3 mb-8 text-sm">
-              <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> <strong>สินค้าไม่จำกัด</strong></li>
-              <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> ต่อโดเมนส่วนตัวได้</li>
-              <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> หลังบ้านขั้นสูง</li>
-              <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> ระบบ Wallet + คูปอง</li>
-              <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> ลบโฆษณา</li>
-            </ul>
-            <button onclick="selectPlan('pro', 299)" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow">เลือกแพ็กเกจนี้</button>
-          </div>
-        </div>
-        <div class="glass rounded-3xl p-8 hover:scale-105 transition">
-          <div class="text-sm text-orange-400 font-semibold mb-2">VIP 👑</div>
-          <div class="flex items-baseline gap-1 mb-1">
-            <span class="text-5xl font-black text-white">฿799</span>
-            <span class="text-gray-400">/เดือน</span>
-          </div>
-          <p class="text-sm text-gray-500 mb-6">สำหรับแบรนด์ใหญ่</p>
-          <ul class="space-y-3 mb-8 text-sm">
-            <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> ทุกอย่างใน Pro</li>
-            <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> ออกแบบเว็บให้ฟรี</li>
-            <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> ทีมงานดูแล</li>
-            <li class="flex items-center gap-2 text-gray-300"><svg class="icon-sm text-green-400 flex-shrink-0"><use href="#i-check"/></svg> SLA 99.9%</li>
-          </ul>
-          <button onclick="selectPlan('vip', 799)" class="w-full glass-light text-white py-3 rounded-xl font-bold hover:bg-white/10 transition">เลือกแพ็กเกจ</button>
-        </div>
-      </div>
-    </div>
-
-    <footer class="text-center text-gray-500 text-sm py-8 border-t border-white/5">
-      <p>© 2026 NextraStore Pro - ให้เช่าเว็บไซต์อัตโนมัติ</p>
-    </footer>
-  </div>
-</div>
-
-<div id="memberPage" class="hidden pt-24 pb-12 px-6">
-  <div class="max-w-6xl mx-auto">
-    <div class="glass-strong rounded-3xl p-6 mb-6 slide-up flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
-          <span class="font-black text-white text-xl" id="memberAvatar">U</span>
-        </div>
-        <div>
-          <p class="text-xs text-gray-400">ยินดีต้อนรับ</p>
-          <h2 class="text-2xl font-black text-white" id="welcomeName"></h2>
-        </div>
-      </div>
-      <div class="flex gap-2">
-        <button onclick="goHome()" class="glass-light px-4 py-2 rounded-xl text-gray-300 hover:text-white flex items-center gap-2 text-sm">
-          <svg class="icon-sm"><use href="#i-globe"/></svg> หน้าหลัก
-        </button>
-        <button onclick="logout()" class="bg-red-500/20 text-red-400 px-4 py-2 rounded-xl hover:bg-red-500/30 flex items-center gap-2 text-sm">
-          <svg class="icon-sm"><use href="#i-logout"/></svg> ออก
-        </button>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      <div class="glass rounded-2xl p-4 stat-card">
-        <p class="text-xs text-gray-400">เว็บของคุณ</p>
-        <p class="text-3xl font-black text-white mt-1" id="mySitesCount">0</p>
-      </div>
-      <div class="glass rounded-2xl p-4 stat-card">
-        <p class="text-xs text-gray-400">แพ็กเกจ</p>
-        <p class="text-lg font-black gradient-text mt-1" id="myPlan">-</p>
-      </div>
-      <div class="glass rounded-2xl p-4 stat-card">
-        <p class="text-xs text-gray-400">หมดอายุ</p>
-        <p class="text-sm font-bold text-orange-400 mt-1" id="myExpiry">-</p>
-      </div>
-      <div class="glass rounded-2xl p-4 stat-card">
-        <p class="text-xs text-gray-400">ยอดใช้จ่าย</p>
-        <p class="text-lg font-black text-green-400 mt-1" id="mySpent">฿0</p>
-      </div>
-    </div>
-
-    <div class="glass-strong rounded-3xl p-6">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
-        <h3 class="text-xl font-bold text-white flex items-center gap-2"><svg class="icon"><use href="#i-globe"/></svg> เว็บไซต์ของฉัน</h3>
-        <button onclick="openCreateSite()" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-xl text-sm font-bold btn-glow flex items-center gap-2">
-          <svg class="icon-sm"><use href="#i-plus"/></svg> สร้างเว็บใหม่
-        </button>
-      </div>
-      <div id="mySitesList"></div>
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>🔥 อัปเดต OB47 แล้ว</span>
+      <span>⚡ เซิร์ฟเวอร์เสถียร 99.9%</span>
+      <span>🎯 Aimbot • Wallhack • ESP • Anti-Ban</span>
+      <span>💎 รองรับทุกดีไวซ์</span>
+      <span>🚀 ติดตั้งง่ายใน 3 นาที</span>
+      <span>🔥 อัปเดต OB47 แล้ว</span>
+      <span>⚡ เซิร์ฟเวอร์เสถียร 99.9%</span>
+      <span>🎯 Aimbot • Wallhack • ESP • Anti-Ban</span>
+      <span>💎 รองรับทุกดีไวซ์</span>
+      <span>🚀 ติดตั้งง่ายใน 3 นาที</span>
     </div>
   </div>
-</div>
 
-<div id="adminPage" class="hidden pt-16">
-  <nav class="fixed top-0 left-0 right-0 z-50 glass-strong">
-    <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
-          <svg class="icon text-white"><use href="#i-shield"/></svg>
-        </div>
-        <div>
-          <h1 class="font-black text-white text-sm">NextraStore Admin</h1>
-          <p class="text-[10px] text-gray-400">Logged as: <span class="text-purple-400">nextrastore</span></p>
-        </div>
+  <section id="features" class="features">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">🎮 ฟีเจอร์เด่น</span>
+        <h2 class="section-title">ทำไมต้อง <span class="accent">HIDDEN PRO</span></h2>
+        <p class="section-sub">เราพัฒนาเครื่องมือเกมมิ่งระดับโปร ปลอดภัย แม่นยำ ไม่มีใครเทียบได้</p>
       </div>
-      <div class="flex gap-2 items-center">
-        <div class="hidden md:flex items-center gap-2 glass-light px-3 py-1.5 rounded-xl">
-          <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span class="text-xs text-gray-300" id="adminTime">ออนไลน์</span>
-        </div>
-        <button onclick="goHome()" class="glass-light px-3 py-2 rounded-xl text-gray-300 hover:text-white text-sm flex items-center gap-1">
-          <svg class="icon-sm"><use href="#i-external"/></svg> <span class="hidden md:inline">ดูเว็บ</span>
-        </button>
-        <button onclick="logoutAdmin()" class="bg-red-500/20 text-red-400 px-3 py-2 rounded-xl hover:bg-red-500/30 text-sm flex items-center gap-1">
-          <svg class="icon-sm"><use href="#i-logout"/></svg> <span class="hidden md:inline">ออก</span>
-        </button>
+      <div class="feature-grid">
+        <div class="feature"><div class="feature-icon">🎯</div><h3>Aimbot Pro</h3><p>ล็อกหัวแม่นยำ 99.8% ปรับความ smooth ได้ ตรวจจับการเคลื่อนไหวเรียลไทม์ แทบไม่มีคนจับได้</p></div>
+        <div class="feature"><div class="feature-icon">👁️</div><h3>ESP Vision</h3><p>มองเห็นศัตรูทะลุกำแพง แสดงระยะ HP ชื่อ ปืน ระเบิด ครบทุกรายละเอียด</p></div>
+        <div class="feature"><div class="feature-icon">🛡️</div><h3>Anti-Ban</h3><p>ระบบป้องกันแบนขั้นสูง อัปเดตภายใน 24 ชม. หลังแพตช์ใหม่ พร้อมระบบสุ่มเซ็นเซอร์</p></div>
+        <div class="feature"><div class="feature-icon">⚡</div><h3>No Recoil</h3><p>ลดแรงสั่นปืน 100% ยิงง่าย แม่น ไม่ต้องเล็งเอง ใช้ได้กับปืนทุกชนิด</p></div>
+        <div class="feature"><div class="feature-icon">🗺️</div><h3>Radar Hack</h3><p>เห็นตำแหน่งศัตรูทั้งแมพ พร้อมเส้นทางที่ดีที่สุด หลบ ลุย ได้ตามใจ</p></div>
+        <div class="feature"><div class="feature-icon">🔄</div><h3>Auto Update</h3><p>อัปเดตอัตโนมัติทุกครั้งที่เกมแพตช์ ไม่ต้องโหลดใหม่ ล็อกอินใหม่ทีเดียวจบ</p></div>
       </div>
     </div>
-  </nav>
-  <div class="flex pt-4">
-    <aside class="w-64 min-h-screen p-4 hidden md:block">
-      <div class="glass-strong rounded-2xl p-4 sticky top-20">
-        <div class="text-xs text-gray-500 uppercase mb-3 px-2">เมนูหลัก</div>
-        <nav class="space-y-1">
-          <a onclick="showAdminTab('dashboard')" data-tab="dashboard" class="admin-nav block px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer text-gray-300 flex items-center gap-3 text-sm transition"><svg class="icon-sm"><use href="#i-dashboard"/></svg> Dashboard</a>
-          <a onclick="showAdminTab('tenants')" data-tab="tenants" class="admin-nav block px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer text-gray-300 flex items-center gap-3 text-sm transition"><svg class="icon-sm"><use href="#i-users"/></svg> ลูกค้าเช่า</a>
-          <a onclick="showAdminTab('sites')" data-tab="sites" class="admin-nav block px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer text-gray-300 flex items-center gap-3 text-sm transition"><svg class="icon-sm"><use href="#i-globe"/></svg> เว็บทั้งหมด</a>
-          <a onclick="showAdminTab('orders')" data-tab="orders" class="admin-nav block px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer text-gray-300 flex items-center gap-3 text-sm transition"><svg class="icon-sm"><use href="#i-package"/></svg> ออเดอร์</a>
-          <a onclick="showAdminTab('revenue')" data-tab="revenue" class="admin-nav block px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer text-gray-300 flex items-center gap-3 text-sm transition"><svg class="icon-sm"><use href="#i-wallet"/></svg> รายได้</a>
-          <a onclick="showAdminTab('settings')" data-tab="settings" class="admin-nav block px-4 py-3 rounded-xl hover:bg-white/5 cursor-pointer text-gray-300 flex items-center gap-3 text-sm transition"><svg class="icon-sm"><use href="#i-settings"/></svg> ตั้งค่า</a>
-        </nav>
+  </section>
+
+  <section id="reviews" class="reviews">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">💬 รีวิวจากลูกค้า</span>
+        <h2 class="section-title">ลูกค้าบอก <span class="accent">อะไร</span> กัน</h2>
+        <p class="section-sub">รีวิวจริงจากผู้ใช้งานจริง ไม่ปลอม ไม่แต่ง</p>
       </div>
-    </aside>
-    <main class="flex-1 p-4 md:p-8">
-
-      <div id="admin-dashboard" class="admin-content">
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h2 class="text-3xl font-black text-white">Dashboard</h2>
-            <p class="text-sm text-gray-400 mt-1">ภาพรวมระบบทั้งหมด</p>
-          </div>
-          <div class="glass-light px-3 py-1.5 rounded-xl text-xs text-gray-400" id="currentDate"></div>
+      <div class="review-grid">
+        <div class="review">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"โหดมาก ใช้มา 3 เดือนแล้วไม่โดนแบนเลย แมทช์แต่ละทีได้บัวเยอะมาก คุ้มสุดๆ"</p>
+          <div class="review-author"><div class="avatar" style="background:linear-gradient(135deg,#ff5722,#ff9800)">เอ</div><div><strong>เอกพล</strong><span>VIP รายเดือน • ใช้งาน 90 วัน</span></div></div>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div class="glass-strong rounded-2xl p-6 stat-card">
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center"><svg class="icon text-white"><use href="#i-users"/></svg></div>
-              <svg class="icon-sm text-green-400"><use href="#i-trending-up"/></svg>
-            </div>
-            <p class="text-xs text-gray-400">ลูกค้าทั้งหมด</p>
-            <p class="text-3xl font-black text-white mt-1" id="statMembers">0</p>
-            <p class="text-xs text-green-400 mt-2">↑ ใหม่ <span id="statNew">0</span> คน</p>
-          </div>
-          <div class="glass-strong rounded-2xl p-6 stat-card">
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center"><svg class="icon text-white"><use href="#i-globe"/></svg></div>
-              <svg class="icon-sm text-green-400"><use href="#i-trending-up"/></svg>
-            </div>
-            <p class="text-xs text-gray-400">เว็บที่ใช้งาน</p>
-            <p class="text-3xl font-black gradient-text mt-1" id="statActiveSites">0</p>
-            <p class="text-xs text-gray-500 mt-2">จากทั้งหมด <span id="statTotalSites">0</span></p>
-          </div>
-          <div class="glass-strong rounded-2xl p-6 stat-card">
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center"><svg class="icon text-white"><use href="#i-wallet"/></svg></div>
-              <svg class="icon-sm text-green-400"><use href="#i-trending-up"/></svg>
-            </div>
-            <p class="text-xs text-gray-400">รายได้/เดือน</p>
-            <p class="text-2xl font-black text-green-400 mt-1" id="statMRR">฿0</p>
-            <p class="text-xs text-gray-500 mt-2">MRR</p>
-          </div>
-          <div class="glass-strong rounded-2xl p-6 stat-card">
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center"><svg class="icon text-white"><use href="#i-package"/></svg></div>
-            </div>
-            <p class="text-xs text-gray-400">ออเดอร์ทั้งหมด</p>
-            <p class="text-3xl font-black text-white mt-1" id="statOrders">0</p>
-            <p class="text-xs text-gray-500 mt-2"><span id="statRevenue">฿0</span></p>
-          </div>
+        <div class="review">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"เร็ว แม่น ปลอดภัย ทีมงานตอบไว แนะนำเลย โดยเฉพาะแพ็คเกจซีซั่นคุ้มมาก"</p>
+          <div class="review-author"><div class="avatar" style="background:linear-gradient(135deg,#e91e63,#9c27b0)">ม</div><div><strong>มิ้นท์</strong><span>Season Pass • ใช้งาน 45 วัน</span></div></div>
         </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="glass-strong rounded-2xl p-6">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="font-bold text-white flex items-center gap-2"><svg class="icon-sm"><use href="#i-trending-up"/></svg> การเช่าล่าสุด</h3>
-              <button onclick="showAdminTab('sites')" class="text-xs text-purple-400 hover:underline">ดูทั้งหมด →</button>
-            </div>
-            <div id="recentRentals" class="space-y-2"></div>
-          </div>
-
-          <div class="glass-strong rounded-2xl p-6">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="font-bold text-white flex items-center gap-2"><svg class="icon-sm"><use href="#i-star"/></svg> Top ลูกค้า</h3>
-            </div>
-            <div id="topCustomers" class="space-y-2"></div>
-          </div>
+        <div class="review">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"เริ่มจาก DAILY ลองของ แล้วอัปเป็น LIFETIME เลย ใช้ได้ทุกแมพ ปืนแม่นสุดๆ ชนะ 95% ของแมทช์"</p>
+          <div class="review-author"><div class="avatar" style="background:linear-gradient(135deg,#2196f3,#00bcd4)">ซ</div><div><strong>ซันเซ็ท</strong><span>Lifetime • ใช้งาน 6 เดือน</span></div></div>
         </div>
-      </div>
-
-      <div id="admin-tenants" class="admin-content hidden">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-6">
-          <div>
-            <h2 class="text-3xl font-black text-white">ลูกค้าเช่าทั้งหมด</h2>
-            <p class="text-sm text-gray-400 mt-1">จัดการข้อมูลลูกค้าทั้งหมด</p>
-          </div>
-          <input type="text" placeholder="🔍 ค้นหา..." class="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none input-glow" onkeyup="searchMembers(this.value)">
-        </div>
-        <div class="glass-strong rounded-2xl p-4 overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead><tr class="text-gray-400 border-b border-white/10"><th class="py-3 px-2">ชื่อ</th><th class="py-3 px-2">Username</th><th class="py-3 px-2">แพ็กเกจ</th><th class="py-3 px-2">เว็บ</th><th class="py-3 px-2">ยอดจ่าย</th><th class="py-3 px-2">หมดอายุ</th><th class="py-3 px-2">จัดการ</th></tr></thead>
-            <tbody id="tenantsTable"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div id="admin-sites" class="admin-content hidden">
-        <h2 class="text-3xl font-black text-white mb-6">เว็บทั้งหมดในระบบ</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="sitesGrid"></div>
-      </div>
-
-      <div id="admin-orders" class="admin-content hidden">
-        <h2 class="text-3xl font-black text-white mb-6">คำสั่งซื้อทั้งหมด</h2>
-        <div class="glass-strong rounded-2xl p-4 overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead><tr class="text-gray-400 border-b border-white/10"><th class="py-3 px-2">รหัส</th><th class="py-3 px-2">ลูกค้า</th><th class="py-3 px-2">เว็บ</th><th class="py-3 px-2">ยอด</th><th class="py-3 px-2">วันที่</th><th class="py-3 px-2">สถานะ</th></tr></thead>
-            <tbody id="adminOrdersTable"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div id="admin-revenue" class="admin-content hidden">
-        <h2 class="text-3xl font-black text-white mb-6">รายได้</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div class="glass-strong rounded-2xl p-6 stat-card">
-            <p class="text-xs text-gray-400 mb-2">วันนี้</p>
-            <p class="text-3xl font-black text-white" id="revToday">฿0</p>
-          </div>
-          <div class="glass-strong rounded-2xl p-6 stat-card">
-            <p class="text-xs text-gray-400 mb-2">เดือนนี้</p>
-            <p class="text-3xl font-black gradient-text" id="revMonth">฿0</p>
-          </div>
-          <div class="glass-strong rounded-2xl p-6 stat-card">
-            <p class="text-xs text-gray-400 mb-2">ทั้งหมด</p>
-            <p class="text-3xl font-black text-green-400" id="revAll">฿0</p>
-          </div>
-        </div>
-        <div class="glass-strong rounded-2xl p-6">
-          <h3 class="font-bold text-white mb-4">ประวัติธุรกรรม</h3>
-          <div id="revenueHistory" class="space-y-2"></div>
-        </div>
-      </div>
-
-      <div id="admin-settings" class="admin-content hidden">
-        <h2 class="text-3xl font-black text-white mb-6">ตั้งค่าแพลตฟอร์ม</h2>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="glass-strong rounded-2xl p-6 space-y-4">
-            <h3 class="font-bold text-white flex items-center gap-2"><svg class="icon-sm"><use href="#i-globe"/></svg> ทั่วไป</h3>
-            <div><label class="block text-xs mb-1 text-gray-400">โดเมนหลัก</label><input value="nextrastore.com" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow text-sm"></div>
-            <div><label class="block text-xs mb-1 text-gray-400">ชื่อเว็บ</label><input value="NextraStore Pro" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow text-sm"></div>
-            <div><label class="block text-xs mb-1 text-gray-400">อีเมลติดต่อ</label><input value="admin@nextrastore.com" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow text-sm"></div>
-          </div>
-          <div class="glass-strong rounded-2xl p-6 space-y-4">
-            <h3 class="font-bold text-white flex items-center gap-2"><svg class="icon-sm"><use href="#i-phone"/></svg> การชำระเงิน</h3>
-            <div><label class="block text-xs mb-1 text-gray-400">เบอร์รับเงิน TrueMoney</label><input value="0988785068" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow text-sm"></div>
-            <div><label class="block text-xs mb-1 text-gray-400">ชื่อบัญชี</label><input value="NextraStore" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow text-sm"></div>
-            <div><label class="block text-xs mb-1 text-gray-400">ทดลองใช้ฟรี (วัน)</label><input type="number" value="7" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow text-sm"></div>
-            <button onclick="toast('บันทึกการตั้งค่าแล้ว')" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow">💾 บันทึกการตั้งค่า</button>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-</div>
-
-<div id="clientSitePage" class="hidden">
-  <nav class="fixed top-0 left-0 right-0 z-50 glass-strong">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center">
-          <svg class="icon text-white"><use href="#i-cart"/></svg>
-        </div>
-        <h1 class="text-lg font-black gradient-text" id="clientSiteName">ร้านค้า</h1>
-      </div>
-      <div class="flex gap-2">
-        <button onclick="openClientAdmin()" class="glass-light px-3 py-2 rounded-xl text-gray-300 hover:text-white text-sm flex items-center gap-1">
-          <svg class="icon-sm"><use href="#i-settings"/></svg> <span class="hidden md:inline">จัดการ</span>
-        </button>
-        <button onclick="exitClientSite()" class="bg-red-500/20 text-red-400 px-3 py-2 rounded-xl text-sm flex items-center gap-1">
-          <svg class="icon-sm"><use href="#i-logout"/></svg> <span class="hidden md:inline">ออก</span>
-        </button>
       </div>
     </div>
-  </nav>
-  <div class="pt-20">
-    <div id="clientStorefront"></div>
-    <div id="clientAdminPanel" class="hidden"></div>
-  </div>
-</div>
+  </section>
+</section>
 
-<div id="authModal" class="modal fixed inset-0 bg-black/70 backdrop-blur-sm items-center justify-center z-50 p-4">
-  <div class="glass-strong rounded-3xl p-6 md:p-8 w-full max-w-md slide-up relative my-8 max-h-[90vh] overflow-y-auto">
-    <button onclick="closeModal('authModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white"><svg class="icon"><use href="#i-x"/></svg></button>
-    <div id="authLogin">
-      <h3 class="text-2xl md:text-3xl font-black text-white mb-2">เข้าสู่ระบบ</h3>
-      <p class="text-gray-400 mb-6">ยินดีต้อนรับกลับมา 👋</p>
-      <div class="space-y-3">
-        <input id="loginUsername" placeholder="Username" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow" onkeypress="if(event.key==='Enter')document.getElementById('loginPassword').focus()">
-        <input id="loginPassword" type="password" placeholder="Password" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow" onkeypress="if(event.key==='Enter')doLogin()">
-        <button onclick="doLogin()" class="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white py-3 rounded-xl font-bold btn-glow">เข้าสู่ระบบ</button>
-      </div>
-      <p class="text-center text-gray-400 text-sm mt-4">ยังไม่มีบัญชี? <a onclick="switchAuth('register')" class="text-purple-400 cursor-pointer hover:underline">สมัครเลย</a></p>
+<!-- PACKAGES PAGE -->
+<section id="page-packages" class="page">
+  <div class="container" style="padding-top:120px; padding-bottom:80px;">
+    <div class="section-head">
+      <span class="section-tag">💰 ราคาสุดคุ้ม</span>
+      <h2 class="section-title">เลือกแพ็คเกจ <span class="accent">PRO</span></h2>
+      <p class="section-sub">เลือกแพ็คเกจที่ใช่สำหรับคุณ ทั้งรายวัน รายเดือน ถาวร</p>
     </div>
-    <div id="authRegister" class="hidden">
-      <h3 class="text-2xl md:text-3xl font-black text-white mb-2">สมัครสมาชิก</h3>
-      <p class="text-gray-400 mb-6">เริ่มใช้งานฟรี ✨</p>
-      <div class="space-y-3">
-        <input id="regName" placeholder="ชื่อ-นามสกุล" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
-        <input id="regUsername" placeholder="Username (4-20 ตัว)" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
-        <input id="regEmail" type="email" placeholder="อีเมล" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
-        <input id="regPhone" placeholder="เบอร์โทร" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
-        <input id="regPassword" type="password" placeholder="Password (ขั้นต่ำ 6 ตัว)" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
-        <input id="regPassword2" type="password" placeholder="ยืนยัน Password" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow">
-        <button onclick="doRegister()" class="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white py-3 rounded-xl font-bold btn-glow">สมัครสมาชิก</button>
-      </div>
-      <p class="text-center text-gray-400 text-sm mt-4">มีบัญชีแล้ว? <a onclick="switchAuth('login')" class="text-purple-400 cursor-pointer hover:underline">เข้าสู่ระบบ</a></p>
+    <div class="package-grid">
+      <div class="pkg"><div class="pkg-head"><span class="pkg-tag">มาใหม่</span><div class="pkg-icon">🎯</div><h3 class="pkg-name">DAILY PASS</h3><p class="pkg-desc">ทดลองใช้ 1 วัน เหมาะมือใหม่</p></div><div class="pkg-price"><span class="price-currency">฿</span><span class="price-num">49</span><span class="price-period">/วัน</span></div><ul class="pkg-features"><li>✓ ใช้งาน 24 ชั่วโมง</li><li>✓ Aimbot ปรับแรงได้</li><li>✓ ESP มองเห็นศัตรู</li><li>✓ Anti-Ban เบสิก</li><li>✓ ซัพพอร์ตผ่าน Discord</li></ul><button class="pkg-btn" onclick="buyPkg('daily')">เลือกแพ็คเกจ</button></div>
+      <div class="pkg"><div class="pkg-head"><span class="pkg-tag">ยอดนิยม</span><div class="pkg-icon">⚡</div><h3 class="pkg-name">WEEKLY</h3><p class="pkg-desc">ใช้งาน 7 วัน คุ้มสุดๆ</p></div><div class="pkg-price"><span class="price-currency">฿</span><span class="price-num">249</span><span class="price-period">/สัปดาห์</span></div><ul class="pkg-features"><li>✓ ใช้งาน 7 วันเต็ม</li><li>✓ ฟีเจอร์ครบทุกโหมด</li><li>✓ Aimbot ระดับ Pro</li><li>✓ Wallhack + ESP</li><li>✓ Anti-Ban ขั้นสูง</li><li>✓ อัปเดตอัตโนมัติ</li></ul><button class="pkg-btn" onclick="buyPkg('weekly')">เลือกแพ็คเกจ</button></div>
+      <div class="pkg popular"><span class="pkg-badge">🔥 HOT</span><div class="pkg-head"><div class="pkg-icon">💎</div><h3 class="pkg-name">MONTHLY VIP</h3><p class="pkg-desc">แพ็คเกจขายดีสุด ฟีเจอร์ครบ</p></div><div class="pkg-price"><span class="price-old">฿1,490</span><span class="price-currency">฿</span><span class="price-num">799</span><span class="price-period">/เดือน</span></div><ul class="pkg-features"><li>✓ ใช้งาน 30 วัน</li><li>✓ ทุกฟีเจอร์ปลดล็อก</li><li>✓ Aimbot Pro + Smooth</li><li>✓ ESP มองทะลุกำแพง</li><li>✓ No Recoil 100%</li><li>✓ Anti-Ban ระดับสูงสุด</li><li>✓ ซัพพอร์ตส่วนตัว 1:1</li><li>✓ อัปเดตฟรีทุกแพตช์</li></ul><button class="pkg-btn" onclick="buyPkg('monthly')">🔥 เลือกแพ็คเกจนี้</button></div>
+      <div class="pkg"><div class="pkg-head"><span class="pkg-tag">คุ้มสุด</span><div class="pkg-icon">👑</div><h3 class="pkg-name">SEASON PASS</h3><p class="pkg-desc">ใช้ได้ทั้งซีซั่น 90 วัน</p></div><div class="pkg-price"><span class="price-old">฿3,990</span><span class="price-currency">฿</span><span class="price-num">1,899</span><span class="price-period">/ซีซั่น</span></div><ul class="pkg-features"><li>✓ ใช้งาน 90 วัน</li><li>✓ ทุกฟีเจอร์ VIP</li><li>✓ เครื่องมือแอดมิน</li><li>✓ สกินอาวุธพิเศษ</li><li>✓ Config ส่วนตัว</li><li>✓ Priority Support</li><li>✓ อัปเดตฟรีทุกแพตช์</li></ul><button class="pkg-btn" onclick="buyPkg('season')">เลือกแพ็คเกจ</button></div>
+      <div class="pkg"><div class="pkg-head"><span class="pkg-tag">ถาวร</span><div class="pkg-icon">🏆</div><h3 class="pkg-name">LIFETIME</h3><p class="pkg-desc">จ่ายครั้งเดียว ใช้ได้ตลอดชีพ</p></div><div class="pkg-price"><span class="price-old">฿7,990</span><span class="price-currency">฿</span><span class="price-num">3,999</span><span class="price-period">/ตลอดชีพ</span></div><ul class="pkg-features"><li>✓ ใช้งานไม่จำกัด</li><li>✓ ทุกฟีเจอร์ทุกเวอร์ชัน</li><li>✓ ฟีเจอร์ใหม่ฟรีทุกอย่าง</li><li>✓ โหลดเวอร์ชัน PC + มือถือ</li><li>✓ Config Preset ส่วนตัว</li><li>✓ VIP Support ตลอด 24/7</li><li>✓ อัปเดตไม่อั้น</li><li>✓ รับประกันไม่แบน 1 ปี</li></ul><button class="pkg-btn" onclick="buyPkg('lifetime')">เลือกแพ็คเกจ</button></div>
     </div>
   </div>
-</div>
+</section>
 
-<div id="adminLoginModal" class="modal fixed inset-0 bg-black/70 backdrop-blur-sm items-center justify-center z-50 p-4">
-  <div class="glass-strong rounded-3xl p-6 md:p-8 w-full max-w-md slide-up relative">
-    <button onclick="closeModal('adminLoginModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white"><svg class="icon"><use href="#i-x"/></svg></button>
-    <div class="text-center mb-6">
-      <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-purple-500/30">
-        <svg class="icon-xl text-white"><use href="#i-shield"/></svg>
-      </div>
-      <h3 class="text-2xl font-black text-white">Admin Login</h3>
-      <p class="text-xs text-gray-400 mt-2">🔑 Default: nextrastore / nextra109store</p>
+<!-- DASHBOARD -->
+<section id="page-dashboard" class="page">
+  <div class="container" style="padding-top:120px; padding-bottom:80px;">
+    <div class="section-head">
+      <span class="section-tag">👤 ยินดีต้อนรับ</span>
+      <h2 class="section-title">แดชบอร์ดของ <span class="accent" id="dashUsername">User</span></h2>
     </div>
-    <div class="space-y-3">
+    <div class="dash-grid">
+      <div class="dash-card"><div class="dash-icon">💎</div><h3>แพ็คเกจปัจจุบัน</h3><p id="dashPkg">ยังไม่มี</p></div>
+      <div class="dash-card"><div class="dash-icon">📅</div><h3>วันหมดอายุ</h3><p id="dashExpire">-</p></div>
+      <div class="dash-card"><div class="dash-icon">💰</div><h3>เครดิตคงเหลือ</h3><p id="dashCredits">0</p></div>
+      <div class="dash-card"><div class="dash-icon">🛒</div><h3>ออเดอร์ทั้งหมด</h3><p id="dashOrders">0</p></div>
+    </div>
+    <div style="margin-top:40px;">
+      <h3 style="margin-bottom:20px;">📋 ประวัติออเดอร์</h3>
+      <div class="order-list" id="orderList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN -->
+<section id="page-admin" class="page">
+  <div class="container" style="padding-top:120px; padding-bottom:80px;">
+    <div class="section-head">
+      <span class="section-tag">🛡️ Admin Panel</span>
+      <h2 class="section-title">แผงควบคุม <span class="accent">แอดมิน</span></h2>
+    </div>
+    
+    <div class="dash-grid" id="adminStats">
+      <div class="dash-card"><div class="dash-icon">👥</div><h3>ผู้ใช้ทั้งหมด</h3><p id="statUsers">0</p></div>
+      <div class="dash-card"><div class="dash-icon">📦</div><h3>ออเดอร์ทั้งหมด</h3><p id="statOrders">0</p></div>
+      <div class="dash-card"><div class="dash-icon">⏳</div><h3>รออนุมัติ</h3><p id="statPending">0</p></div>
+      <div class="dash-card"><div class="dash-icon">💵</div><h3>รายได้รวม</h3><p id="statRevenue">฿0</p></div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="tab active" data-tab="orders">ออเดอร์</button>
+      <button class="tab" data-tab="users">ผู้ใช้</button>
+      <button class="tab" data-tab="codes">โค้ด</button>
+      <button class="tab" data-tab="logs">Logs</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-orders">
+      <div class="order-list" id="adminOrderList"></div>
+    </div>
+
+    <div class="tab-panel" id="tab-users">
+      <div class="user-list" id="adminUserList"></div>
+    </div>
+
+    <div class="tab-panel" id="tab-codes">
+      <div class="code-create">
+        <h3>สร้างโค้ดใหม่</h3>
+        <form onsubmit="createCode(event)">
+          <input type="text" name="code" placeholder="โค้ด (เว้นว่างสุ่มให้)">
+          <select name="type">
+            <option value="credits">เครดิต</option>
+            <option value="package">แพ็คเกจ</option>
+          </select>
+          <input type="number" name="value" placeholder="มูลค่า" value="100">
+          <select name="pkgId">
+            <option value="">-เลือกแพ็คเกจ-</option>
+            <option value="daily">daily</option><option value="weekly">weekly</option>
+            <option value="monthly">monthly</option><option value="season">season</option>
+            <option value="lifetime">lifetime</option>
+          </select>
+          <button type="submit" class="btn-primary">สร้างโค้ด</button>
+        </form>
+      </div>
+      <div class="code-list" id="adminCodeList"></div>
+    </div>
+
+    <div class="tab-panel" id="tab-logs">
+      <div class="log-list" id="adminLogList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="page-contact" class="page">
+  <div class="container" style="padding-top:120px; padding-bottom:80px;">
+    <div class="section-head">
+      <span class="section-tag">📞 ติดต่อเรา</span>
+      <h2 class="section-title">มีคำถาม? <span class="accent">ทักมาเลย</span></h2>
+      <p class="section-sub">ทีมซัพพอร์ตพร้อมตอบ 24 ชั่วโมง ทุกวัน</p>
+    </div>
+    <div class="contact-grid">
+      <a href="#" class="contact-card"><div class="contact-icon">💬</div><h3>Discord</h3><p>เข้าร่วมเซิร์ฟเวอร์</p><span class="contact-link">discord.gg/hiddenpro</span></a>
+      <a href="#" class="contact-card"><div class="contact-icon">📱</div><h3>LINE</h3><p>แอดไลน์ไอดี</p><span class="contact-link">@hiddenpro</span></a>
+      <a href="#" class="contact-card"><div class="contact-icon">📧</div><h3>Email</h3><p>ส่งเมลหาเรา</p><span class="contact-link">support@hiddenpro.shop</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
       <div>
-        <label class="block text-xs text-gray-400 mb-1">Username</label>
-        <input id="adminLoginUser" type="text" value="nextrastore" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow">
+        <div class="logo"><span class="logo-icon">🔥</span><span class="logo-text">HIDDEN<span class="logo-accent">PRO</span></span></div>
+        <p class="footer-desc">บริการขายโปรเกมมิ่งอันดับ 1 ของไทย ปลอดภัย แม่นยำ อัปเดตตลอด</p>
       </div>
-      <div>
-        <label class="block text-xs text-gray-400 mb-1">Password</label>
-        <input id="adminLoginPass" type="password" value="nextra109store" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none input-glow" onkeypress="if(event.key==='Enter')doAdminLogin()">
-      </div>
-      <button onclick="doAdminLogin()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow">🔓 เข้าสู่ระบบ</button>
-      <p class="text-center text-xs text-gray-500">กด Enter ในช่อง Password ได้เลย</p>
+      <div><h4>เมนู</h4><ul><li><a href="#" onclick="showPage('home');return false;">หน้าแรก</a></li><li><a href="#" onclick="showPage('packages');return false;">แพ็คเกจ</a></li><li><a href="#" onclick="showPage('contact');return false;">ติดต่อ</a></li></ul></div>
+      <div><h4>ช่วยเหลือ</h4><ul><li><a href="#">วิธีใช้งาน</a></li><li><a href="#">คำถามที่พบบ่อย</a></li><li><a href="#">นโยบาย</a></li></ul></div>
+      <div><h4>ชำระเงิน</h4><div class="payment-icons"><span>💳 TrueMoney</span><span>📲 พร้อมเพย์</span><span>🏦 โอนผ่านธนาคาร</span><span>₿ USDT</span></div></div>
     </div>
+    <div class="footer-bottom"><p>© 2026 HIDDEN PRO. All rights reserved.</p></div>
+  </div>
+</footer>
+
+<!-- MODAL: LOGIN -->
+<div class="modal" id="loginModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('login')">×</button>
+    <h2 class="modal-title">เข้าสู่ระบบ</h2>
+    <form class="modal-form" onsubmit="handleLogin(event)">
+      <div class="form-group"><label>ชื่อผู้ใช้ / อีเมล</label><input type="text" name="username" required placeholder="username หรือ email"></div>
+      <div class="form-group"><label>รหัสผ่าน</label><input type="password" name="password" required placeholder="••••••••"></div>
+      <button type="submit" class="btn-primary full">⚡ เข้าสู่ระบบ</button>
+      <p class="modal-switch">ยังไม่มีบัญชี? <a href="#" onclick="switchModal('login','register');return false;">สมัครสมาชิก</a></p>
+    </form>
   </div>
 </div>
 
-<div id="createSiteModal" class="modal fixed inset-0 bg-black/70 backdrop-blur-sm items-center justify-center z-50 p-4 overflow-y-auto">
-  <div class="glass-strong rounded-3xl p-6 md:p-8 w-full max-w-2xl slide-up my-8 relative">
-    <button onclick="closeCreateSite()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><svg class="icon"><use href="#i-x"/></svg></button>
-    <div class="flex flex-wrap justify-between gap-2 mb-8">
-      <div id="step-ind-1" class="flex items-center gap-2 step-active px-3 py-1 rounded-full text-xs md:text-sm font-bold"><span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs">1</span> <span class="hidden md:inline">เลือก</span></div>
-      <div id="step-ind-2" class="flex items-center gap-2 step-pending px-3 py-1 rounded-full text-xs md:text-sm"><span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs">2</span> <span class="hidden md:inline">ข้อมูล</span></div>
-      <div id="step-ind-3" class="flex items-center gap-2 step-pending px-3 py-1 rounded-full text-xs md:text-sm"><span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs">3</span> <span class="hidden md:inline">ชำระ</span></div>
-      <div id="step-ind-4" class="flex items-center gap-2 step-pending px-3 py-1 rounded-full text-xs md:text-sm"><span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs">4</span> <span class="hidden md:inline">เสร็จ</span></div>
-    </div>
-    <div id="cs-step-1">
-      <h3 class="text-xl md:text-2xl font-black text-white mb-2">เลือกแพ็กเกจ</h3>
-      <p class="text-gray-400 mb-6">เลือกแพ็กเกจที่ต้องการใช้งาน</p>
-      <div class="space-y-3" id="planSelectList"></div>
-      <button onclick="csNext()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold mt-6 btn-glow flex items-center justify-center gap-2">ถัดไป <svg class="icon-sm"><use href="#i-arrow-right"/></svg></button>
-    </div>
-    <div id="cs-step-2" class="hidden">
-      <h3 class="text-xl md:text-2xl font-black text-white mb-2">กรอกข้อมูลเว็บ</h3>
-      <p class="text-gray-400 mb-6">ข้อมูลนี้จะใช้สร้างเว็บของคุณ</p>
-      <div class="space-y-3">
-        <div>
-          <label class="block text-sm mb-1 text-gray-400">ชื่อ subdomain *</label>
-          <div class="flex">
-            <input id="cs-domain" placeholder="myshop" class="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-l-xl text-white placeholder-gray-500 focus:outline-none input-glow">
-            <span class="bg-white/5 border border-l-0 border-white/10 px-4 py-3 rounded-r-xl text-gray-400 text-sm">.nextrastore.com</span>
-          </div>
-          <p id="cs-domain-error" class="text-red-400 text-xs mt-1 hidden"></p>
-        </div>
-        <div><label class="block text-sm mb-1 text-gray-400">ชื่อร้าน *</label><input id="cs-shopname" placeholder="ร้านของฉัน" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow"></div>
-        <div><label class="block text-sm mb-1 text-gray-400">Username admin *</label><input id="cs-adminuser" placeholder="admin" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow"></div>
-        <div><label class="block text-sm mb-1 text-gray-400">Password admin *</label><input id="cs-adminpass" type="password" placeholder="ขั้นต่ำ 6 ตัว" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none input-glow"></div>
-      </div>
-      <div class="flex gap-2 mt-6">
-        <button onclick="csBack()" class="flex-1 glass-light text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2"><svg class="icon-sm"><use href="#i-arrow-left"/></svg> กลับ</button>
-        <button onclick="csNext()" class="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow flex items-center justify-center gap-2">ถัดไป <svg class="icon-sm"><use href="#i-arrow-right"/></svg></button>
-      </div>
-    </div>
-    <div id="cs-step-3" class="hidden">
-      <h3 class="text-xl md:text-2xl font-black text-white mb-2">ชำระเงิน</h3>
-      <div class="glass-light rounded-2xl p-4 mb-4 space-y-2">
-        <div class="flex justify-between text-sm"><span class="text-gray-400">แพ็กเกจ:</span><span class="font-bold text-white" id="cs-confirm-plan">-</span></div>
-        <div class="flex justify-between text-sm"><span class="text-gray-400">ระยะเวลา:</span><span class="font-bold text-white">1 เดือน</span></div>
-        <div class="flex justify-between text-sm"><span class="text-gray-400">ทดลองใช้ฟรี:</span><span class="font-bold text-green-400">7 วัน</span></div>
-        <div class="border-t border-white/10 my-2"></div>
-        <div class="flex justify-between items-center"><span class="text-gray-400">ยอดชำระ:</span><span class="text-3xl font-black gradient-text" id="cs-confirm-price">฿0</span></div>
-      </div>
-      <div class="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 rounded-2xl p-4 mb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-xl bg-cyan-500/30 flex items-center justify-center">
-            <svg class="icon text-cyan-400"><use href="#i-phone"/></svg>
-          </div>
-          <div class="flex-1">
-            <p class="text-xs text-gray-400">โอนผ่าน TrueMoney Wallet</p>
-            <div class="flex items-center gap-2">
-              <p class="text-xl md:text-2xl font-black text-white">098-878-5068</p>
-              <button onclick="copyPhone()" class="text-cyan-400 hover:text-cyan-300"><svg class="icon-sm"><use href="#i-copy"/></svg></button>
-            </div>
-            <p class="text-xs text-gray-400">ชื่อ: NextraStore</p>
-          </div>
-        </div>
-      </div>
-      <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-4">
-        <p class="text-sm text-yellow-300">⚠️ ต้องโอน <span class="font-bold" id="cs-required-amount">฿0</span> ให้ครบ ระบบจะตรวจสอบอัตโนมัติ</p>
-      </div>
-      <div class="flex gap-2 mt-6">
-        <button onclick="csBack()" class="flex-1 glass-light text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2"><svg class="icon-sm"><use href="#i-arrow-left"/></svg> กลับ</button>
-        <button onclick="csNext()" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-3 rounded-xl font-bold btn-glow flex items-center justify-center gap-2"><svg class="icon-sm"><use href="#i-check"/></svg> ชำระแล้ว</button>
-      </div>
-    </div>
-    <div id="cs-step-4" class="hidden text-center">
-      <div class="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mx-auto mb-4 pulse-slow shadow-lg shadow-green-500/30">
-        <svg class="icon-xl text-white"><use href="#i-check"/></svg>
-      </div>
-      <h3 class="text-2xl md:text-3xl font-black text-white mb-2">สร้างเว็บสำเร็จ! 🎉</h3>
-      <p class="text-gray-400 mb-6">เว็บของคุณพร้อมใช้งานแล้ว</p>
-      <div class="glass-light rounded-2xl p-6 mb-4">
-        <p class="text-xs text-gray-400 mb-2">URL เว็บของคุณ</p>
-        <p id="cs-final-url" class="text-xl md:text-2xl font-black gradient-text break-all"></p>
-      </div>
-      <div class="glass-light rounded-2xl p-4 text-left text-sm space-y-2 mb-6">
-        <div class="flex justify-between gap-2"><span class="text-gray-400">Username admin:</span><span class="font-bold text-white" id="cs-final-user">-</span></div>
-        <div class="flex justify-between gap-2"><span class="text-gray-400">Password admin:</span><span class="font-bold text-white" id="cs-final-pass">-</span></div>
-        <div class="text-red-400 text-xs mt-2">⚠️ กรุณาจดรหัสไว้ ระบบจะไม่แสดงอีก</div>
-      </div>
-      <button onclick="goToMySite()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow flex items-center justify-center gap-2"><svg class="icon"><use href="#i-external"/></svg> เข้าสู่เว็บของฉัน</button>
-      <button onclick="closeCreateSite();enterMember();" class="w-full text-gray-400 py-2 mt-2">กลับหน้าหลัก</button>
-    </div>
+<!-- MODAL: REGISTER -->
+<div class="modal" id="registerModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('register')">×</button>
+    <h2 class="modal-title">สมัครสมาชิก</h2>
+    <form class="modal-form" onsubmit="handleRegister(event)">
+      <div class="form-group"><label>ชื่อผู้ใช้</label><input type="text" name="username" required minlength="3" placeholder="เลือก username"></div>
+      <div class="form-group"><label>อีเมล</label><input type="email" name="email" required placeholder="email@example.com"></div>
+      <div class="form-group"><label>รหัสผ่าน</label><input type="password" name="password" required minlength="6" placeholder="อย่างน้อย 6 ตัวอักษร"></div>
+      <button type="submit" class="btn-primary full">🚀 สมัครสมาชิก</button>
+      <p class="modal-switch">มีบัญชีแล้ว? <a href="#" onclick="switchModal('register','login');return false;">เข้าสู่ระบบ</a></p>
+    </form>
   </div>
 </div>
 
-<div id="demoModal" class="modal fixed inset-0 bg-black/70 backdrop-blur-sm items-center justify-center z-50 p-4">
-  <div class="glass-strong rounded-3xl p-6 md:p-8 w-full max-w-md slide-up text-center">
-    <h3 class="text-2xl font-black text-white mb-4">ดูตัวอย่างเว็บ</h3>
-    <p class="text-gray-400 mb-6">สมัครสมาชิกก่อนเพื่อสร้างเว็บของคุณเอง</p>
-    <button onclick="closeModal('demoModal');openAuth('register')" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold btn-glow">🚀 สมัครเลย</button>
-    <button onclick="closeModal('demoModal')" class="w-full text-gray-400 py-2 mt-2">ปิด</button>
+<!-- MODAL: BUY PACKAGE -->
+<div class="modal" id="buyModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('buy')">×</button>
+    <h2 class="modal-title">ซื้อแพ็คเกจ <span id="buyPkgName" class="accent"></span></h2>
+    <p style="text-align:center; margin-bottom:20px;">ราคา: <strong style="font-size:24px;color:var(--primary);" id="buyPkgPrice"></strong></p>
+    <form class="modal-form" onsubmit="handleBuy(event)">
+      <div class="form-group">
+        <label>วิธีชำระเงิน</label>
+        <select name="method" required>
+          <option value="truemoney">TrueMoney Wallet</option>
+          <option value="promptpay">พร้อมเพย์</option>
+          <option value="bank">โอนผ่านธนาคาร</option>
+          <option value="usdt">USDT (TRC20)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>ลิงก์สลิป / URL</label>
+        <input type="text" name="slip" placeholder="วางลิงก์รูปสลิป หรือ URL">
+      </div>
+      <div id="paymentInfo" class="payment-info"></div>
+      <button type="submit" class="btn-primary full">🔥 ยืนยันการสั่งซื้อ</button>
+    </form>
   </div>
 </div>
 
-<div id="toast" class="hidden fixed top-20 right-5 px-6 py-3 rounded-2xl shadow-2xl z-50 text-white font-semibold slide-up bg-gradient-to-r from-green-500 to-emerald-500"></div>
+<!-- MODAL: REDEEM CODE -->
+<div class="modal" id="redeemModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('redeem')">×</button>
+    <h2 class="modal-title">🎁 ใช้โค้ด</h2>
+    <form class="modal-form" onsubmit="handleRedeem(event)">
+      <div class="form-group"><label>โค้ดของคุณ</label><input type="text" name="code" required placeholder="XXXX-XXXX-XXXX"></div>
+      <button type="submit" class="btn-primary full">✨ กดเพื่อใช้โค้ด</button>
+    </form>
+  </div>
+</div>
 
-<script>
-const CONFIG = {
-  PHONE: '0988785068',
-  ADMIN_USER: 'nextrastore',
-  ADMIN_PASS: 'nextra109store',
-  DOMAIN: 'nextrastore.com'
-};
+<div class="toast" id="toast"></div>
 
-let db = {
-  members: JSON.parse(localStorage.getItem('ns_members')) || [],
-  sites: JSON.parse(localStorage.getItem('ns_sites')) || [],
-  payments: JSON.parse(localStorage.getItem('ns_payments')) || []
-};
-
-function saveDB() { 
-  localStorage.setItem('ns_members', JSON.stringify(db.members));
-  localStorage.setItem('ns_sites', JSON.stringify(db.sites));
-  localStorage.setItem('ns_payments', JSON.stringify(db.payments));
-}
-
-let currentMember = null, currentSite = null, cart = [];
-let selectedPlan = null, csStep = 1, csData = {};
-
-function openModal(id) { document.getElementById(id).classList.add('active'); }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-function toast(msg, color='green') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `fixed top-20 right-5 px-6 py-3 rounded-2xl shadow-2xl z-50 text-white font-semibold slide-up bg-gradient-to-r ${color==='green'?'from-green-500 to-emerald-500':color==='red'?'from-red-500 to-pink-500':color==='blue'?'from-cyan-500 to-blue-500':'from-purple-500 to-pink-500'}`;
-  t.classList.remove('hidden');
-  setTimeout(() => t.classList.add('hidden'), 3000);
-}
-
-function copyPhone() { navigator.clipboard.writeText(CONFIG.PHONE); toast('คัดลอกเบอร์แล้ว'); }
-function scrollToPricing() { document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' }); }
-
-function openAuth(mode) {
-  document.getElementById('authLogin').classList.toggle('hidden', mode==='register');
-  document.getElementById('authRegister').classList.toggle('hidden', mode==='login');
-  openModal('authModal');
-}
-function switchAuth(mode) { openAuth(mode); }
-
-function updateNav() {
-  const nav = document.getElementById('navButtons');
-  if (currentMember) {
-    nav.innerHTML = `
-      <div class="hidden md:flex items-center gap-2 glass-light px-3 py-1.5 rounded-xl">
-        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
-        <span class="text-sm text-gray-300">${currentMember.username}</span>
-      </div>
-      <button onclick="logout()" class="text-gray-400 hover:text-white text-sm flex items-center gap-1"><svg class="icon-sm"><use href="#i-logout"/></svg> ออก</button>
-    `;
-  } else {
-    nav.innerHTML = `
-      <button onclick="openAdminLogin()" class="text-gray-300 hover:text-white text-sm hidden md:flex items-center gap-1">
-        <svg class="icon-sm"><use href="#i-shield"/></svg> Admin
-      </button>
-      <button onclick="openAuth('login')" class="text-gray-300 hover:text-white text-sm hidden md:block">เข้าสู่ระบบ</button>
-      <button onclick="openAuth('register')" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-xl text-sm font-semibold btn-glow">สมัคร</button>
-    `;
-  }
-}
-
-function goHome() {
-  document.getElementById('memberPage').classList.add('hidden');
-  document.getElementById('adminPage').classList.add('hidden');
-  document.getElementById('clientSitePage').classList.add('hidden');
-  document.getElementById('homePage').classList.remove('hidden');
-}
-
-function validatePhone(p) { return /^0\d{9}$/.test(p.replace(/[-\s]/g, '')); }
-
-function doRegister() {
-  const name = document.getElementById('regName').value.trim();
-  const username = document.getElementById('regUsername').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const phone = document.getElementById('regPhone').value.trim().replace(/[-\s]/g, '');
-  const pw = document.getElementById('regPassword').value;
-  const pw2 = document.getElementById('regPassword2').value;
-  if (!name) return toast('กรอกชื่อ', 'red');
-  if (!/^[a-zA-Z0-9_]{4,20}$/.test(username)) return toast('Username 4-20 ตัว', 'red');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast('อีเมลไม่ถูก', 'red');
-  if (!validatePhone(phone)) return toast('เบอร์โทรไม่ถูก', 'red');
-  if (pw.length < 6) return toast('รหัสขั้นต่ำ 6 ตัว', 'red');
-  if (pw !== pw2) return toast('รหัสไม่ตรง', 'red');
-  if (db.members.find(m => m.username === username)) return toast('Username ซ้ำ', 'red');
-  db.members.push({ id: Date.now(), name, username, email, phone, password: pw, wallet: 0, createdAt: new Date().toISOString() });
-  saveDB();
-  currentMember = db.members[db.members.length-1];
-  closeModal('authModal');
-  enterMember();
-  toast('สมัครสำเร็จ! ยินดีต้อนรับ 🎉');
-}
-
-function doLogin() {
-  const username = document.getElementById('loginUsername').value.trim();
-  const pw = document.getElementById('loginPassword').value;
-  
-  // เช็ค admin ก่อน (ล็อกอินเหมือน user ปกติ)
-  if (username === CONFIG.ADMIN_USER && pw === CONFIG.ADMIN_PASS) {
-    closeModal('authModal');
-    document.getElementById('homePage').classList.add('hidden');
-    document.getElementById('memberPage').classList.add('hidden');
-    document.getElementById('clientSitePage').classList.add('hidden');
-    document.getElementById('adminPage').classList.remove('hidden');
-    showAdminTab('dashboard');
-    toast('ยินดีต้อนรับแอดมิน 👑');
-    return;
-  }
-  
-  const member = db.members.find(m => m.username === username && m.password === pw);
-  if (!member) return toast('Username/Password ผิด', 'red');
-  currentMember = member;
-  closeModal('authModal');
-  enterMember();
-  toast('ยินดีต้อนรับ');
-}
-
-function logout() { currentMember = null; cart = []; updateNav(); goHome(); }
-
-function enterMember() {
-  document.getElementById('homePage').classList.add('hidden');
-  document.getElementById('memberPage').classList.remove('hidden');
-  document.getElementById('welcomeName').textContent = currentMember.name;
-  document.getElementById('memberAvatar').textContent = currentMember.name.charAt(0).toUpperCase();
-  updateNav();
-  renderMySites();
-}
-
-function openAdminLogin() { openModal('adminLoginModal'); }
-
-function doAdminLogin() {
-  const u = document.getElementById('adminLoginUser').value.trim();
-  const p = document.getElementById('adminLoginPass').value.trim();
-  if (u === CONFIG.ADMIN_USER && p === CONFIG.ADMIN_PASS) {
-    closeModal('adminLoginModal');
-    document.getElementById('homePage').classList.add('hidden');
-    document.getElementById('memberPage').classList.add('hidden');
-    document.getElementById('clientSitePage').classList.add('hidden');
-    document.getElementById('adminPage').classList.remove('hidden');
-    showAdminTab('dashboard');
-    toast('ยินดีต้อนรับแอดมิน nextrastore 👑');
-  } else {
-    toast('รหัสผิด!', 'red');
-    document.getElementById('adminLoginPass').value = '';
-    document.getElementById('adminLoginPass').focus();
-  }
-}
-
-function logoutAdmin() {
-  document.getElementById('adminPage').classList.add('hidden');
-  document.getElementById('homePage').classList.remove('hidden');
-  updateNav();
-}
-
-function selectPlan(name, price) {
-  selectedPlan = { name, price };
-  toast(`เลือก ${name.toUpperCase()} ฿${price}/เดือน`, 'blue');
-  openCreateSite();
-}
-
-function openCreateSite() {
-  if (!currentMember) { openAuth('login'); return toast('เข้าสู่ระบบก่อน', 'red'); }
-  csStep = 1;
-  csData = {};
-  if (!selectedPlan) selectedPlan = { name: 'basic', price: 129 };
-  renderCsStep();
-  openModal('createSiteModal');
-}
-
-function closeCreateSite() { closeModal('createSiteModal'); csStep = 1; }
-
-function renderCsStep() {
-  [1,2,3,4].forEach(n => {
-    document.getElementById('cs-step-'+n).classList.toggle('hidden', n !== csStep);
-    const ind = document.getElementById('step-ind-'+n);
-    if (n < csStep) ind.className = 'flex items-center gap-2 step-done px-3 py-1 rounded-full text-xs md:text-sm font-bold';
-    else if (n === csStep) ind.className = 'flex items-center gap-2 step-active px-3 py-1 rounded-full text-xs md:text-sm font-bold';
-    else ind.className = 'flex items-center gap-2 step-pending px-3 py-1 rounded-full text-xs md:text-sm';
-  });
-  document.getElementById('cs-confirm-plan').textContent = (selectedPlan?.name || 'basic').toUpperCase();
-  document.getElementById('cs-confirm-price').textContent = '฿' + (selectedPlan?.price || 0).toLocaleString();
-  document.getElementById('cs-required-amount').textContent = '฿' + (selectedPlan?.price || 0).toLocaleString();
-  if (csStep === 1) {
-    document.getElementById('planSelectList').innerHTML = [
-      { name: 'basic', price: 129, label: 'Basic', desc: 'เริ่มต้น' },
-      { name: 'pro', price: 299, label: 'Pro ⭐ แนะนำ', desc: 'ยอดนิยม' },
-      { name: 'vip', price: 799, label: 'VIP 👑', desc: 'พรีเมียม' }
-    ].map(p => `
-      <div onclick="selectedPlan={name:'${p.name}',price:${p.price}};renderCsStep();" class="glass-light p-4 rounded-xl cursor-pointer ${selectedPlan.name === p.name ? 'border-2 border-purple-500 bg-purple-500/10' : ''} flex justify-between items-center hover:bg-white/10 transition">
-        <div>
-          <div class="font-bold text-white">${p.label}</div>
-          <div class="text-xs text-gray-400">${p.desc}</div>
-        </div>
-        <div class="text-2xl font-black gradient-text">฿${p.price}</div>
-      </div>
-    `).join('');
-  }
-}
-
-function csNext() {
-  if (csStep === 1) { csStep = 2; }
-  else if (csStep === 2) {
-    const domain = document.getElementById('cs-domain').value.trim().toLowerCase();
-    const shopname = document.getElementById('cs-shopname').value.trim();
-    const adminUser = document.getElementById('cs-adminuser').value.trim();
-    const adminPass = document.getElementById('cs-adminpass').value;
-    const errEl = document.getElementById('cs-domain-error');
-    errEl.classList.add('hidden');
-    if (!/^[a-z0-9-]{3,20}$/.test(domain)) { errEl.textContent = 'Subdomain ต้องเป็น a-z, 0-9, - (3-20 ตัว)'; errEl.classList.remove('hidden'); return; }
-    if (db.sites.find(s => s.domain === domain)) { errEl.textContent = 'Subdomain ถูกใช้แล้ว'; errEl.classList.remove('hidden'); return; }
-    if (!shopname || shopname.length < 2) return toast('กรอกชื่อร้าน', 'red');
-    if (!/^[a-zA-Z0-9_]{3,20}$/.test(adminUser)) return toast('Username admin ไม่ถูก', 'red');
-    if (adminPass.length < 6) return toast('Password ขั้นต่ำ 6 ตัว', 'red');
-    csData = { domain, shopname, adminUser, adminPass };
-    csStep = 3;
-  } else if (csStep === 3) {
-    if (!confirm(`ยืนยันชำระเงิน ฿${selectedPlan.price.toLocaleString()}?`)) return;
-    db.payments.push({
-      id: Date.now().toString(),
-      memberId: currentMember.id,
-      memberName: currentMember.username,
-      plan: selectedPlan.name,
-      amount: selectedPlan.price,
-      status: 'verified',
-      date: new Date().toLocaleString('th-TH')
-    });
-    const newSite = {
-      id: Date.now(),
-      domain: csData.domain,
-      shopname: csData.shopname,
-      adminUser: csData.adminUser,
-      adminPass: csData.adminPass,
-      plan: selectedPlan.name,
-      price: selectedPlan.price,
-      memberId: currentMember.id,
-      memberName: currentMember.username,
-      products: [
-        { id: 1, name: 'สินค้าตัวอย่าง 1', price: 199, stock: 10, icon: 'i-shirt', sold: 0 },
-        { id: 2, name: 'สินค้าตัวอย่าง 2', price: 299, stock: 5, icon: 'i-shoe', sold: 0 }
-      ],
-      orders: [],
-      createdAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + 30*24*60*60*1000).toISOString(),
-      status: 'active'
-    };
-    db.sites.push(newSite);
-    db.payments[db.payments.length-1].siteId = newSite.id;
-    saveDB();
-    currentSite = newSite;
-    document.getElementById('cs-final-url').textContent = csData.domain + '.' + CONFIG.DOMAIN;
-    document.getElementById('cs-final-user').textContent = csData.adminUser;
-    document.getElementById('cs-final-pass').textContent = csData.adminPass;
-    csStep = 4;
-  }
-  renderCsStep();
-}
-
-function csBack() { csStep--; renderCsStep(); }
-
-function goToMySite() {
-  closeCreateSite();
-  if (currentSite) showClientSite(currentSite);
-}
-
-function renderMySites() {
-  const mySites = db.sites.filter(s => s.memberName === currentMember.username);
-  document.getElementById('mySitesCount').textContent = mySites.length;
-  if (mySites.length) {
-    const totalSpent = db.payments.filter(p => p.memberName === currentMember.username && p.status === 'verified').reduce((s,p) => s + p.amount, 0);
-    document.getElementById('mySpent').textContent = '฿' + totalSpent.toLocaleString();
-    document.getElementById('myPlan').textContent = mySites[0].plan.toUpperCase();
-    document.getElementById('myExpiry').textContent = new Date(mySites[0].expiresAt).toLocaleDateString('th-TH');
-  }
-  document.getElementById('mySitesList').innerHTML = mySites.length ? mySites.map(s => `
-    <div class="glass-light rounded-2xl p-4 mb-3 flex justify-between items-center hover:scale-[1.02] transition cursor-pointer" onclick="showClientSite(db.sites.find(x => x.id === ${s.id}))">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center">
-          <svg class="icon text-white"><use href="#i-cart"/></svg>
-        </div>
-        <div>
-          <h4 class="font-bold text-white">${s.shopname}</h4>
-          <p class="text-xs text-gray-400">${s.domain}.${CONFIG.DOMAIN}</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">ใช้งาน</span>
-        <svg class="icon-sm text-gray-400"><use href="#i-arrow-right"/></svg>
-      </div>
-    </div>
-  `).join('') : `
-    <div class="text-center py-12">
-      <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mx-auto mb-4 pulse-slow">
-        <svg class="icon-xl text-white"><use href="#i-globe"/></svg>
-      </div>
-      <h4 class="text-xl font-bold text-white mb-2">ยังไม่มีเว็บ</h4>
-      <p class="text-gray-400 mb-4">สร้างเว็บแรกของคุณเลย!</p>
-      <button onclick="openCreateSite()" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl font-bold btn-glow flex items-center gap-2 mx-auto">
-        <svg class="icon"><use href="#i-plus"/></svg> สร้างเว็บแรก
-      </button>
-    </div>
-  `;
-}
-
-function showClientSite(site) {
-  currentSite = site;
-  document.getElementById('homePage').classList.add('hidden');
-  document.getElementById('memberPage').classList.add('hidden');
-  document.getElementById('adminPage').classList.add('hidden');
-  document.getElementById('clientSitePage').classList.remove('hidden');
-  document.getElementById('clientAdminPanel').classList.add('hidden');
-  document.getElementById('clientStorefront').classList.remove('hidden');
-  document.getElementById('clientSiteName').textContent = site.shopname;
-  renderStorefront();
-}
-
-function exitClientSite() {
-  document.getElementById('clientSitePage').classList.add('hidden');
-  enterMember();
-}
-
-function renderStorefront() {
-  const s = currentSite;
-  document.getElementById('clientStorefront').innerHTML = `
-    <header class="bg-gradient-to-r from-pink-500 via-red-500 to-orange-500 py-20 text-center text-white relative overflow-hidden">
-      <div class="absolute inset-0 bg-black/10"></div>
-      <div class="relative">
-        <h1 class="text-5xl md:text-6xl font-black mb-3">${s.shopname}</h1>
-        <p class="text-lg opacity-90">ยินดีต้อนรับสู่ร้านค้าของเรา</p>
-      </div>
-    </header>
-    <main class="max-w-6xl mx-auto px-4 md:px-6 py-10">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl md:text-3xl font-black text-white">สินค้าทั้งหมด</h2>
-        <div class="text-sm text-gray-400">${s.products.length} รายการ</div>
-      </div>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        ${s.products.map((p, i) => `
-          <div class="glass rounded-2xl overflow-hidden hover:scale-105 transition">
-            <div class="h-32 md:h-44 bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-              <svg class="icon-xl text-purple-400"><use href="#${p.icon || 'i-box'}"/></svg>
-            </div>
-            <div class="p-3 md:p-4">
-              <h4 class="font-bold text-white text-sm md:text-base">${p.name}</h4>
-              <div class="flex justify-between items-center mt-2">
-                <span class="text-lg md:text-xl font-black gradient-text">฿${p.price.toLocaleString()}</span>
-                <button onclick="addToCartClient(${i})" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-lg text-xs md:text-sm font-bold" ${p.stock <= 0 ? 'disabled' : ''}>${p.stock <= 0 ? 'หมด' : 'ซื้อ'}</button>
-              </div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-      ${cart.length ? `
-        <div class="glass-strong rounded-3xl p-4 md:p-6 mt-8">
-          <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><svg class="icon"><use href="#i-cart"/></svg> ตะกร้าสินค้า</h3>
-          <div id="cartListClient"></div>
-          <div class="mt-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 pt-4 border-t border-white/10">
-            <div>
-              <p class="text-sm text-gray-400">ยอดรวมทั้งหมด</p>
-              <span class="text-3xl font-black gradient-text">฿${cart.reduce((s, c) => s + c.price * c.qty, 0).toLocaleString()}</span>
-            </div>
-            <button onclick="checkoutClient()" class="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-8 py-3 rounded-xl font-bold btn-glow flex items-center gap-2">
-              <svg class="icon"><use href="#i-check"/></svg> ชำระเงิน
-            </button>
-          </div>
-        </div>
-      ` : ''}
-    </main>
-  `;
-  if (cart.length) renderCartClient();
-}
-
-function addToCartClient(idx) {
-  const p = currentSite.products[idx];
-  if (!p || p.stock <= 0) return toast('หมด', 'red');
-  const ex = cart.find(c => c.id === p.id);
-  if (ex) ex.qty++; else cart.push({ id: p.id, name: p.name, price: p.price, qty: 1 });
-  renderStorefront();
-  toast('เพิ่มลงตะกร้า');
-}
-
-function renderCartClient() {
-  document.getElementById('cartListClient').innerHTML = cart.map((c, i) => `
-    <div class="flex justify-between items-center py-2 border-b border-white/5 text-sm">
-      <span class="text-white">${c.name} x${c.qty}</span>
-      <div class="flex items-center gap-2">
-        <button onclick="changeQtyClient(${i}, -1)" class="w-8 h-8 rounded bg-white/5 hover:bg-white/10">-</button>
-        <span class="font-bold text-white w-20 text-right">฿${(c.price * c.qty).toLocaleString()}</span>
-        <button onclick="changeQtyClient(${i}, 1)" class="w-8 h-8 rounded bg-white/5 hover:bg-white/10">+</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function changeQtyClient(i, d) {
-  cart[i].qty += d;
-  if (cart[i].qty <= 0) cart.splice(i, 1);
-  renderStorefront();
-}
-
-function checkoutClient() {
-  const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
-  if (!confirm(`ยืนยันชำระ ฿${total.toLocaleString()}?`)) return;
-  cart.forEach(c => {
-    const p = currentSite.products.find(p => p.id === c.id);
-    if (p) { p.stock -= c.qty; p.sold = (p.sold || 0) + c.qty; }
-  });
-  currentSite.orders = currentSite.orders || [];
-  currentSite.orders.push({
-    code: 'OR' + Date.now().toString().slice(-6),
-    memberName: currentSite.shopname,
-    items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price })),
-    total, date: new Date().toLocaleString('th-TH')
-  });
-  const idx = db.sites.findIndex(s => s.id === currentSite.id);
-  if (idx >= 0) db.sites[idx] = currentSite;
-  saveDB();
-  cart = [];
-  toast('🎉 สั่งซื้อสำเร็จ!');
-  renderStorefront();
-}
-
-function openClientAdmin() {
-  document.getElementById('clientStorefront').classList.add('hidden');
-  document.getElementById('clientAdminPanel').classList.remove('hidden');
-  renderClientAdmin();
-}
-
-function renderClientAdmin() {
-  const s = currentSite;
-  document.getElementById('clientAdminPanel').innerHTML = `
-    <div class="max-w-6xl mx-auto px-4 md:px-6 py-8">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6">
-        <h2 class="text-2xl md:text-3xl font-black text-white">⚙️ หลังบ้าน: ${s.shopname}</h2>
-        <button onclick="document.getElementById('clientAdminPanel').classList.add('hidden'); document.getElementById('clientStorefront').classList.remove('hidden'); renderStorefront();" class="glass-light px-4 py-2 rounded-xl text-white flex items-center gap-2">
-          <svg class="icon-sm"><use href="#i-arrow-left"/></svg> กลับหน้าร้าน
-        </button>
-      </div>
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-        <div class="glass-strong rounded-2xl p-5 stat-card">
-          <p class="text-xs text-gray-400">สินค้าทั้งหมด</p>
-          <p class="text-3xl font-black text-white mt-1">${s.products.length}</p>
-        </div>
-        <div class="glass-strong rounded-2xl p-5 stat-card">
-          <p class="text-xs text-gray-400">ออเดอร์</p>
-          <p class="text-3xl font-black text-white mt-1">${(s.orders || []).length}</p>
-        </div>
-        <div class="glass-strong rounded-2xl p-5 stat-card col-span-2 md:col-span-1">
-          <p class="text-xs text-gray-400">ยอดขายรวม</p>
-          <p class="text-3xl font-black gradient-text mt-1">฿${(s.orders || []).reduce((sum, o) => sum + o.total, 0).toLocaleString()}</p>
-        </div>
-      </div>
-      <div class="glass-strong rounded-2xl p-4 md:p-6">
-        <h3 class="font-bold text-white mb-4 flex items-center gap-2"><svg class="icon"><use href="#i-package"/></svg> จัดการสินค้า</h3>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead><tr class="text-gray-400 border-b border-white/10"><th class="py-3 px-2">สินค้า</th><th class="py-3 px-2">ราคา</th><th class="py-3 px-2">สต็อก</th><th class="py-3 px-2">ขายได้</th><th class="py-3 px-2 text-right">จัดการ</th></tr></thead>
-            <tbody>${s.products.map((p, i) => `<tr class="border-b border-white/5">
-              <td class="py-3 px-2"><div class="flex items-center gap-2"><svg class="icon-sm text-purple-400"><use href="#${p.icon || 'i-box'}"/></svg><span class="text-white">${p.name}</span></div></td>
-              <td class="py-3 px-2 font-bold text-white">฿${p.price.toLocaleString()}</td>
-              <td class="py-3 px-2"><span class="px-2 py-0.5 rounded text-xs ${p.stock > 5 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">${p.stock}</span></td>
-              <td class="py-3 px-2 text-green-400">${p.sold || 0}</td>
-              <td class="py-3 px-2 text-right">
-                <button onclick="adjustStock(${i}, 10)" class="text-green-400 text-xs px-2">+10</button>
-                <button onclick="adjustStock(${i}, -10)" class="text-orange-400 text-xs px-2">-10</button>
-                <button onclick="deleteProductInSite(${i})" class="text-red-400 text-xs px-2"><svg class="icon-sm inline"><use href="#i-trash"/></svg></button>
-              </td>
-            </tr>`).join('')}</tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function adjustStock(i, amount) {
-  const idx = db.sites.findIndex(s => s.id === currentSite.id);
-  if (idx >= 0) {
-    db.sites[idx].products[i].stock = Math.max(0, db.sites[idx].products[i].stock + amount);
-    currentSite = db.sites[idx];
-    saveDB();
-    renderClientAdmin();
-  }
-}
-
-function deleteProductInSite(i) {
-  if (!confirm('ลบสินค้านี้?')) return;
-  const idx = db.sites.findIndex(s => s.id === currentSite.id);
-  if (idx >= 0) {
-    db.sites[idx].products.splice(i, 1);
-    currentSite = db.sites[idx];
-    saveDB();
-    renderClientAdmin();
-  }
-}
-
-function showAdminTab(tab) {
-  document.querySelectorAll('.admin-content').forEach(el => el.classList.add('hidden'));
-  document.querySelectorAll('.admin-nav').forEach(el => el.classList.remove('nav-active'));
-  document.getElementById('admin-' + tab).classList.remove('hidden');
-  document.querySelector(`[data-tab="${tab}"]`)?.classList.add('nav-active');
-  if (tab === 'dashboard') renderAdminDash();
-  if (tab === 'tenants') renderTenants();
-  if (tab === 'sites') renderSitesGrid();
-  if (tab === 'orders') renderAdminOrders();
-  if (tab === 'revenue') renderRevenue();
-}
-
-function renderAdminDash() {
-  document.getElementById('statMembers').textContent = db.members.length;
-  document.getElementById('statActiveSites').textContent = db.sites.filter(s => s.status === 'active').length;
-  document.getElementById('statTotalSites').textContent = db.sites.length;
-  const mrr = db.sites.filter(s => s.status === 'active').reduce((s, site) => s + site.price, 0);
-  document.getElementById('statMRR').textContent = '฿' + mrr.toLocaleString();
-  const monthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
-  document.getElementById('statNew').textContent = db.members.filter(m => new Date(m.createdAt).getTime() > monthAgo).length;
-  const allOrders = db.sites.flatMap(s => s.orders || []);
-  document.getElementById('statOrders').textContent = allOrders.length;
-  const totalRev = allOrders.reduce((s, o) => s + o.total, 0);
-  document.getElementById('statRevenue').textContent = '฿' + totalRev.toLocaleString();
-  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  
-  document.getElementById('recentRentals').innerHTML = db.sites.slice(-5).reverse().map(s => `
-    <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center flex-shrink-0">
-        <svg class="icon-sm text-white"><use href="#i-cart"/></svg>
-      </div>
-      <div class="flex-1 min-w-0">
-        <div class="font-bold text-white text-sm truncate">${s.shopname}</div>
-        <div class="text-xs text-gray-400 truncate">${s.memberName} • ${s.domain}.${CONFIG.DOMAIN}</div>
-      </div>
-      <div class="text-right flex-shrink-0">
-        <div class="text-sm font-bold gradient-text">฿${s.price}/ด</div>
-        <div class="text-xs text-gray-500">${new Date(s.createdAt).toLocaleDateString('th-TH')}</div>
-      </div>
-    </div>
-  `).join('') || '<p class="text-gray-500 text-center py-4">ยังไม่มี</p>';
-
-  const topBySpending = db.members.map(m => {
-    const total = db.payments.filter(p => p.memberName === m.username && p.status === 'verified').reduce((s, p) => s + p.amount, 0);
-    return { ...m, total };
-  }).sort((a, b) => b.total - a.total).slice(0, 5);
-  
-  document.getElementById('topCustomers').innerHTML = topBySpending.length ? topBySpending.map((m, i) => `
-    <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition">
-      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-black text-sm text-white">${i+1}</div>
-      <div class="flex-1 min-w-0">
-        <div class="font-bold text-white text-sm truncate">${m.name}</div>
-        <div class="text-xs text-gray-400 truncate">@${m.username}</div>
-      </div>
-      <div class="text-sm font-bold text-green-400 flex-shrink-0">฿${m.total.toLocaleString()}</div>
-    </div>
-  `).join('') : '<p class="text-gray-500 text-center py-4">ยังไม่มี</p>';
-}
-
-function renderTenants(filter = '') {
-  const filtered = db.members.filter(m => !filter || m.name.toLowerCase().includes(filter.toLowerCase()) || m.username.toLowerCase().includes(filter.toLowerCase()));
-  document.getElementById('tenantsTable').innerHTML = filtered.length ? filtered.map((m, i) => {
-    const userSite = db.sites.find(s => s.memberName === m.username);
-    const totalSpent = db.payments.filter(p => p.memberName === m.username && p.status === 'verified').reduce((s, p) => s + p.amount, 0);
-    return `<tr class="border-b border-white/5 hover:bg-white/5">
-      <td class="py-3 px-2">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xs font-black text-white">${m.name.charAt(0)}</div>
-          <span class="text-white font-medium">${m.name}</span>
-        </div>
-      </td>
-      <td class="py-3 px-2 text-gray-300 font-mono text-xs">@${m.username}</td>
-      <td class="py-3 px-2"><span class="px-2 py-0.5 rounded-full text-xs ${userSite?.plan === 'pro' ? 'bg-purple-500/20 text-purple-300' : userSite?.plan === 'vip' ? 'bg-orange-500/20 text-orange-300' : 'bg-cyan-500/20 text-cyan-300'}">${(userSite?.plan || '-').toUpperCase()}</span></td>
-      <td class="py-3 px-2 text-white">${db.sites.filter(s => s.memberName === m.username).length}</td>
-      <td class="py-3 px-2 text-green-400 font-bold">฿${totalSpent.toLocaleString()}</td>
-      <td class="py-3 px-2 text-orange-400 text-xs">${userSite?.expiresAt ? new Date(userSite.expiresAt).toLocaleDateString('th-TH') : '-'}</td>
-      <td class="py-3 px-2">
-        <button onclick="deleteMember(${i})" class="text-red-400 hover:text-red-300 text-xs"><svg class="icon-sm inline"><use href="#i-trash"/></svg></button>
-      </td>
-    </tr>`;
-  }).join('') : '<tr><td colspan="7" class="py-8 text-center text-gray-500">ไม่มีข้อมูล</td></tr>';
-}
-
-function searchMembers(val) { renderTenants(val); }
-
-function deleteMember(i) {
-  if (confirm('ลบสมาชิกนี้?')) {
-    db.members.splice(i, 1);
-    saveDB();
-    renderTenants();
-    toast('ลบสมาชิกแล้ว', 'blue');
-  }
-}
-
-function renderSitesGrid() {
-  document.getElementById('sitesGrid').innerHTML = db.sites.length ? db.sites.map(s => `
-    <div class="glass-strong rounded-2xl p-5 stat-card hover:scale-105 transition cursor-pointer" onclick="showClientSite(db.sites.find(x=>x.id===${s.id}))">
-      <div class="flex items-center gap-3 mb-3">
-        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center">
-          <svg class="icon text-white"><use href="#i-cart"/></svg>
-        </div>
-        <div class="flex-1 min-w-0">
-          <h4 class="font-bold text-white truncate">${s.shopname}</h4>
-          <p class="text-xs text-gray-400 truncate">${s.domain}.${CONFIG.DOMAIN}</p>
-        </div>
-        <span class="px-2 py-0.5 bg-green-500/20 text-green-400 rounded-full text-xs">${(s.plan || '-').toUpperCase()}</span>
-      </div>
-      <div class="grid grid-cols-3 gap-2 text-center text-xs">
-        <div class="p-2 rounded-lg bg-white/5">
-          <div class="text-gray-400">สินค้า</div>
-          <div class="font-bold text-white text-base">${s.products.length}</div>
-        </div>
-        <div class="p-2 rounded-lg bg-white/5">
-          <div class="text-gray-400">ออเดอร์</div>
-          <div class="font-bold text-white text-base">${(s.orders || []).length}</div>
-        </div>
-        <div class="p-2 rounded-lg bg-white/5">
-          <div class="text-gray-400">ยอดขาย</div>
-          <div class="font-bold text-green-400 text-sm">฿${(s.orders || []).reduce((sum, o) => sum + o.total, 0).toLocaleString()}</div>
-        </div>
-      </div>
-      <div class="mt-3 text-xs text-gray-500">👤 ${s.memberName}</div>
-    </div>
-  `).join('') : '<div class="col-span-3 text-center text-gray-500 py-8">ยังไม่มีเว็บ</div>';
-}
-
-function renderAdminOrders() {
-  const allOrders = db.sites.flatMap(s => (s.orders || []).map(o => ({ ...o, siteName: s.shopname, domain: s.domain, memberName: s.memberName })));
-  document.getElementById('adminOrdersTable').innerHTML = allOrders.length ? allOrders.slice().reverse().map(o => `
-    <tr class="border-b border-white/5 hover:bg-white/5">
-      <td class="py-3 px-2 font-mono text-xs text-gray-300">${o.code}</td>
-      <td class="py-3 px-2 text-white">${o.memberName}</td>
-      <td class="py-3 px-2 text-gray-300 text-xs">${o.siteName} (${o.domain})</td>
-      <td class="py-3 px-2 font-bold text-green-400">฿${o.total.toLocaleString()}</td>
-      <td class="py-3 px-2 text-gray-400 text-xs">${o.date}</td>
-      <td class="py-3 px-2"><span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded-full text-xs">${o.status || 'สำเร็จ'}</span></td>
-    </tr>
-  `).join('') : '<tr><td colspan="6" class="py-8 text-center text-gray-500">ยังไม่มีออเดอร์</td></tr>';
-}
-
-function renderRevenue() {
-  const todayRev = db.payments.filter(p => new Date(p.date).toDateString() === new Date().toDateString() && p.status === 'verified').reduce((s, p) => s + p.amount, 0);
-  const monthRev = db.payments.filter(p => new Date(p.date).getMonth() === new Date().getMonth() && p.status === 'verified').reduce((s, p) => s + p.amount, 0);
-  const allRev = db.payments.filter(p => p.status === 'verified').reduce((s, p) => s + p.amount, 0);
-  document.getElementById('revToday').textContent = '฿' + todayRev.toLocaleString();
-  document.getElementById('revMonth').textContent = '฿' + monthRev.toLocaleString();
-  document.getElementById('revAll').textContent = '฿' + allRev.toLocaleString();
-  document.getElementById('revenueHistory').innerHTML = db.payments.slice().reverse().map(p => `
-    <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0">
-        <svg class="icon-sm text-white"><use href="#i-wallet"/></svg>
-      </div>
-      <div class="flex-1 min-w-0">
-        <div class="font-bold text-white text-sm">${p.memberName}</div>
-        <div class="text-xs text-gray-400 truncate">${p.plan.toUpperCase()} • ${p.date}</div>
-      </div>
-      <div class="font-bold gradient-text text-lg">+฿${p.amount.toLocaleString()}</div>
-    </div>
-  `).join('') || '<p class="text-gray-500 text-center py-4">ยังไม่มี</p>';
-}
-
-// Update admin time
-setInterval(() => {
-  const el = document.getElementById('adminTime');
-  if (el) el.textContent = new Date().toLocaleTimeString('th-TH');
-}, 1000);
-
-window.addEventListener('load', () => { updateNav(); });
-</script>
-
+<script src="/script.js"></script>
 </body>
 </html>
