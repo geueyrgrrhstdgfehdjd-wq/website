@@ -3,275 +3,367 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HIDDEN PRO • Free Fire Pro Shop</title>
+<title id="siteTitle">HIDDEN PRO</title>
 <link rel="stylesheet" href="/style.css">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=Russo+One&display=swap" rel="stylesheet">
 </head>
 <body>
 
+<div class="auto-login-banner" id="autoLoginBanner">
+  <span>👋 ยินดีต้อนรับกลับ <strong id="autoLoginName"></strong></span>
+  <span class="auto-login-device" id="autoLoginDevice"></span>
+  <button onclick="document.getElementById('autoLoginBanner').classList.remove('show')">×</button>
+</div>
+
 <nav class="navbar">
   <div class="nav-wrap">
     <a href="#" class="logo" onclick="showHome();return false;">
-      <span class="logo-icon">🔥</span>
-      <span class="logo-text">HIDDEN<span class="logo-accent">PRO</span></span>
+      <span class="logo-icon" id="logoIcon">🔥</span>
+      <span class="logo-text"><span id="logoName">HIDDEN</span><span class="logo-accent">PRO</span></span>
     </a>
     <ul class="nav-menu" id="navMenu">
       <li><a href="#home" class="active" data-page="home">หน้าแรก</a></li>
       <li><a href="#packages" data-page="packages">แพ็คเกจ</a></li>
-      <li><a href="#features" data-page="features">ฟีเจอร์</a></li>
-      <li><a href="#reviews" data-page="reviews">รีวิว</a></li>
       <li><a href="#contact" data-page="contact">ติดต่อ</a></li>
-      <li id="navAdmin" style="display:none;"><a href="#" data-page="admin">แอดมิน</a></li>
+      <li id="navAdmin" style="display:none;"><a href="#" data-page="admin">🛡️ แอดมิน</a></li>
     </ul>
     <div class="nav-actions" id="navActions">
       <button class="btn-login" onclick="openModal('login')">เข้าสู่ระบบ</button>
-      <button class="btn-register" onclick="openModal('register')">สมัครสมาชิก</button>
+      <button class="btn-register" onclick="openModal('register')">สมัคร</button>
     </div>
     <div class="nav-user" id="navUser" style="display:none;">
-      <span class="nav-username" id="navUsername">User</span>
-      <button class="btn-redeem" onclick="openModal('redeem')">🎁 ใช้โค้ด</button>
+      <span class="nav-username" id="navUsername"></span>
+      <button class="btn-redeem" onclick="openModal('redeem')">🎁</button>
       <button class="btn-dashboard" onclick="showPage('dashboard')">แดชบอร์ด</button>
       <button class="btn-logout" onclick="logout()">ออก</button>
     </div>
-    <button class="hamburger" onclick="toggleMobile()">☰</button>
+    <button class="hamburger" onclick="document.getElementById('navMenu').classList.toggle('show')">☰</button>
   </div>
 </nav>
+
+<!-- ANNOUNCEMENTS -->
+<div class="announcements" id="announcements"></div>
 
 <section id="page-home" class="page active">
   <section class="hero">
     <div class="hero-bg"></div>
-    <div class="hero-particles"></div>
     <div class="hero-content">
-      <div class="hero-badge">⚡ #1 PRO SHOP IN THAILAND ⚡</div>
+      <div class="hero-badge">⚡ #1 PRO SHOP ⚡</div>
       <h1 class="hero-title">
-        <span class="title-line1">HIDDEN</span>
-        <span class="title-line2">PRO<span class="fire-emoji">🔥</span></span>
+        <span class="title-line1" id="heroTitle1">HIDDEN</span>
+        <span class="title-line2"><span id="heroTitle2">PRO</span>🔥</span>
       </h1>
-      <p class="hero-sub">บริการขายโปรแกรมเมอร์ฟรีไฟ • เข้าใช้งานง่าย • ปลอดภัย 100% • อัปเดตทุกแพตช์</p>
-      <div class="hero-stats">
-        <div class="stat"><div class="stat-num" data-count="5847">0</div><div class="stat-label">ผู้ใช้งาน</div></div>
-        <div class="stat"><div class="stat-num" data-count="12490">0</div><div class="stat-label">ออเดอร์สำเร็จ</div></div>
-        <div class="stat"><div class="stat-num" data-count="99">0</div><div class="stat-label">% อัปไทม์</div></div>
-        <div class="stat"><div class="stat-num" data-count="24">0</div><div class="stat-label">ชม. ซัพพอร์ต</div></div>
-      </div>
+      <p class="hero-sub" id="heroSub"></p>
       <div class="hero-cta">
-        <button class="btn-primary" onclick="showPage('packages');scrollToEl('#packages');">🔥 ดูแพ็คเกจ</button>
+        <button class="btn-primary" onclick="showPage('packages')">🔥 ดูแพ็คเกจ</button>
         <button class="btn-secondary" onclick="openModal('login')">⚡ เข้าสู่ระบบ</button>
       </div>
     </div>
-    <div class="hero-scroll"><span>เลื่อนลง</span><div class="scroll-arrow"></div></div>
   </section>
-
-  <div class="marquee">
-    <div class="marquee-track">
-      <span>🔥 อัปเดต OB47 แล้ว</span>
-      <span>⚡ เซิร์ฟเวอร์เสถียร 99.9%</span>
-      <span>🎯 Aimbot • Wallhack • ESP • Anti-Ban</span>
-      <span>💎 รองรับทุกดีไวซ์</span>
-      <span>🚀 ติดตั้งง่ายใน 3 นาที</span>
-      <span>🔥 อัปเดต OB47 แล้ว</span>
-      <span>⚡ เซิร์ฟเวอร์เสถียร 99.9%</span>
-      <span>🎯 Aimbot • Wallhack • ESP • Anti-Ban</span>
-      <span>💎 รองรับทุกดีไวซ์</span>
-      <span>🚀 ติดตั้งง่ายใน 3 นาที</span>
-    </div>
-  </div>
-
-  <section id="features" class="features">
-    <div class="container">
-      <div class="section-head">
-        <span class="section-tag">🎮 ฟีเจอร์เด่น</span>
-        <h2 class="section-title">ทำไมต้อง <span class="accent">HIDDEN PRO</span></h2>
-        <p class="section-sub">เราพัฒนาเครื่องมือเกมมิ่งระดับโปร ปลอดภัย แม่นยำ ไม่มีใครเทียบได้</p>
-      </div>
-      <div class="feature-grid">
-        <div class="feature"><div class="feature-icon">🎯</div><h3>Aimbot Pro</h3><p>ล็อกหัวแม่นยำ 99.8% ปรับความ smooth ได้ ตรวจจับการเคลื่อนไหวเรียลไทม์ แทบไม่มีคนจับได้</p></div>
-        <div class="feature"><div class="feature-icon">👁️</div><h3>ESP Vision</h3><p>มองเห็นศัตรูทะลุกำแพง แสดงระยะ HP ชื่อ ปืน ระเบิด ครบทุกรายละเอียด</p></div>
-        <div class="feature"><div class="feature-icon">🛡️</div><h3>Anti-Ban</h3><p>ระบบป้องกันแบนขั้นสูง อัปเดตภายใน 24 ชม. หลังแพตช์ใหม่ พร้อมระบบสุ่มเซ็นเซอร์</p></div>
-        <div class="feature"><div class="feature-icon">⚡</div><h3>No Recoil</h3><p>ลดแรงสั่นปืน 100% ยิงง่าย แม่น ไม่ต้องเล็งเอง ใช้ได้กับปืนทุกชนิด</p></div>
-        <div class="feature"><div class="feature-icon">🗺️</div><h3>Radar Hack</h3><p>เห็นตำแหน่งศัตรูทั้งแมพ พร้อมเส้นทางที่ดีที่สุด หลบ ลุย ได้ตามใจ</p></div>
-        <div class="feature"><div class="feature-icon">🔄</div><h3>Auto Update</h3><p>อัปเดตอัตโนมัติทุกครั้งที่เกมแพตช์ ไม่ต้องโหลดใหม่ ล็อกอินใหม่ทีเดียวจบ</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="reviews" class="reviews">
-    <div class="container">
-      <div class="section-head">
-        <span class="section-tag">💬 รีวิวจากลูกค้า</span>
-        <h2 class="section-title">ลูกค้าบอก <span class="accent">อะไร</span> กัน</h2>
-        <p class="section-sub">รีวิวจริงจากผู้ใช้งานจริง ไม่ปลอม ไม่แต่ง</p>
-      </div>
-      <div class="review-grid">
-        <div class="review"><div class="review-stars">★★★★★</div><p class="review-text">"โหดมาก ใช้มา 3 เดือนแล้วไม่โดนแบนเลย แมทช์แต่ละทีได้บัวเยอะมาก คุ้มสุดๆ"</p><div class="review-author"><div class="avatar" style="background:linear-gradient(135deg,#ff5722,#ff9800)">เอ</div><div><strong>เอกพล</strong><span>VIP รายเดือน • ใช้งาน 90 วัน</span></div></div></div>
-        <div class="review"><div class="review-stars">★★★★★</div><p class="review-text">"เร็ว แม่น ปลอดภัย ทีมงานตอบไว แนะนำเลย โดยเฉพาะแพ็คเกจซีซั่นคุ้มมาก"</p><div class="review-author"><div class="avatar" style="background:linear-gradient(135deg,#e91e63,#9c27b0)">ม</div><div><strong>มิ้นท์</strong><span>Season Pass • ใช้งาน 45 วัน</span></div></div></div>
-        <div class="review"><div class="review-stars">★★★★★</div><p class="review-text">"เริ่มจาก DAILY ลองของ แล้วอัปเป็น LIFETIME เลย ใช้ได้ทุกแมพ ปืนแม่นสุดๆ ชนะ 95% ของแมทช์"</p><div class="review-author"><div class="avatar" style="background:linear-gradient(135deg,#2196f3,#00bcd4)">ซ</div><div><strong>ซันเซ็ท</strong><span>Lifetime • ใช้งาน 6 เดือน</span></div></div></div>
-      </div>
-    </div>
-  </section>
+  <div class="marquee"><div class="marquee-track" id="marqueeTrack"></div></div>
 </section>
 
 <section id="page-packages" class="page">
   <div class="container" style="padding-top:120px; padding-bottom:80px;">
     <div class="section-head">
-      <span class="section-tag">💰 ราคาสุดคุ้ม</span>
       <h2 class="section-title">เลือกแพ็คเกจ <span class="accent">PRO</span></h2>
-      <p class="section-sub">เลือกแพ็คเกจที่ใช่สำหรับคุณ ทั้งรายวัน รายเดือน ถาวร</p>
     </div>
-    <div class="package-grid">
-      <div class="pkg"><div class="pkg-head"><span class="pkg-tag">มาใหม่</span><div class="pkg-icon">🎯</div><h3 class="pkg-name">DAILY PASS</h3><p class="pkg-desc">ทดลองใช้ 1 วัน เหมาะมือใหม่</p></div><div class="pkg-price"><span class="price-currency">฿</span><span class="price-num">49</span><span class="price-period">/วัน</span></div><ul class="pkg-features"><li>✓ ใช้งาน 24 ชั่วโมง</li><li>✓ Aimbot ปรับแรงได้</li><li>✓ ESP มองเห็นศัตรู</li><li>✓ Anti-Ban เบสิก</li><li>✓ ซัพพอร์ตผ่าน Discord</li></ul><button class="pkg-btn" onclick="buyPkg('daily')">เลือกแพ็คเกจ</button></div>
-      <div class="pkg"><div class="pkg-head"><span class="pkg-tag">ยอดนิยม</span><div class="pkg-icon">⚡</div><h3 class="pkg-name">WEEKLY</h3><p class="pkg-desc">ใช้งาน 7 วัน คุ้มสุดๆ</p></div><div class="pkg-price"><span class="price-currency">฿</span><span class="price-num">249</span><span class="price-period">/สัปดาห์</span></div><ul class="pkg-features"><li>✓ ใช้งาน 7 วันเต็ม</li><li>✓ ฟีเจอร์ครบทุกโหมด</li><li>✓ Aimbot ระดับ Pro</li><li>✓ Wallhack + ESP</li><li>✓ Anti-Ban ขั้นสูง</li><li>✓ อัปเดตอัตโนมัติ</li></ul><button class="pkg-btn" onclick="buyPkg('weekly')">เลือกแพ็คเกจ</button></div>
-      <div class="pkg popular"><span class="pkg-badge">🔥 HOT</span><div class="pkg-head"><div class="pkg-icon">💎</div><h3 class="pkg-name">MONTHLY VIP</h3><p class="pkg-desc">แพ็คเกจขายดีสุด ฟีเจอร์ครบ</p></div><div class="pkg-price"><span class="price-old">฿1,490</span><span class="price-currency">฿</span><span class="price-num">799</span><span class="price-period">/เดือน</span></div><ul class="pkg-features"><li>✓ ใช้งาน 30 วัน</li><li>✓ ทุกฟีเจอร์ปลดล็อก</li><li>✓ Aimbot Pro + Smooth</li><li>✓ ESP มองทะลุกำแพง</li><li>✓ No Recoil 100%</li><li>✓ Anti-Ban ระดับสูงสุด</li><li>✓ ซัพพอร์ตส่วนตัว 1:1</li><li>✓ อัปเดตฟรีทุกแพตช์</li></ul><button class="pkg-btn" onclick="buyPkg('monthly')">🔥 เลือกแพ็คเกจนี้</button></div>
-      <div class="pkg"><div class="pkg-head"><span class="pkg-tag">คุ้มสุด</span><div class="pkg-icon">👑</div><h3 class="pkg-name">SEASON PASS</h3><p class="pkg-desc">ใช้ได้ทั้งซีซั่น 90 วัน</p></div><div class="pkg-price"><span class="price-old">฿3,990</span><span class="price-currency">฿</span><span class="price-num">1,899</span><span class="price-period">/ซีซั่น</span></div><ul class="pkg-features"><li>✓ ใช้งาน 90 วัน</li><li>✓ ทุกฟีเจอร์ VIP</li><li>✓ เครื่องมือแอดมิน</li><li>✓ สกินอาวุธพิเศษ</li><li>✓ Config ส่วนตัว</li><li>✓ Priority Support</li><li>✓ อัปเดตฟรีทุกแพตช์</li></ul><button class="pkg-btn" onclick="buyPkg('season')">เลือกแพ็คเกจ</button></div>
-      <div class="pkg"><div class="pkg-head"><span class="pkg-tag">ถาวร</span><div class="pkg-icon">🏆</div><h3 class="pkg-name">LIFETIME</h3><p class="pkg-desc">จ่ายครั้งเดียว ใช้ได้ตลอดชีพ</p></div><div class="pkg-price"><span class="price-old">฿7,990</span><span class="price-currency">฿</span><span class="price-num">3,999</span><span class="price-period">/ตลอดชีพ</span></div><ul class="pkg-features"><li>✓ ใช้งานไม่จำกัด</li><li>✓ ทุกฟีเจอร์ทุกเวอร์ชัน</li><li>✓ ฟีเจอร์ใหม่ฟรีทุกอย่าง</li><li>✓ โหลดเวอร์ชัน PC + มือถือ</li><li>✓ Config Preset ส่วนตัว</li><li>✓ VIP Support ตลอด 24/7</li><li>✓ อัปเดตไม่อั้น</li><li>✓ รับประกันไม่แบน 1 ปี</li></ul><button class="pkg-btn" onclick="buyPkg('lifetime')">เลือกแพ็คเกจ</button></div>
-    </div>
+    <div class="package-grid" id="packageGrid"></div>
   </div>
 </section>
 
 <section id="page-dashboard" class="page">
   <div class="container" style="padding-top:120px; padding-bottom:80px;">
-    <div class="section-head">
-      <span class="section-tag">👤 ยินดีต้อนรับ</span>
-      <h2 class="section-title">แดชบอร์ดของ <span class="accent" id="dashUsername">User</span></h2>
-    </div>
+    <h2 class="section-title">สวัสดี <span class="accent" id="dashUsername"></span></h2>
     <div class="dash-grid">
-      <div class="dash-card"><div class="dash-icon">💎</div><h3>แพ็คเกจปัจจุบัน</h3><p id="dashPkg">ยังไม่มี</p></div>
-      <div class="dash-card"><div class="dash-icon">📅</div><h3>วันหมดอายุ</h3><p id="dashExpire">-</p></div>
-      <div class="dash-card"><div class="dash-icon">💰</div><h3>เครดิตคงเหลือ</h3><p id="dashCredits">0</p></div>
-      <div class="dash-card"><div class="dash-icon">🛒</div><h3>ออเดอร์ทั้งหมด</h3><p id="dashOrders">0</p></div>
+      <div class="dash-card"><div class="dash-icon">💎</div><h3>แพ็คเกจ</h3><p id="dashPkg">-</p></div>
+      <div class="dash-card"><div class="dash-icon">📅</div><h3>หมดอายุ</h3><p id="dashExpire">-</p></div>
+      <div class="dash-card"><div class="dash-icon">💰</div><h3>เครดิต</h3><p id="dashCredits">0</p></div>
+      <div class="dash-card"><div class="dash-icon">🛒</div><h3>ออเดอร์</h3><p id="dashOrders">0</p></div>
     </div>
-    <div style="margin-top:40px;">
-      <h3 style="margin-bottom:20px;">📋 ประวัติออเดอร์</h3>
-      <div class="order-list" id="orderList"></div>
+    <div class="dashboard-sections">
+      <div class="dash-section"><h3>📋 ประวัติออเดอร์</h3><div id="orderList"></div></div>
+      <div class="dash-section"><h3>� ข้อความ</h3><div id="messageList"></div></div>
     </div>
   </div>
 </section>
 
+<!-- ========== ADMIN ========== -->
 <section id="page-admin" class="page">
-  <div class="container" style="padding-top:120px; padding-bottom:80px;">
+  <div class="container" style="padding-top:100px; padding-bottom:80px;">
+
+    <!-- Dashboard Stats -->
     <div class="section-head">
-      <span class="section-tag">🛡️ Admin Panel</span>
+      <span class="section-tag">🛡️ Admin Dashboard</span>
       <h2 class="section-title">แผงควบคุม <span class="accent">แอดมิน</span></h2>
     </div>
-    <div class="dash-grid">
-      <div class="dash-card"><div class="dash-icon">👥</div><h3>ผู้ใช้ทั้งหมด</h3><p id="statUsers">0</p></div>
-      <div class="dash-card"><div class="dash-icon">📦</div><h3>ออเดอร์ทั้งหมด</h3><p id="statOrders">0</p></div>
-      <div class="dash-card"><div class="dash-icon">⏳</div><h3>รออนุมัติ</h3><p id="statPending">0</p></div>
-      <div class="dash-card"><div class="dash-icon">💵</div><h3>รายได้รวม</h3><p id="statRevenue">฿0</p></div>
+
+    <div class="admin-stats-grid">
+      <div class="stat-card primary"><div class="stat-icon">👥</div><div class="stat-info"><div class="stat-label">ผู้ใช้ทั้งหมด</div><div class="stat-val" id="sUsers">0</div></div></div>
+      <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-info"><div class="stat-label">ออเดอร์วันนี้</div><div class="stat-val" id="sTodayOrders">0</div></div></div>
+      <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-info"><div class="stat-label">รออนุมัติ</div><div class="stat-val" id="sPending">0</div></div></div>
+      <div class="stat-card success"><div class="stat-icon">💵</div><div class="stat-info"><div class="stat-label">รายได้วันนี้</div><div class="stat-val" id="sTodayRev">฿0</div></div></div>
+      <div class="stat-card success"><div class="stat-icon">💰</div><div class="stat-info"><div class="stat-label">รายได้เดือนนี้</div><div class="stat-val" id="sMonthRev">฿0</div></div></div>
+      <div class="stat-card primary"><div class="stat-icon">💎</div><div class="stat-info"><div class="stat-label">รายได้รวม</div><div class="stat-val" id="sTotalRev">฿0</div></div></div>
+      <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-info"><div class="stat-label">ออนไลน์ตอนนี้</div><div class="stat-val" id="sOnline">0</div></div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-info"><div class="stat-label">สมาชิกใช้งาน</div><div class="stat-val" id="sActive">0</div></div></div>
     </div>
+
+    <!-- Chart -->
+    <div class="admin-chart">
+      <h3>📊 ยอดขาย 7 �ันล่าสุด</h3>
+      <canvas id="salesChart"></canvas>
+    </div>
+
+    <!-- Tabs -->
     <div class="admin-tabs">
-      <button class="tab active" data-tab="orders">ออเดอร์</button>
-      <button class="tab" data-tab="users">ผู้ใช้</button>
-      <button class="tab" data-tab="codes">โค้ด</button>
-      <button class="tab" data-tab="logs">Logs</button>
+      <button class="tab active" data-tab="orders">📦 ออเดอร์</button>
+      <button class="tab" data-tab="users">👥 �ู้ใช้</button>
+      <button class="tab" data-tab="packages">🎁 แพ็คเกจ</button>
+      <button class="tab" data-tab="codes">🎟️ โค้ด</button>
+      <button class="tab" data-tab="announcements">📰 ประกาศ</button>
+      <button class="tab" data-tab="messages">💌 ข้อความ</button>
+      <button class="tab" data-tab="payments">💳 ชำระเงิน</button>
+      <button class="tab" data-tab="customize">⚙️ ปรับแต่ง</button>
+      <button class="tab" data-tab="logs">📜 Logs</button>
+      <button class="tab" data-tab="system">🔧 ระบบ</button>
     </div>
-    <div class="tab-panel active" id="tab-orders"><div class="order-list" id="adminOrderList"></div></div>
-    <div class="tab-panel" id="tab-users"><div class="user-list" id="adminUserList"></div></div>
+
+    <!-- ORDERS TAB -->
+    <div class="tab-panel active" id="tab-orders">
+      <div class="tab-toolbar">
+        <input type="text" id="orderSearch" placeholder="🔍 ค้นหา ID / username / แพ็คเกจ" oninput="loadAdminOrders()">
+        <select id="orderFilter" onchange="loadAdminOrders()">
+          <option value="all">ทุกสถานะ</option>
+          <option value="pending">⏳ รออนุมัติ</option>
+          <option value="approved">✅ อนุมัติ</option>
+          <option value="rejected">❌ ปฏิเสธ</option>
+        </select>
+        <button class="btn-redeem" onclick="bulkApproveOrders()">✓ อนุมัติที่เลือก</button>
+        <button class="btn-redeem" onclick="exportCSV('orders')">📤 Export</button>
+      </div>
+      <div id="adminOrderList" class="list-container"></div>
+    </div>
+
+    <!-- USERS TAB -->
+    <div class="tab-panel" id="tab-users">
+      <div class="tab-toolbar">
+        <input type="text" id="userSearch" placeholder="🔍 ค้นหา username / email" oninput="loadAdminUsers()">
+        <select id="userRoleFilter" onchange="loadAdminUsers()">
+          <option value="all">ทุก role</option>
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button class="btn-redeem" onclick="exportCSV('users')">📤 Export</button>
+      </div>
+      <div id="adminUserList" class="list-container"></div>
+    </div>
+
+    <!-- PACKAGES TAB -->
+    <div class="tab-panel" id="tab-packages">
+      <div class="tab-toolbar">
+        <button class="btn-primary" onclick="openPkgCreate()">➕ เพิ่มแพ็คเกจใหม่</button>
+      </div>
+      <div id="packageEditor" class="list-container"></div>
+    </div>
+
+    <!-- CODES TAB -->
     <div class="tab-panel" id="tab-codes">
-      <div class="code-create">
-        <h3>สร้างโค้ดใหม่</h3>
+      <div class="code-create-grid">
+        <h3>สร้างโค้ดเดี่ยว</h3>
         <form onsubmit="createCode(event)">
-          <input type="text" name="code" placeholder="โค้ด (เว้นว่างสุ่มให้)">
+          <input type="text" name="code" placeholder="โค้ด">
           <select name="type"><option value="credits">เครดิต</option><option value="package">แพ็คเกจ</option></select>
           <input type="number" name="value" placeholder="มูลค่า" value="100">
+          <input type="number" name="maxUse" placeholder="ใช้ได้กี่ครั้ง" value="1">
           <select name="pkgId"><option value="">-เลือกแพ็คเกจ-</option><option value="daily">daily</option><option value="weekly">weekly</option><option value="monthly">monthly</option><option value="season">season</option><option value="lifetime">lifetime</option></select>
-          <button type="submit" class="btn-primary">สร้างโค้ด</button>
+          <button type="submit" class="btn-primary">สร้าง</button>
         </form>
       </div>
-      <div class="code-list" id="adminCodeList"></div>
+      <div class="code-create-grid">
+        <h3>🚀 สร้างโค้ดจำนวนมาก (Bulk)</h3>
+        <form onsubmit="bulkCodes(event)">
+          <input type="number" name="count" placeholder="จำนวน" value="10" min="1" max="100">
+          <select name="type"><option value="credits">เครดิต</option><option value="package">แพ็คเกจ</option></select>
+          <input type="number" name="value" placeholder="มูลค่า" value="100">
+          <input type="number" name="maxUse" placeholder="ใช้ได้กี่ครั้ง" value="1">
+          <select name="pkgId"><option value="">-เลือกแพ็คเกจ-</option><option value="daily">daily</option><option value="weekly">weekly</option><option value="monthly">monthly</option><option value="season">season</option><option value="lifetime">lifetime</option></select>
+          <button type="submit" class="btn-primary">สร้าง Bulk</button>
+        </form>
+      </div>
+      <div id="adminCodeList" class="list-container"></div>
     </div>
-    <div class="tab-panel" id="tab-logs"><div class="log-list" id="adminLogList"></div></div>
+
+    <!-- ANNOUNCEMENTS TAB -->
+    <div class="tab-panel" id="tab-announcements">
+      <div class="code-create-grid">
+        <h3>📰 สร้างประกาศ</h3>
+        <form onsubmit="createAnnouncement(event)">
+          <input type="text" name="title" placeholder="หัวข้อ" required>
+          <select name="type"><option value="info">ℹ️ Info</option><option value="warning">⚠️ Warning</option><option value="success">✅ Success</option></select>
+          <textarea name="message" placeholder="ข้อความ" rows="3" required></textarea>
+          <button type="submit" class="btn-primary">📢 ประกาศ</button>
+        </form>
+      </div>
+      <div id="adminAnnList" class="list-container"></div>
+    </div>
+
+    <!-- MESSAGES TAB -->
+    <div class="tab-panel" id="tab-messages">
+      <div class="code-create-grid">
+        <h3>💌 ส่งข้อความหาผู้ใช้</h3>
+        <form onsubmit="sendMessage(event)">
+          <select name="userId" id="msgUserSelect" required></select>
+          <input type="text" name="title" placeholder="หัวข้อ" required>
+          <textarea name="message" placeholder="ข้อความ" rows="3" required></textarea>
+          <button type="submit" class="btn-primary">📨 ส่ง</button>
+        </form>
+      </div>
+      <div id="adminMsgList" class="list-container"></div>
+    </div>
+
+    <!-- PAYMENTS TAB -->
+    <div class="tab-panel" id="tab-payments">
+      <div class="customize-panel">
+        <h3>💳 ตั้งค่าบัญชีรับเงิน</h3>
+        <form onsubmit="savePayments(event)">
+          <div class="form-row"><label>TrueMoney Wallet</label><input type="text" name="truemoney.wallet" id="setTrueWallet"></div>
+          <div class="form-row"><label>พร้อมเพย์ เบอร์โทร</label><input type="text" name="promptpay.id" id="setPromptId"></div>
+          <div class="form-row"><label>ชื่อบัญชี พร้อมเพย์</label><input type="text" name="promptpay.name" id="setPromptName"></div>
+          <div class="form-row"><label>ธนาคาร</label><input type="text" name="bank.bank" id="setBankName"></div>
+          <div class="form-row"><label>เลขบัญชี</label><input type="text" name="bank.account" id="setBankAcc"></div>
+          <div class="form-row"><label>ชื่อบัญชีธนาคาร</label><input type="text" name="bank.name" id="setBankHolder"></div>
+          <div class="form-row"><label>USDT Address (TRC20)</label><input type="text" name="usdt.address" id="setUsdt"></div>
+          <button type="submit" class="btn-primary full">💾 บันทึก</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- CUSTOMIZE TAB -->
+    <div class="tab-panel" id="tab-customize">
+      <div class="customize-panel">
+        <h3>⚙️ ปรับแต่งเว็บ</h3>
+        <form onsubmit="saveSettings(event)">
+          <div class="form-row"><label>ชื่อเว็บ</label><input type="text" name="site.name" id="setSiteName"></div>
+          <div class="form-row"><label>โลโก้</label><input type="text" name="site.logo" id="setSiteLogo"></div>
+          <div class="form-row"><label>คำอธิบาย</label><textarea name="site.description" id="setSiteDesc" rows="2"></textarea></div>
+          <div class="form-row"><label>Hero 1</label><input type="text" name="content.heroTitle1" id="setHero1"></div>
+          <div class="form-row"><label>Hero 2</label><input type="text" name="content.heroTitle2" id="setHero2"></div>
+          <div class="form-row"><label>Hero Sub</label><textarea name="content.heroSub" id="setHeroSub" rows="2"></textarea></div>
+          <div class="form-row-2">
+            <div class="form-row"><label>สีหลัก</label><input type="color" name="theme.primary" id="setPrimary"></div>
+            <div class="form-row"><label>สีรอง</label><input type="color" name="theme.accent" id="setAccent"></div>
+          </div>
+          <div class="form-row"><label>Discord</label><input type="text" name="site.contact.discord" id="setDiscord"></div>
+          <div class="form-row"><label>LINE</label><input type="text" name="site.contact.line" id="setLine"></div>
+          <div class="form-row"><label>Email</label><input type="text" name="site.contact.email" id="setEmail"></div>
+          <button type="submit" class="btn-primary full">💾 บันทึก</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- LOGS TAB -->
+    <div class="tab-panel" id="tab-logs">
+      <div class="tab-toolbar">
+        <select id="logTypeFilter" onchange="loadLogs()">
+          <option value="all">ทุกประเภท</option>
+          <option value="login">Login</option>
+          <option value="order">Order</option>
+          <option value="approve">Approve</option>
+          <option value="reject">Reject</option>
+          <option value="ban">Ban</option>
+          <option value="register">Register</option>
+          <option value="redeem">Redeem</option>
+        </select>
+      </div>
+      <div id="adminLogList" class="list-container"></div>
+    </div>
+
+    <!-- SYSTEM TAB -->
+    <div class="tab-panel" id="tab-system">
+      <div class="system-grid">
+        <button class="system-btn" onclick="backupSystem()">💾 Backup ข้อมูล</button>
+        <button class="system-btn" onclick="clearCache()">🧹 ล้าง Cache</button>
+        <button class="system-btn" onclick="systemInfo()">ℹ️ ข้อมูลระบบ</button>
+      </div>
+      <div id="systemInfo" class="system-info"></div>
+    </div>
+
   </div>
 </section>
 
 <section id="page-contact" class="page">
   <div class="container" style="padding-top:120px; padding-bottom:80px;">
-    <div class="section-head">
-      <span class="section-tag">📞 ติดต่อเรา</span>
-      <h2 class="section-title">มีคำถาม? <span class="accent">ทักมาเลย</span></h2>
-      <p class="section-sub">ทีมซัพพอร์ตพร้อมตอบ 24 ชั่วโมง ทุกวัน</p>
-    </div>
-    <div class="contact-grid">
-      <a href="#" class="contact-card"><div class="contact-icon">💬</div><h3>Discord</h3><p>เข้าร่วมเซิร์ฟเวอร์</p><span class="contact-link">discord.gg/hiddenpro</span></a>
-      <a href="#" class="contact-card"><div class="contact-icon">📱</div><h3>LINE</h3><p>แอดไลน์ไอดี</p><span class="contact-link">@hiddenpro</span></a>
-      <a href="#" class="contact-card"><div class="contact-icon">📧</div><h3>Email</h3><p>ส่งเมลหาเรา</p><span class="contact-link">support@hiddenpro.shop</span></a>
-    </div>
+    <h2 class="section-title">ติดต่อ <span class="accent">เรา</span></h2>
+    <div class="contact-grid" id="contactGrid"></div>
   </div>
 </section>
 
 <footer class="footer">
   <div class="container">
-    <div class="footer-grid">
-      <div>
-        <div class="logo"><span class="logo-icon">🔥</span><span class="logo-text">HIDDEN<span class="logo-accent">PRO</span></span></div>
-        <p class="footer-desc">บริการขายโปรเกมมิ่งอันดับ 1 ของไทย ปลอดภัย แม่นยำ อัปเดตตลอด</p>
-      </div>
-      <div><h4>เมนู</h4><ul><li><a href="#" onclick="showPage('home');return false;">หน้าแรก</a></li><li><a href="#" onclick="showPage('packages');return false;">แพ็คเกจ</a></li><li><a href="#" onclick="showPage('contact');return false;">ติดต่อ</a></li></ul></div>
-      <div><h4>ช่วยเหลือ</h4><ul><li><a href="#">วิธีใช้งาน</a></li><li><a href="#">คำถามที่พบบ่อย</a></li><li><a href="#">นโยบาย</a></li></ul></div>
-      <div><h4>ชำระเงิน</h4><div class="payment-icons"><span>💳 TrueMoney</span><span>📲 พร้อมเพย์</span><span>🏦 โอนผ่านธนาคาร</span><span>₿ USDT</span></div></div>
-    </div>
-    <div class="footer-bottom"><p>© 2026 HIDDEN PRO. All rights reserved.</p></div>
+    <p style="text-align:center;color:var(--text-muted);">© 2026 HIDDEN PRO</p>
   </div>
 </footer>
 
-<div class="modal" id="loginModal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('login')">×</button>
-    <h2 class="modal-title">เข้าสู่ระบบ</h2>
-    <form class="modal-form" onsubmit="handleLogin(event)">
-      <div class="form-group"><label>ชื่อผู้ใช้ / อีเมล</label><input type="text" name="username" required placeholder="username หรือ email"></div>
-      <div class="form-group"><label>รหัสผ่าน</label><input type="password" name="password" required placeholder="••••••••"></div>
-      <button type="submit" class="btn-primary full">⚡ เข้าสู่ระบบ</button>
-      <p class="modal-switch">ยังไม่มีบัญชี? <a href="#" onclick="switchModal('login','register');return false;">สมัครสมาชิก</a></p>
-    </form>
-  </div>
-</div>
+<!-- MODALS -->
+<div class="modal" id="loginModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('login')">×</button>
+  <h2 class="modal-title">เข้าสู่ระบบ</h2>
+  <form class="modal-form" onsubmit="handleLogin(event)">
+    <div class="form-group"><label>Username / Email</label><input type="text" name="username" required></div>
+    <div class="form-group"><label>รหัสผ่าน</label><input type="password" name="password" required></div>
+    <label class="remember-me"><input type="checkbox" name="rememberMe" checked> � จำฉันไว้ 30 วัน</label>
+    <button type="submit" class="btn-primary full">⚡ เข้าสู่ระบบ</button>
+    <p class="modal-switch">ยังไม่มีบัญชี? <a href="#" onclick="switchModal('login','register');return false;">สมัคร</a></p>
+  </form>
+</div></div>
 
-<div class="modal" id="registerModal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('register')">×</button>
-    <h2 class="modal-title">สมัครสมาชิก</h2>
-    <form class="modal-form" onsubmit="handleRegister(event)">
-      <div class="form-group"><label>ชื่อผู้ใช้</label><input type="text" name="username" required minlength="3" placeholder="เลือก username"></div>
-      <div class="form-group"><label>อีเมล</label><input type="email" name="email" required placeholder="email@example.com"></div>
-      <div class="form-group"><label>รหัสผ่าน</label><input type="password" name="password" required minlength="6" placeholder="อย่างน้อย 6 ตัวอักษร"></div>
-      <button type="submit" class="btn-primary full">🚀 สมัครสมาชิก</button>
-      <p class="modal-switch">มีบัญชีแล้ว? <a href="#" onclick="switchModal('register','login');return false;">เข้าสู่ระบบ</a></p>
-    </form>
-  </div>
-</div>
+<div class="modal" id="registerModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('register')">×</button>
+  <h2 class="modal-title">สมัครสมาชิก</h2>
+  <form class="modal-form" onsubmit="handleRegister(event)">
+    <div class="form-group"><label>Username</label><input type="text" name="username" required minlength="3"></div>
+    <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
+    <div class="form-group"><label>รหัสผ่าน</label><input type="password" name="password" required minlength="6"></div>
+    <label class="remember-me"><input type="checkbox" name="rememberMe" checked> 🔒 จำ�ันไว้</label>
+    <button type="submit" class="btn-primary full">🚀 สมัคร</button>
+    <p class="modal-switch">มีบัญชี? <a href="#" onclick="switchModal('register','login');return false;">เข้าสู่ระบบ</a></p>
+  </form>
+</div></div>
 
-<div class="modal" id="buyModal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('buy')">×</button>
-    <h2 class="modal-title">ซื้อแพ็คเกจ <span id="buyPkgName" class="accent"></span></h2>
-    <p style="text-align:center; margin-bottom:20px;">ราคา: <strong style="font-size:24px;color:var(--primary);" id="buyPkgPrice"></strong></p>
-    <form class="modal-form" onsubmit="handleBuy(event)">
-      <div class="form-group">
-        <label>วิธีชำระเงิน</label>
-        <select name="method" required>
-          <option value="truemoney">TrueMoney Wallet</option>
-          <option value="promptpay">พร้อมเพย์</option>
-          <option value="bank">โอนผ่านธนาคาร</option>
-          <option value="usdt">USDT (TRC20)</option>
-        </select>
-      </div>
-      <div class="form-group"><label>ลิงก์สลิป / URL</label><input type="text" name="slip" placeholder="วางลิงก์รูปสลิป หรือ URL"></div>
-      <button type="submit" class="btn-primary full">🔥 ยืนยันการสั่งซื้อ</button>
-    </form>
-  </div>
-</div>
+<div class="modal" id="buyModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('buy')">×</button>
+  <h2 class="modal-title">ซื้อ <span id="buyPkgName" class="accent"></span></h2>
+  <p style="text-align:center;">ราคา: <strong style="font-size:24px;color:var(--primary);" id="buyPkgPrice"></strong></p>
+  <div id="paymentInfo"></div>
+  <form class="modal-form" onsubmit="handleBuy(event)">
+    <div class="form-group"><label>วิธีชำระเงิน</label><select name="method" required id="buyMethodSelect"></select></div>
+    <div class="form-group"><label>ลิงก์สลิป</label><input type="text" name="slip"></div>
+    <button type="submit" class="btn-primary full">🔥 ยืนยัน</button>
+  </form>
+</div></div>
 
-<div class="modal" id="redeemModal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('redeem')">×</button>
-    <h2 class="modal-title">🎁 ใช้โค้ด</h2>
-    <form class="modal-form" onsubmit="handleRedeem(event)">
-      <div class="form-group"><label>โค้ดของคุณ</label><input type="text" name="code" required placeholder="XXXX-XXXX-XXXX"></div>
-      <button type="submit" class="btn-primary full">✨ กดเพื่อใช้โค้ด</button>
-    </form>
-  </div>
-</div>
+<div class="modal" id="redeemModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('redeem')">×</button>
+  <h2 class="modal-title">🎁 ใช้โค้ด</h2>
+  <form class="modal-form" onsubmit="handleRedeem(event)">
+    <div class="form-group"><label>โค้ด</label><input type="text" name="code" required></div>
+    <button type="submit" class="btn-primary full">✨ ใช้โค้ด</button>
+  </form>
+</div></div>
+
+<div class="modal" id="editPkgModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('editPkg')">×</button>
+  <h2 class="modal-title">แพ็คเกจ <span id="editPkgId" class="accent"></span></h2>
+  <form class="modal-form" onsubmit="savePkgEdit(event)">
+    <div class="form-row-2"><div class="form-group"><label>ID</label><input type="text" name="id" id="editPkgIdInput"></div><div class="form-group"><label>ชื่อ</label><input type="text" name="name" id="editName" required></div></div>
+    <div class="form-row-2"><div class="form-group"><label>ราคา</label><input type="number" name="price" id="editPrice" required></div><div class="form-group"><label>รา�าเดิม</label><input type="number" name="oldPrice" id="editOldPrice"></div></div>
+    <div class="form-row-2"><div class="form-group"><label>วัน</label><input type="number" name="days" id="editDays" required></div><div class="form-group"><label>ไอคอน</label><input type="text" name="image" id="editImage"></div></div>
+    <div class="form-group"><label>แท็ก</label><input type="text" name="tag" id="editTag"></div>
+    <div class="form-group"><label><input type="checkbox" name="featured" id="editFeatured"> แนะนำ</label></div>
+    <button type="submit" class="btn-primary full">💾 บันทึก</button>
+  </form>
+</div></div>
+
+<div class="modal" id="userActionModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('userAction')">×</button>
+  <h2 class="modal-title">จัดการผู้ใช้</h2>
+  <div id="userActionContent"></div>
+</div></div>
 
 <div class="toast" id="toast"></div>
 
