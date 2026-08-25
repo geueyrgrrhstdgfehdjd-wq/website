@@ -12,7 +12,7 @@
 <div class="auto-login-banner" id="autoLoginBanner">
   <span>👋 ยินดีต้อนรับกลับ <strong id="autoLoginName"></strong></span>
   <span class="auto-login-device" id="autoLoginDevice"></span>
-  <button onclick="document.getElementById('autoLoginBanner').classList.remove('show')">×</button>
+  <button onclick="this.parentElement.classList.remove('show')">×</button>
 </div>
 
 <nav class="navbar">
@@ -41,7 +41,6 @@
   </div>
 </nav>
 
-<!-- ANNOUNCEMENTS -->
 <div class="announcements" id="announcements"></div>
 
 <section id="page-home" class="page active">
@@ -65,9 +64,7 @@
 
 <section id="page-packages" class="page">
   <div class="container" style="padding-top:120px; padding-bottom:80px;">
-    <div class="section-head">
-      <h2 class="section-title">เลือกแพ็คเกจ <span class="accent">PRO</span></h2>
-    </div>
+    <h2 class="section-title">เลือกแพ็คเกจ <span class="accent">PRO</span></h2>
     <div class="package-grid" id="packageGrid"></div>
   </div>
 </section>
@@ -83,16 +80,13 @@
     </div>
     <div class="dashboard-sections">
       <div class="dash-section"><h3>📋 ประวัติออเดอร์</h3><div id="orderList"></div></div>
-      <div class="dash-section"><h3>� ข้อความ</h3><div id="messageList"></div></div>
+      <div class="dash-section"><h3>💌 ข้อความ</h3><div id="messageList"></div></div>
     </div>
   </div>
 </section>
 
-<!-- ========== ADMIN ========== -->
 <section id="page-admin" class="page">
   <div class="container" style="padding-top:100px; padding-bottom:80px;">
-
-    <!-- Dashboard Stats -->
     <div class="section-head">
       <span class="section-tag">🛡️ Admin Dashboard</span>
       <h2 class="section-title">แผงควบคุม <span class="accent">แอดมิน</span></h2>
@@ -105,20 +99,15 @@
       <div class="stat-card success"><div class="stat-icon">💵</div><div class="stat-info"><div class="stat-label">รายได้วันนี้</div><div class="stat-val" id="sTodayRev">฿0</div></div></div>
       <div class="stat-card success"><div class="stat-icon">💰</div><div class="stat-info"><div class="stat-label">รายได้เดือนนี้</div><div class="stat-val" id="sMonthRev">฿0</div></div></div>
       <div class="stat-card primary"><div class="stat-icon">💎</div><div class="stat-info"><div class="stat-label">รายได้รวม</div><div class="stat-val" id="sTotalRev">฿0</div></div></div>
-      <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-info"><div class="stat-label">ออนไลน์ตอนนี้</div><div class="stat-val" id="sOnline">0</div></div></div>
+      <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-info"><div class="stat-label">ออนไลน์</div><div class="stat-val" id="sOnline">0</div></div></div>
       <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-info"><div class="stat-label">สมาชิกใช้งาน</div><div class="stat-val" id="sActive">0</div></div></div>
     </div>
 
-    <!-- Chart -->
-    <div class="admin-chart">
-      <h3>📊 ยอดขาย 7 �ันล่าสุด</h3>
-      <canvas id="salesChart"></canvas>
-    </div>
+    <div class="admin-chart"><h3>📊 ยอดขาย 7 วันล่าสุด</h3><canvas id="salesChart"></canvas></div>
 
-    <!-- Tabs -->
     <div class="admin-tabs">
       <button class="tab active" data-tab="orders">📦 ออเดอร์</button>
-      <button class="tab" data-tab="users">👥 �ู้ใช้</button>
+      <button class="tab" data-tab="users">👥 ผู้ใช้</button>
       <button class="tab" data-tab="packages">🎁 แพ็คเกจ</button>
       <button class="tab" data-tab="codes">🎟️ โค้ด</button>
       <button class="tab" data-tab="announcements">📰 ประกาศ</button>
@@ -129,10 +118,9 @@
       <button class="tab" data-tab="system">🔧 ระบบ</button>
     </div>
 
-    <!-- ORDERS TAB -->
     <div class="tab-panel active" id="tab-orders">
       <div class="tab-toolbar">
-        <input type="text" id="orderSearch" placeholder="🔍 ค้นหา ID / username / แพ็คเกจ" oninput="loadAdminOrders()">
+        <input type="text" id="orderSearch" placeholder="🔍 ค้นหา" oninput="loadAdminOrders()">
         <select id="orderFilter" onchange="loadAdminOrders()">
           <option value="all">ทุกสถานะ</option>
           <option value="pending">⏳ รออนุมัติ</option>
@@ -145,10 +133,9 @@
       <div id="adminOrderList" class="list-container"></div>
     </div>
 
-    <!-- USERS TAB -->
     <div class="tab-panel" id="tab-users">
       <div class="tab-toolbar">
-        <input type="text" id="userSearch" placeholder="🔍 ค้นหา username / email" oninput="loadAdminUsers()">
+        <input type="text" id="userSearch" placeholder="🔍 ค้นหา" oninput="loadAdminUsers()">
         <select id="userRoleFilter" onchange="loadAdminUsers()">
           <option value="all">ทุก role</option>
           <option value="user">User</option>
@@ -159,18 +146,14 @@
       <div id="adminUserList" class="list-container"></div>
     </div>
 
-    <!-- PACKAGES TAB -->
     <div class="tab-panel" id="tab-packages">
-      <div class="tab-toolbar">
-        <button class="btn-primary" onclick="openPkgCreate()">➕ เพิ่มแพ็คเกจใหม่</button>
-      </div>
+      <div class="tab-toolbar"><button class="btn-primary" onclick="openPkgCreate()">➕ เพิ่มแพ็คเกจ</button></div>
       <div id="packageEditor" class="list-container"></div>
     </div>
 
-    <!-- CODES TAB -->
     <div class="tab-panel" id="tab-codes">
       <div class="code-create-grid">
-        <h3>สร้างโค้ดเดี่ยว</h3>
+        <h3>สร้างโค้ด</h3>
         <form onsubmit="createCode(event)">
           <input type="text" name="code" placeholder="โค้ด">
           <select name="type"><option value="credits">เครดิต</option><option value="package">แพ็คเกจ</option></select>
@@ -181,7 +164,7 @@
         </form>
       </div>
       <div class="code-create-grid">
-        <h3>🚀 สร้างโค้ดจำนวนมาก (Bulk)</h3>
+        <h3>🚀 Bulk สร้างโค้ดจำนวนมาก</h3>
         <form onsubmit="bulkCodes(event)">
           <input type="number" name="count" placeholder="จำนวน" value="10" min="1" max="100">
           <select name="type"><option value="credits">เครดิต</option><option value="package">แพ็คเกจ</option></select>
@@ -194,7 +177,6 @@
       <div id="adminCodeList" class="list-container"></div>
     </div>
 
-    <!-- ANNOUNCEMENTS TAB -->
     <div class="tab-panel" id="tab-announcements">
       <div class="code-create-grid">
         <h3>📰 สร้างประกาศ</h3>
@@ -208,10 +190,9 @@
       <div id="adminAnnList" class="list-container"></div>
     </div>
 
-    <!-- MESSAGES TAB -->
     <div class="tab-panel" id="tab-messages">
       <div class="code-create-grid">
-        <h3>💌 ส่งข้อความหาผู้ใช้</h3>
+        <h3>💌 ส่งข้อความ</h3>
         <form onsubmit="sendMessage(event)">
           <select name="userId" id="msgUserSelect" required></select>
           <input type="text" name="title" placeholder="หัวข้อ" required>
@@ -222,7 +203,6 @@
       <div id="adminMsgList" class="list-container"></div>
     </div>
 
-    <!-- PAYMENTS TAB -->
     <div class="tab-panel" id="tab-payments">
       <div class="customize-panel">
         <h3>💳 ตั้งค่าบัญชีรับเงิน</h3>
@@ -233,13 +213,12 @@
           <div class="form-row"><label>ธนาคาร</label><input type="text" name="bank.bank" id="setBankName"></div>
           <div class="form-row"><label>เลขบัญชี</label><input type="text" name="bank.account" id="setBankAcc"></div>
           <div class="form-row"><label>ชื่อบัญชีธนาคาร</label><input type="text" name="bank.name" id="setBankHolder"></div>
-          <div class="form-row"><label>USDT Address (TRC20)</label><input type="text" name="usdt.address" id="setUsdt"></div>
+          <div class="form-row"><label>USDT Address</label><input type="text" name="usdt.address" id="setUsdt"></div>
           <button type="submit" class="btn-primary full">💾 บันทึก</button>
         </form>
       </div>
     </div>
 
-    <!-- CUSTOMIZE TAB -->
     <div class="tab-panel" id="tab-customize">
       <div class="customize-panel">
         <h3>⚙️ ปรับแต่งเว็บ</h3>
@@ -250,10 +229,7 @@
           <div class="form-row"><label>Hero 1</label><input type="text" name="content.heroTitle1" id="setHero1"></div>
           <div class="form-row"><label>Hero 2</label><input type="text" name="content.heroTitle2" id="setHero2"></div>
           <div class="form-row"><label>Hero Sub</label><textarea name="content.heroSub" id="setHeroSub" rows="2"></textarea></div>
-          <div class="form-row-2">
-            <div class="form-row"><label>สีหลัก</label><input type="color" name="theme.primary" id="setPrimary"></div>
-            <div class="form-row"><label>สีรอง</label><input type="color" name="theme.accent" id="setAccent"></div>
-          </div>
+          <div class="form-row-2"><div class="form-row"><label>สีหลัก</label><input type="color" name="theme.primary" id="setPrimary"></div><div class="form-row"><label>สีรอง</label><input type="color" name="theme.accent" id="setAccent"></div></div>
           <div class="form-row"><label>Discord</label><input type="text" name="site.contact.discord" id="setDiscord"></div>
           <div class="form-row"><label>LINE</label><input type="text" name="site.contact.line" id="setLine"></div>
           <div class="form-row"><label>Email</label><input type="text" name="site.contact.email" id="setEmail"></div>
@@ -262,33 +238,27 @@
       </div>
     </div>
 
-    <!-- LOGS TAB -->
     <div class="tab-panel" id="tab-logs">
       <div class="tab-toolbar">
         <select id="logTypeFilter" onchange="loadLogs()">
           <option value="all">ทุกประเภท</option>
-          <option value="login">Login</option>
-          <option value="order">Order</option>
-          <option value="approve">Approve</option>
-          <option value="reject">Reject</option>
-          <option value="ban">Ban</option>
-          <option value="register">Register</option>
+          <option value="login">Login</option><option value="order">Order</option>
+          <option value="approve">Approve</option><option value="reject">Reject</option>
+          <option value="ban">Ban</option><option value="register">Register</option>
           <option value="redeem">Redeem</option>
         </select>
       </div>
       <div id="adminLogList" class="list-container"></div>
     </div>
 
-    <!-- SYSTEM TAB -->
     <div class="tab-panel" id="tab-system">
       <div class="system-grid">
-        <button class="system-btn" onclick="backupSystem()">💾 Backup ข้อมูล</button>
+        <button class="system-btn" onclick="backupSystem()">💾 Backup</button>
         <button class="system-btn" onclick="clearCache()">🧹 ล้าง Cache</button>
         <button class="system-btn" onclick="systemInfo()">ℹ️ ข้อมูลระบบ</button>
       </div>
       <div id="systemInfo" class="system-info"></div>
     </div>
-
   </div>
 </section>
 
@@ -299,19 +269,14 @@
   </div>
 </section>
 
-<footer class="footer">
-  <div class="container">
-    <p style="text-align:center;color:var(--text-muted);">© 2026 HIDDEN PRO</p>
-  </div>
-</footer>
+<footer class="footer"><div class="container"><p style="text-align:center;color:var(--text-muted);">© 2026 HIDDEN PRO</p></div></footer>
 
-<!-- MODALS -->
 <div class="modal" id="loginModal"><div class="modal-box"><button class="modal-close" onclick="closeModal('login')">×</button>
   <h2 class="modal-title">เข้าสู่ระบบ</h2>
   <form class="modal-form" onsubmit="handleLogin(event)">
     <div class="form-group"><label>Username / Email</label><input type="text" name="username" required></div>
     <div class="form-group"><label>รหัสผ่าน</label><input type="password" name="password" required></div>
-    <label class="remember-me"><input type="checkbox" name="rememberMe" checked> � จำฉันไว้ 30 วัน</label>
+    <label class="remember-me"><input type="checkbox" name="rememberMe" checked> 🔒 จำฉันไว้ 30 วัน</label>
     <button type="submit" class="btn-primary full">⚡ เข้าสู่ระบบ</button>
     <p class="modal-switch">ยังไม่มีบัญชี? <a href="#" onclick="switchModal('login','register');return false;">สมัคร</a></p>
   </form>
@@ -323,7 +288,7 @@
     <div class="form-group"><label>Username</label><input type="text" name="username" required minlength="3"></div>
     <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
     <div class="form-group"><label>รหัสผ่าน</label><input type="password" name="password" required minlength="6"></div>
-    <label class="remember-me"><input type="checkbox" name="rememberMe" checked> 🔒 จำ�ันไว้</label>
+    <label class="remember-me"><input type="checkbox" name="rememberMe" checked> 🔒 จำฉันไว้</label>
     <button type="submit" class="btn-primary full">🚀 สมัคร</button>
     <p class="modal-switch">มีบัญชี? <a href="#" onclick="switchModal('register','login');return false;">เข้าสู่ระบบ</a></p>
   </form>
@@ -352,7 +317,7 @@
   <h2 class="modal-title">แพ็คเกจ <span id="editPkgId" class="accent"></span></h2>
   <form class="modal-form" onsubmit="savePkgEdit(event)">
     <div class="form-row-2"><div class="form-group"><label>ID</label><input type="text" name="id" id="editPkgIdInput"></div><div class="form-group"><label>ชื่อ</label><input type="text" name="name" id="editName" required></div></div>
-    <div class="form-row-2"><div class="form-group"><label>ราคา</label><input type="number" name="price" id="editPrice" required></div><div class="form-group"><label>รา�าเดิม</label><input type="number" name="oldPrice" id="editOldPrice"></div></div>
+    <div class="form-row-2"><div class="form-group"><label>ราคา</label><input type="number" name="price" id="editPrice" required></div><div class="form-group"><label>ราคาเดิม</label><input type="number" name="oldPrice" id="editOldPrice"></div></div>
     <div class="form-row-2"><div class="form-group"><label>วัน</label><input type="number" name="days" id="editDays" required></div><div class="form-group"><label>ไอคอน</label><input type="text" name="image" id="editImage"></div></div>
     <div class="form-group"><label>แท็ก</label><input type="text" name="tag" id="editTag"></div>
     <div class="form-group"><label><input type="checkbox" name="featured" id="editFeatured"> แนะนำ</label></div>
