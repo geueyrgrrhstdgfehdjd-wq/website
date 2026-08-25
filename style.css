@@ -154,8 +154,7 @@ body { font-family: 'Kanit', sans-serif; background: var(--bg); color: var(--tex
 
 .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
 .modal.show { display: flex; }
-.modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 40px; max-width: 480px; width: 100%; position: relative; animation: modalIn 0.3s; }
-@keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+.modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 40px; max-width: 480px; width: 100%; position: relative; }
 .modal-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 50%; cursor: pointer; font-size: 20px; }
 .modal-close:hover { border-color: var(--danger); color: var(--danger); }
 .modal-title { font-family: 'Russo One', sans-serif; font-size: 28px; margin-bottom: 24px; text-align: center; }
@@ -166,7 +165,6 @@ body { font-family: 'Kanit', sans-serif; background: var(--bg); color: var(--tex
 .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
 .modal-switch { text-align: center; color: var(--text-muted); font-size: 14px; }
 .modal-switch a { color: var(--primary); text-decoration: none; font-weight: 600; }
-.payment-info { background: var(--bg); border: 1px dashed var(--border); border-radius: 8px; padding: 12px; color: var(--text-muted); font-size: 13px; }
 
 .toast { position: fixed; bottom: 30px; right: 30px; background: var(--bg-card); border: 1px solid var(--success); color: var(--text); padding: 14px 24px; border-radius: 12px; font-weight: 600; z-index: 3000; transform: translateX(400px); transition: transform 0.3s; }
 .toast.show { transform: translateX(0); }
